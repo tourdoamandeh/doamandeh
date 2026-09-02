@@ -1,34 +1,67 @@
 # TASKS.md
 
-## Completed
+> Status Phase 1–5: DONE (fondasi, public, CMS, booking, polish awal)
+> Sekarang masuk Phase 6 (fitur lanjutan per role) dan Phase 7 (integration).
 
-- [x] Phase 1 — Setup Core (Next.js, Supabase, Schema)
-- [x] Phase 2 — Public Website (Homepage, Category, Detail)
-- [x] Phase 3 — Admin Auth (Login, Proteksi Route)
-- [x] Phase 4 — Admin CMS Dasar (CRUD Services, List Bookings)
-- [x] Phase 5 — Form Booking Dasar & Polish UI Awal
+## Phase 6A — CMS Advanced (Owner: Sultan)
 
-## Current Tasks
+- [ ] Upload gambar service ke Supabase Storage
+  - [ ] Preview gambar di form
+  - [ ] Validasi tipe & ukuran file
+  - [ ] Simpan URL ke services.image_url
+- [ ] Site Settings CMS
+  - [ ] Tambah halaman /admin/settings
+  - [ ] Key: hero_title, hero_subtitle, about_text, contact, sosmed
+  - [ ] Homepage public baca dari site_settings
+- [ ] Booking Management Upgrade
+  - [ ] Filter by status (pending / confirmed / cancelled)
+  - [ ] Filter by category
+  - [ ] Search by nama/email/phone
+  - [ ] Sort by newest
+  - [ ] Detail booking modal/drawer
+  - [ ] Quick action confirm/cancel
+- [ ] Service Management Upgrade
+  - [ ] Filter category
+  - [ ] Search service
+  - [ ] Toggle active/inactive
+  - [ ] Delete confirmation dialog
+  - [ ] Empty state
+- [ ] Validasi & error handling admin forms
 
-### Phase 6 — CMS Advanced & Storage (Sultan)
+## Phase 6B — Public Website Upgrade (Owner: Mayang)
 
-- [ ] Setup Supabase Storage bucket untuk gambar services
-- [ ] Fitur upload gambar di form create/update service
-- [ ] Buat halaman CMS Site Settings (edit hero, about, kontak)
-- [ ] Tambah filter, search, dan pagination di tabel Admin Bookings
-- [ ] Tambah filter dan toggle active/inactive di tabel Admin Services
+- [ ] Homepage dinamis dari site_settings
+- [ ] Hero section dengan gambar dari Supabase Storage
+- [ ] Halaman About
+- [ ] Halaman Contact dengan map
+- [ ] Testimoni section (data bisa dari Supabase)
+- [ ] FAQ section
+- [ ] SEO: meta tags, OG image, sitemap.xml
+- [ ] Favicon & branding konsisten
+- [ ] Mobile nav polish
 
-### Phase 7 — Public Web Polish & Integrasi (Mayang)
+## Phase 6C — Booking & UX Polish (Owner: Sahrul)
 
-- [ ] Integrasi data Site Settings dari Supabase ke Homepage & Footer
-- [ ] Tambah loading skeletons di halaman public
-- [ ] Optimasi SEO (Meta tags, Open Graph) per halaman service
-- [ ] Responsive bottom navigation untuk mobile
-- [ ] Empty state UI kalau category/service belum ada
+- [ ] Form booking dengan validasi zod
+- [ ] Date picker yang proper (start_date, end_date)
+- [ ] Loading, success, error state
+- [ ] Notifikasi booking (toast)
+- [ ] Konfirmasi booking via email (optional, pakai Supabase Edge Function)
+- [ ] Konsistensi UI antar halaman
+- [ ] Empty state & skeleton loading
+- [ ] Accessibility (alt text, aria-label, keyboard nav)
 
-### Phase 8 — Booking Advanced & Flow (Sahrul)
+## Phase 7 — Integration & QA (Owner: All)
 
-- [ ] Fitur redirect ke WhatsApp admin setelah booking sukses (bawa pesan otomatis)
-- [ ] Validasi tanggal (end_date tidak boleh sebelum start_date, tidak bisa pilih tanggal lampau)
-- [ ] Halaman "Cek Status Booking" berdasarkan email/nomor HP
-- [ ] Notifikasi email dasar (opsional) atau webhook ke WA saat ada booking baru
+- [ ] Merge semua branch ke main
+- [ ] End-to-end test: user booking → admin lihat → admin confirm
+- [ ] End-to-end test: admin upload gambar → tampil di homepage
+- [ ] End-to-end test: admin ubah site settings → homepage update
+- [ ] bun run build (zero error)
+- [ ] Deploy ke Vercel
+- [ ] Setup custom domain
+- [ ] Setup monitoring (Sentry / Vercel Analytics)
+
+## Log Perubahan
+
+- [2026-09-02] Phase 1–5 selesai, masuk Phase 6.
