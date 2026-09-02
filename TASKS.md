@@ -28,6 +28,12 @@
   - [x] Custom delete confirmation dialog
   - [x] Empty state responsif
 - [x] Validasi & error handling admin forms (Zod & server actions)
+- [x] Sidebar admin (shadcn base sidebar)
+  - [x] Install component sidebar
+  - [x] Theming via CSS variables di globals.css
+  - [x] Menu + active state + collapsible icon
+  - [x] Footer user + logout
+  - [x] Integrate ke /admin/layout.tsx + SidebarTrigger di topbar
 
 ## Phase 6B — Public Website Upgrade (Owner: Mayang)
 
@@ -68,3 +74,4 @@
 - [2026-09-02] Phase 1–5 selesai, masuk Phase 6.
 - [2026-09-02] Phase 6A (CMS Advanced) selesai: Upload gambar Supabase Storage, Site Settings CMS, Service & Booking Management upgrade (filter, search, sort, detail modal, quick actions, custom dialogs, Zod validation).
 - [2026-09-02] Admin Operations UI Redesign (ADMIN_UI.md): Implementasi tema operations tool Linear/Stripe style (Instrument Sans + JetBrains Mono, sidebar dark #101010, background #FAFAF9, table compact row h-11, status dot+text, deep teal #0F766E, zero AI slop, zero gradients/glassmorphism).
+- [2026-09-02] Sidebar Admin shadcn Base: Implementasi penuh komponen sidebar shadcn (SidebarProvider, Sidebar collapsible icon, SidebarHeader brand Doamandeh, SidebarContent menu, SidebarFooter user & logout, SidebarTrigger di topbar) dengan theming murni via CSS variables di globals.css.

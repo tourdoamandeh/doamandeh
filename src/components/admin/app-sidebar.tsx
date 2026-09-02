@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Package,
-  CalendarCheck,
+  Calendar,
   Settings,
   LogOut,
   ExternalLink,
@@ -40,25 +40,25 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
 
   const navItems = [
     {
-      title: 'Overview',
+      title: 'Dashboard',
       url: '/admin',
       icon: LayoutDashboard,
       isActive: pathname === '/admin',
     },
     {
-      title: 'Katalog Layanan',
+      title: 'Services',
       url: '/admin/services',
       icon: Package,
       isActive: pathname.startsWith('/admin/services'),
     },
     {
-      title: 'Daftar Booking',
+      title: 'Bookings',
       url: '/admin/bookings',
-      icon: CalendarCheck,
+      icon: Calendar,
       isActive: pathname.startsWith('/admin/bookings'),
     },
     {
-      title: 'Pengaturan Website',
+      title: 'Settings',
       url: '/admin/settings',
       icon: Settings,
       isActive: pathname.startsWith('/admin/settings'),
@@ -72,19 +72,19 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      {/* Sidebar Header: Brand Team Switcher */}
+      {/* Sidebar Header: Brand Doamandeh */}
       <SidebarHeader>
         <div className={`flex items-center gap-2.5 px-1 py-1 ${isCollapsed ? 'justify-center' : ''}`}>
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-teal-700 text-white font-mono text-xs font-bold shadow-xs">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground font-mono text-xs font-bold shadow-xs">
             D
           </div>
           {!isCollapsed && (
             <div className="grid flex-1 text-left text-xs leading-tight">
-              <span className="truncate font-mono font-bold tracking-wider text-white">
-                DOAMANDEH
+              <span className="truncate font-mono font-bold tracking-wider text-sidebar-accent-foreground">
+                Doamandeh
               </span>
-              <span className="truncate text-[10px] font-mono text-stone-400">
-                OPERATIONS CMS
+              <span className="truncate text-[10px] font-mono text-sidebar-foreground">
+                Operations Panel
               </span>
             </div>
           )}
@@ -94,7 +94,7 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
       {/* Sidebar Content */}
       <SidebarContent>
         <SidebarGroup>
-          {!isCollapsed && <SidebarGroupLabel>Menu Utama</SidebarGroupLabel>}
+          {!isCollapsed && <SidebarGroupLabel>Menu</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => {
@@ -107,7 +107,7 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
                         tooltip={item.title}
                         className={isCollapsed ? 'justify-center px-0 h-9 w-9 mx-auto' : ''}
                       >
-                        <Icon className={`h-4 w-4 shrink-0 ${item.isActive ? 'text-teal-400' : 'text-stone-500'}`} />
+                        <Icon className={`h-4 w-4 shrink-0 ${item.isActive ? 'text-sidebar-accent-foreground' : 'text-sidebar-foreground'}`} />
                         {!isCollapsed && <span className="truncate">{item.title}</span>}
                       </SidebarMenuButton>
                     </Link>
@@ -119,7 +119,7 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Sidebar Footer: User Nav & Actions */}
+      {/* Sidebar Footer: User info + Logout */}
       <SidebarFooter>
         <SidebarMenu>
           {/* Website Public Link */}
@@ -129,9 +129,9 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
                 tooltip="Website Public"
                 className={isCollapsed ? 'justify-center px-0 h-9 w-9 mx-auto' : ''}
               >
-                <ExternalLink className="h-4 w-4 shrink-0 text-stone-500" />
+                <ExternalLink className="h-4 w-4 shrink-0 text-sidebar-foreground" />
                 {!isCollapsed && (
-                  <span className="truncate text-xs text-stone-400">
+                  <span className="truncate text-xs text-sidebar-foreground">
                     Website Public
                   </span>
                 )}
@@ -139,21 +139,21 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
             </Link>
           </SidebarMenuItem>
 
-          {/* User Card */}
+          {/* User Profile Card */}
           <SidebarMenuItem>
             <div
-              className={`flex items-center gap-2 rounded-lg border border-stone-800/80 bg-stone-900/50 p-2 ${
+              className={`flex items-center gap-2 rounded-lg border border-sidebar-border bg-sidebar-accent p-2 ${
                 isCollapsed ? 'justify-center p-1.5' : ''
               }`}
               title={`${adminName || 'Admin'} (${userEmail || 'admin@doamandeh.com'})`}
             >
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-stone-800 font-mono text-xs font-semibold text-stone-200">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-sidebar text-sidebar-foreground font-mono text-xs font-semibold">
                 {(adminName || 'A').charAt(0).toUpperCase()}
               </div>
               {!isCollapsed && (
                 <div className="grid flex-1 text-left text-xs leading-tight min-w-0">
-                  <span className="truncate font-medium text-white">{adminName || 'Admin'}</span>
-                  <span className="truncate text-[10px] text-stone-500">{userEmail || 'admin@doamandeh.com'}</span>
+                  <span className="truncate font-medium text-sidebar-accent-foreground">{adminName || 'Admin'}</span>
+                  <span className="truncate text-[10px] text-sidebar-foreground">{userEmail || 'admin@doamandeh.com'}</span>
                 </div>
               )}
             </div>
@@ -164,7 +164,7 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
             <SidebarMenuButton
               onClick={handleLogout}
               disabled={isLoggingOut}
-              className={`text-stone-400 hover:text-rose-400 hover:bg-stone-900 cursor-pointer ${
+              className={`text-sidebar-foreground hover:text-red-400 hover:bg-sidebar-accent cursor-pointer ${
                 isCollapsed ? 'justify-center px-0 h-9 w-9 mx-auto' : ''
               }`}
               tooltip="Keluar (Logout)"

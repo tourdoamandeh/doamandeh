@@ -1,4 +1,4 @@
-# UI_GUIDELINES.md
+# ADMIN_UI.md
 
 ## Prinsip
 
@@ -48,3 +48,49 @@ Bukan landing page. Bukan template.
 - Content: max-w-7xl, padding 24–32px
 - KPI row: angka besar mono, label kecil, delta kecil (tanpa icon lingkaran)
 - Setiap tabel punya toolbar: search + filter + action
+
+## Sidebar Admin
+
+Referensi: https://ui.shadcn.com/docs/components/base/sidebar
+
+Install:
+bunx shadcn@latest add sidebar
+
+Komposisi wajib (sesuai docs):
+
+- SidebarProvider (wrap layout admin)
+- Sidebar (collapsible="icon")
+- SidebarHeader → brand "Doamandeh"
+- SidebarContent → SidebarGroup + SidebarMenu
+- SidebarFooter → user info + logout
+- SidebarTrigger di topbar
+- SidebarMenuButton dengan isActive untuk active state
+- Link next/link lewat prop asChild / render (sesuai versi terinstall)
+
+Menu:
+
+- Dashboard /admin (LayoutDashboard)
+- Services /admin/services (Package)
+- Bookings /admin/bookings (Calendar)
+- Settings /admin/settings (Settings)
+  Icon: lucide-react. DILARANG emoji.
+
+Theming:
+JANGAN hardcode warna di komponen.
+Override CSS variables sidebar di globals.css,
+nama variabel ikuti yang ada di sidebar.tsx terinstall:
+
+:root {
+--sidebar: #101010; /_ versi lama: --sidebar-background _/
+--sidebar-foreground: #A3A3A3;
+--sidebar-accent: #1F1F1F;
+--sidebar-accent-foreground: #FFFFFF;
+--sidebar-border: #262626;
+--sidebar-ring: #0F766E;
+}
+
+Aturan:
+
+- src/components/ui/sidebar.tsx jangan diubah
+- Responsive bawaan docs: desktop fixed, mobile drawer
+- State collapse persist (localStorage) bawaan provider
