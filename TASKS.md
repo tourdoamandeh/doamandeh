@@ -42,14 +42,14 @@
 
 ## Phase 6C — Booking & UX Polish (Owner: Sahrul)
 
-- [ ] Form booking dengan validasi zod
-- [ ] Date picker yang proper (start_date, end_date)
-- [ ] Loading, success, error state
-- [ ] Notifikasi booking (toast)
-- [ ] Konfirmasi booking via email (optional, pakai Supabase Edge Function)
-- [ ] Konsistensi UI antar halaman
-- [ ] Empty state & skeleton loading
-- [ ] Accessibility (alt text, aria-label, keyboard nav)
+- [x] Form booking dengan validasi zod
+- [x] Date picker yang proper (start_date, end_date)
+- [x] Loading, success, error state
+- [x] Notifikasi booking (toast)
+- [x] Konfirmasi booking via email (optional, pakai Supabase Edge Function)
+- [x] Konsistensi UI antar halaman
+- [x] Empty state & skeleton loading
+- [x] Accessibility (alt text, aria-label, keyboard nav)
 
 ## Phase 7 — Integration & QA (Owner: All)
 
@@ -65,3 +65,4 @@
 ## Log Perubahan
 
 - [2026-09-02] Phase 1–5 selesai, masuk Phase 6.
+- [2026-09-02] Phase 6C selesai: Peningkatan validasi Zod booking form, date range picker interaktif (start_date & end_date) dengan kalkulasi durasi dan total harga otomatis, sistem notifikasi toast mengambang, konfirmasi via WhatsApp + email summary, skeleton loading untuk services detail & category, perbaikan aksesibilitas (a11y: label, aria attributes, keyboard navigation), dan verifikasi build berhasil (`bun run build`).
