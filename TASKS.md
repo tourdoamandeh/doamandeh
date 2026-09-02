@@ -1,39 +1,34 @@
 # TASKS.md
 
-## Phase 1 — Setup Core
+## Completed
 
-- [x] Setup Next.js dengan Bun
-- [x] Install Supabase dependencies
-- [x] Setup env Supabase
-- [x] Buat Supabase client browser & server
-- [x] Buat middleware session
-- [x] Jalankan schema Supabase
-- [x] Seed services awal
+- [x] Phase 1 — Setup Core (Next.js, Supabase, Schema)
+- [x] Phase 2 — Public Website (Homepage, Category, Detail)
+- [x] Phase 3 — Admin Auth (Login, Proteksi Route)
+- [x] Phase 4 — Admin CMS Dasar (CRUD Services, List Bookings)
+- [x] Phase 5 — Form Booking Dasar & Polish UI Awal
 
-## Phase 2 — Public Website
+## Current Tasks
 
-- [x] Homepage menampilkan services dari Supabase
-- [x] Halaman category services
-- [x] Halaman detail service
-- [x] Form booking service
+### Phase 6 — CMS Advanced & Storage (Sultan)
 
-## Phase 3 — Admin Auth
+- [ ] Setup Supabase Storage bucket untuk gambar services
+- [ ] Fitur upload gambar di form create/update service
+- [ ] Buat halaman CMS Site Settings (edit hero, about, kontak)
+- [ ] Tambah filter, search, dan pagination di tabel Admin Bookings
+- [ ] Tambah filter dan toggle active/inactive di tabel Admin Services
 
-- [x] Halaman /admin/login
-- [x] Proteksi route admin
-- [x] Cek role admin dari profiles
+### Phase 7 — Public Web Polish & Integrasi (Mayang)
 
-## Phase 4 — Admin CMS
+- [ ] Integrasi data Site Settings dari Supabase ke Homepage & Footer
+- [ ] Tambah loading skeletons di halaman public
+- [ ] Optimasi SEO (Meta tags, Open Graph) per halaman service
+- [ ] Responsive bottom navigation untuk mobile
+- [ ] Empty state UI kalau category/service belum ada
 
-- [x] Dashboard admin
-- [x] CRUD services
-- [x] List bookings
-- [x] Update booking status
+### Phase 8 — Booking Advanced & Flow (Sahrul)
 
-## Phase 5 — Polish
-
-- [x] Validasi form (Zod validation di semua form publik & admin)
-- [x] Loading state (Spinner, disabled input, pending feedback)
-- [x] Error state (Banner error dismissible, field error feedback)
-- [x] Empty state (Tampilan informatif jika layanan/booking kosong)
-- [x] Build check (Turbopack compile test lulus 100%)
+- [ ] Fitur redirect ke WhatsApp admin setelah booking sukses (bawa pesan otomatis)
+- [ ] Validasi tanggal (end_date tidak boleh sebelum start_date, tidak bisa pilih tanggal lampau)
+- [ ] Halaman "Cek Status Booking" berdasarkan email/nomor HP
+- [ ] Notifikasi email dasar (opsional) atau webhook ke WA saat ada booking baru
