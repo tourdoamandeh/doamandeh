@@ -262,6 +262,77 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Services Showcase with Photos */}
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-xl space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+              <Package className="h-4 w-4 text-amber-400" />
+              Katalog Layanan & Foto Terpasang
+            </h2>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Pratinjau foto dan informasi layanan aktif yang ditampilkan kepada pengunjung website.
+            </p>
+          </div>
+          <Link
+            href="/admin/services"
+            className="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 shrink-0"
+          >
+            Kelola Semua Layanan <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+          {services.slice(0, 6).map((s) => (
+            <div
+              key={s.id}
+              className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-950 border border-zinc-800/80 hover:border-amber-500/40 transition-colors group"
+            >
+              {s.image_url ? (
+                <div className="relative h-16 w-20 rounded-xl overflow-hidden bg-zinc-900 shrink-0 border border-zinc-700/80 shadow-md">
+                  <img
+                    src={s.image_url}
+                    alt={s.title}
+                    className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+              ) : (
+                <div className="flex h-16 w-20 flex-col items-center justify-center rounded-xl bg-zinc-900/80 border border-dashed border-zinc-700/60 text-zinc-500 shrink-0">
+                  <Package className="h-5 w-5 text-zinc-600 mb-0.5" />
+                  <span className="text-[9px] text-zinc-500 font-medium">Tanpa Foto</span>
+                </div>
+              )}
+
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-xs sm:text-sm text-white group-hover:text-amber-400 transition-colors truncate">
+                  {s.title}
+                </p>
+                <p className="text-[11px] font-bold text-amber-400/90 mt-0.5">
+                  {formatRupiah(s.price)}{' '}
+                  <span className="text-[10px] font-normal text-zinc-400">
+                    {s.unit ? `/${s.unit.replace(/^per\s+/i, '')}` : ''}
+                  </span>
+                </p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[10px] text-zinc-400 capitalize bg-zinc-900 px-2 py-0.5 rounded-md border border-zinc-800">
+                    {s.category}
+                  </span>
+                  <span
+                    className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${
+                      s.is_active
+                        ? 'text-emerald-400 bg-emerald-500/10'
+                        : 'text-zinc-500 bg-zinc-800'
+                    }`}
+                  >
+                    {s.is_active ? 'Aktif' : 'Nonaktif'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

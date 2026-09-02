@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Service, ServiceCategory } from '@/types/database';
 import {
   toggleServiceActiveAction,
@@ -51,6 +52,14 @@ function formatRupiah(amount: number): string {
 }
 
 export function ServicesTable({ initialServices }: ServicesTableProps) {
+  const router = useRouter();
+  const [services, setServices] = useState<Service[]>(initialServices);
+
+  // Sync state if initialServices updates from server
+  useEffect(() => {
+    setServices(initialServices);
+  }, [initialServices]);
+
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -67,7 +76,7 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
   const [isPending, startTransition] = useTransition();
 
   // Filter & Sort
-  const filteredServices = initialServices
+  const filteredServices = services
     .filter((s) => {
       const query = search.toLowerCase().trim();
       const matchesSearch =
@@ -109,21 +118,44 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
     setDialogOpen(true);
   }
 
+  function handleFormSuccess() {
+    router.refresh();
+  }
+
   function handleToggleStatus(id: string, currentStatus: boolean) {
     setTogglingId(id);
+    // Optimistic local update
+    setServices((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, is_active: !currentStatus } : s))
+    );
+
     startTransition(async () => {
-      await toggleServiceActiveAction(id, currentStatus);
+      const res = await toggleServiceActiveAction(id, currentStatus);
+      if (!res.success) {
+        // Rollback if error
+        setServices(initialServices);
+      }
       setTogglingId(null);
+      router.refresh();
     });
   }
 
   function confirmDelete() {
     if (!serviceToDelete) return;
     setIsDeleting(true);
+    const targetId = serviceToDelete.id;
+
+    // Optimistic local deletion
+    setServices((prev) => prev.filter((s) => s.id !== targetId));
+
     startTransition(async () => {
-      await deleteServiceAction(serviceToDelete.id);
+      const res = await deleteServiceAction(targetId);
+      if (!res.success) {
+        setServices(initialServices);
+      }
       setIsDeleting(false);
       setServiceToDelete(null);
+      router.refresh();
     });
   }
 
@@ -216,7 +248,7 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
           <table className="w-full text-left text-xs text-zinc-300">
             <thead className="border-b border-zinc-800 bg-zinc-900/80 text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
               <tr>
-                <th className="px-5 py-4">Layanan</th>
+                <th className="px-5 py-4">Foto & Detail Layanan</th>
                 <th className="px-5 py-4">Kategori</th>
                 <th className="px-5 py-4">Harga / Satuan</th>
                 <th className="px-5 py-4">Status</th>
@@ -272,25 +304,32 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
                       key={service.id}
                       className="hover:bg-zinc-800/30 transition-colors group"
                     >
-                      {/* Image Thumbnail + Title & Description */}
-                      <td className="px-5 py-4 max-w-sm">
+                      {/* Photo Thumbnail + Title & Description */}
+                      <td className="px-5 py-4 max-w-md">
                         <div className="flex items-center gap-3.5">
+                          {/* Image Thumbnail with crisp styling */}
                           {service.image_url ? (
-                            <div className="relative h-12 w-14 rounded-xl overflow-hidden bg-zinc-800 shrink-0 border border-zinc-700/80">
+                            <div className="relative h-14 w-16 sm:h-16 sm:w-20 rounded-xl overflow-hidden bg-zinc-950 shrink-0 border border-zinc-700/80 shadow-md">
                               <img
                                 src={service.image_url}
                                 alt={service.title}
-                                className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
+                                className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-300"
                               />
                             </div>
                           ) : (
-                            <div className="flex h-12 w-14 items-center justify-center rounded-xl bg-zinc-800/70 border border-zinc-700/50 text-zinc-500 shrink-0">
-                              <ImageIcon className="h-5 w-5 text-zinc-600" />
-                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEdit(service)}
+                              title="Klik untuk menambahkan foto layanan"
+                              className="flex h-14 w-16 sm:h-16 sm:w-20 flex-col items-center justify-center rounded-xl bg-zinc-800/60 border border-dashed border-zinc-700/80 text-zinc-500 hover:border-amber-500/60 hover:text-amber-400 transition-colors shrink-0 group/img"
+                            >
+                              <ImageIcon className="h-5 w-5 mb-0.5 group-hover/img:scale-110 transition-transform" />
+                              <span className="text-[9px] font-medium">+ Foto</span>
+                            </button>
                           )}
 
                           <div className="min-w-0 flex-1">
-                            <p className="font-semibold text-white group-hover:text-amber-400 transition-colors truncate">
+                            <p className="font-semibold text-white group-hover:text-amber-400 transition-colors truncate text-xs sm:text-sm">
                               {service.title}
                             </p>
                             <p className="text-[11px] text-zinc-400 line-clamp-1 mt-0.5">
@@ -348,7 +387,7 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
                           <button
                             onClick={() => handleOpenEdit(service)}
                             className="rounded-xl p-2 text-zinc-400 hover:bg-zinc-800 hover:text-amber-400 transition-colors"
-                            title="Edit Layanan"
+                            title="Edit Layanan & Foto"
                           >
                             <Edit2 className="h-4 w-4" />
                           </button>
@@ -370,11 +409,12 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
         </div>
       </div>
 
-      {/* Service Modal Dialog (Create / Edit) */}
+      {/* Service Modal Dialog (Create / Edit with Image Upload) */}
       <ServiceFormDialog
         isOpen={dialogOpen}
         service={editingService}
         onClose={() => setDialogOpen(false)}
+        onSuccess={handleFormSuccess}
       />
 
       {/* Custom Delete Confirmation Dialog */}
