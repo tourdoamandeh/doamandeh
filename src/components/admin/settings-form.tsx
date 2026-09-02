@@ -10,6 +10,8 @@ import {
   CheckCircle2,
   AlertCircle,
   RotateCcw,
+  Plus,
+  Trash2,
 } from 'lucide-react';
 
 interface SettingsFormProps {
@@ -18,6 +20,9 @@ interface SettingsFormProps {
 
 export function SettingsForm({ initialSettings }: SettingsFormProps) {
   const [formData, setFormData] = useState<SiteSettingsInput>(initialSettings);
+  const [showSecondCS, setShowSecondCS] = useState<boolean>(
+    Boolean(initialSettings.contact_whatsapp_2 && initialSettings.contact_whatsapp_2.trim().length > 0)
+  );
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<{
     type: 'success' | 'error' | null;
@@ -37,6 +42,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
   function handleReset() {
     if (confirm('Kembalikan seluruh teks pengaturan ke konfigurasi bawaan (default)?')) {
       setFormData(DEFAULT_SITE_SETTINGS);
+      setShowSecondCS(false);
       setStatus({
         type: 'success',
         message: 'Pengaturan dikembalikan ke nilai default. Klik Simpan untuk menerapkan.',
@@ -160,19 +166,31 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
 
       {/* Section 3: Kontak Operasional */}
       <div className="rounded-lg border border-stone-200 bg-white p-5 space-y-4">
-        <div className="border-b border-stone-200 pb-2.5">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-stone-900">
-            Kontak & Operasional
-          </h2>
-          <p className="text-[11px] text-stone-500 mt-0.5">
-            Kontak resmi untuk pemesanan WhatsApp dan konsultasi pelanggan.
-          </p>
+        <div className="border-b border-stone-200 pb-2.5 flex items-center justify-between">
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-stone-900">
+              Kontak & Operasional
+            </h2>
+            <p className="text-[11px] text-stone-500 mt-0.5">
+              Kontak resmi untuk pemesanan WhatsApp dan konsultasi pelanggan.
+            </p>
+          </div>
+          {!showSecondCS && !formData.contact_whatsapp_2 && (
+            <button
+              type="button"
+              onClick={() => setShowSecondCS(true)}
+              className="inline-flex items-center gap-1.5 rounded-md border border-teal-200 bg-teal-50 px-2.5 py-1 text-[11px] font-medium text-teal-800 hover:bg-teal-100 transition-colors cursor-pointer"
+            >
+              <Plus className="h-3.5 w-3.5 text-teal-700" />
+              <span>Tambah CS 2</span>
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div>
             <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
-              Nomor WhatsApp Customer Service *
+              Nomor WhatsApp Customer Service 1 (Utama) *
             </label>
             <input
               type="text"
@@ -183,6 +201,35 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 font-mono focus:border-teal-700 focus:outline-none"
             />
           </div>
+
+          {(showSecondCS || Boolean(formData.contact_whatsapp_2)) ? (
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider">
+                  Nomor WhatsApp Customer Service 2 (Cadangan)
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleChange('contact_whatsapp_2', '');
+                    setShowSecondCS(false);
+                  }}
+                  className="inline-flex items-center gap-1 text-[10px] text-rose-600 hover:text-rose-700 transition-colors cursor-pointer"
+                  title="Hapus nomor CS 2"
+                >
+                  <Trash2 className="h-3 w-3" />
+                  <span>Hapus</span>
+                </button>
+              </div>
+              <input
+                type="text"
+                value={formData.contact_whatsapp_2 || ''}
+                onChange={(e) => handleChange('contact_whatsapp_2', e.target.value)}
+                placeholder="+62 819-8765-4321"
+                className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 font-mono focus:border-teal-700 focus:outline-none"
+              />
+            </div>
+          ) : null}
 
           <div>
             <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
@@ -210,7 +257,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
             />
           </div>
 
-          <div>
+          <div className="sm:col-span-2">
             <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
               Alamat Kantor / Studio
             </label>
@@ -218,7 +265,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               type="text"
               value={formData.contact_address}
               onChange={(e) => handleChange('contact_address', e.target.value)}
-              placeholder="Jl. Raya Canggu No. 88, Badung, Bali"
+              placeholder="Jl. Raya Canggu No. 88, Badung, Bali - Indonesia"
               className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 focus:border-teal-700 focus:outline-none"
             />
           </div>
@@ -284,7 +331,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
           type="button"
           onClick={handleReset}
           disabled={isPending}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-stone-200 bg-white px-3.5 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-stone-200 bg-white px-3.5 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 disabled:opacity-50 cursor-pointer"
         >
           <RotateCcw className="h-3.5 w-3.5 text-stone-400" />
           <span>Reset Default</span>
@@ -293,7 +340,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F766E] px-4 py-2 text-xs font-medium text-white hover:bg-[#115E59] transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F766E] px-4 py-2 text-xs font-medium text-white hover:bg-[#115E59] transition-colors disabled:opacity-50 cursor-pointer"
         >
           {isPending ? (
             <>

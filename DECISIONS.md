@@ -67,3 +67,11 @@
   - Mengimplementasikan validasi ukuran file (maksimal 5MB) dan MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`) pada client dan server action `uploadServiceImageAction` (`src/lib/actions/admin/storage.ts`).
   - Menyediakan opsi fallback input URL langsung pada UI `ServiceFormDialog`.
 
+## DEC-009: Multiple Customer Service Contact Fields in Site Settings
+- **Date**: 2026-09-02
+- **Status**: Accepted
+- **Context**: Klien Doamandeh menyediakan dua nomor kontak Customer Service (CS 1 Utama & CS 2 Cadangan) untuk operasional dan pemesanan.
+- **Decision**:
+  - Menambahkan key `contact_whatsapp_2` (opsional) pada `siteSettingsSchema` dan `DEFAULT_SITE_SETTINGS` di `src/lib/validations/admin.ts`.
+  - Mengupdate UI `SettingsForm` (`src/components/admin/settings-form.tsx`) dengan opsi penambahan / penghapusan nomor CS 2 secara dinamis.
+
