@@ -405,6 +405,7 @@ export const SidebarMenuButton = React.forwardRef<
   (
     {
       isActive = false,
+      tooltip,
       className,
       children,
       ...props
@@ -416,8 +417,9 @@ export const SidebarMenuButton = React.forwardRef<
         ref={ref}
         data-slot="sidebar-menu-button"
         data-active={isActive}
+        title={tooltip || props.title}
         className={cn(
-          'flex h-8 w-full items-center gap-2.5 rounded-lg px-2.5 text-xs font-medium text-[#A3A3A3] transition-colors hover:bg-stone-900 hover:text-white group-data-[state=collapsed]/sidebar:justify-center group-data-[state=collapsed]/sidebar:px-2',
+          'flex h-8 w-full items-center gap-2.5 rounded-lg px-2.5 text-xs font-medium text-[#A3A3A3] transition-colors hover:bg-stone-900 hover:text-white',
           isActive && 'bg-stone-800 text-white font-semibold',
           className
         )}
