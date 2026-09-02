@@ -25,23 +25,14 @@ export default async function AdminServicesPage() {
 
   return (
     <div className="space-y-6">
-      {/* Operations Header with Breadcrumb */}
-      <div className="border-b border-stone-200 pb-4">
-        <div className="flex items-center gap-2 text-xs font-medium text-stone-500 mb-1">
-          <span>Admin</span>
-          <span>/</span>
-          <span className="text-stone-900 font-semibold">Layanan</span>
-        </div>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-stone-900">
-              Katalog Layanan Wisata
-            </h1>
-            <p className="text-xs text-stone-500 mt-0.5">
-              Manajemen paket travel, sewa kendaraan, studio tato, villa, dan kursus surfing.
-            </p>
-          </div>
-        </div>
+      {/* Operations Header */}
+      <div>
+        <h1 className="text-xl font-bold tracking-tight text-stone-900">
+          Katalog Layanan Wisata
+        </h1>
+        <p className="text-xs text-stone-500 mt-0.5">
+          Manajemen paket travel, sewa kendaraan, studio tato, villa, dan kursus surfing.
+        </p>
       </div>
 
       {errorMessage && (

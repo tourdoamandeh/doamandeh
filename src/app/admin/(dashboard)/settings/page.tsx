@@ -8,21 +8,14 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Operations Header with Breadcrumb */}
-      <div className="border-b border-stone-200 pb-4">
-        <div className="flex items-center gap-2 text-xs font-medium text-stone-500 mb-1">
-          <span>Admin</span>
-          <span>/</span>
-          <span className="text-stone-900 font-semibold">Pengaturan</span>
-        </div>
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-stone-900">
-            Pengaturan Website
-          </h1>
-          <p className="text-xs text-stone-500 mt-0.5">
-            Konfigurasi konten dinamis, nomor kontak WhatsApp, dan informasi operasional.
-          </p>
-        </div>
+      {/* Operations Header */}
+      <div>
+        <h1 className="text-xl font-bold tracking-tight text-stone-900">
+          Pengaturan Website
+        </h1>
+        <p className="text-xs text-stone-500 mt-0.5">
+          Konfigurasi konten dinamis, nomor kontak WhatsApp, dan informasi operasional.
+        </p>
       </div>
 
       {/* Form Component */}

@@ -36,21 +36,14 @@ export default async function AdminBookingsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Operations Header with Breadcrumb */}
-      <div className="border-b border-stone-200 pb-4">
-        <div className="flex items-center gap-2 text-xs font-medium text-stone-500 mb-1">
-          <span>Admin</span>
-          <span>/</span>
-          <span className="text-stone-900 font-semibold">Booking</span>
-        </div>
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-stone-900">
-            Daftar Pemesanan Layanan
-          </h1>
-          <p className="text-xs text-stone-500 mt-0.5">
-            Manajemen status pesanan, konfirmasi jadwal, dan detail kontak pelanggan.
-          </p>
-        </div>
+      {/* Operations Header */}
+      <div>
+        <h1 className="text-xl font-bold tracking-tight text-stone-900">
+          Daftar Pemesanan Layanan
+        </h1>
+        <p className="text-xs text-stone-500 mt-0.5">
+          Manajemen status pesanan, konfirmasi jadwal, dan detail kontak pelanggan.
+        </p>
       </div>
 
       {errorMessage && (

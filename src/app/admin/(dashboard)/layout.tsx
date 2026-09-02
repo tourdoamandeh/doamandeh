@@ -1,5 +1,7 @@
 import { getCurrentAdmin } from '@/lib/actions/admin/auth';
-import { AdminNav } from '@/components/admin/admin-nav';
+import { AppSidebar } from '@/components/admin/app-sidebar';
+import { AdminHeader } from '@/components/admin/admin-header';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/sonner';
 import { redirect } from 'next/navigation';
 
@@ -15,22 +17,25 @@ export default async function AdminDashboardLayout({
   }
 
   return (
-    <div className="min-h-screen flex bg-[#FAFAF9] text-[#171717] font-sans antialiased selection:bg-teal-700 selection:text-white">
-      {/* Toast Notifications Provider */}
+    <SidebarProvider defaultOpen={true}>
+      {/* Toast Notifications */}
       <Toaster richColors position="top-right" />
 
-      {/* Fixed Left Sidebar */}
-      <AdminNav
+      {/* Official shadcn Collapsible App Sidebar */}
+      <AppSidebar
         userEmail={user.email}
         adminName={profile?.full_name || 'Administrator'}
       />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-60">
-        <main className="flex-1 p-5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+      {/* Main Content Area in SidebarInset */}
+      <SidebarInset>
+        {/* Top Operations Header with SidebarTrigger & Breadcrumb */}
+        <AdminHeader />
+
+        <div className="flex flex-1 flex-col p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
           {children}
-        </main>
-      </div>
-    </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

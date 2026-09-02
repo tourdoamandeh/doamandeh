@@ -70,30 +70,28 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Topbar Operations Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200 pb-4">
+      {/* Operations Action Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-medium text-stone-500 mb-1">
-            <span>Admin</span>
-            <span>/</span>
-            <span className="text-stone-900 font-semibold">Overview</span>
-          </div>
           <h1 className="text-xl font-bold tracking-tight text-stone-900">
             Operations Dashboard
           </h1>
+          <p className="text-xs text-stone-500 mt-0.5">
+            Ringkasan metrik reservasi, pendapatan terkonfirmasi, dan status operasional.
+          </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <Link
             href="/admin/services"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F766E] px-3.5 py-2 text-xs font-medium text-white hover:bg-[#115E59] transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F766E] px-3.5 py-1.5 text-xs font-medium text-white hover:bg-[#115E59] transition-colors"
           >
             <Plus className="h-3.5 w-3.5" />
             <span>Tambah Layanan</span>
           </Link>
           <Link
             href="/admin/bookings"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-stone-200 bg-white px-3.5 py-2 text-xs font-medium text-stone-700 hover:bg-stone-50 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-stone-200 bg-white px-3.5 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 transition-colors"
           >
             <span>Semua Booking ({pendingBookings} Pending)</span>
           </Link>
