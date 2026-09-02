@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Package,
   CalendarCheck,
+  Settings,
   LogOut,
   ExternalLink,
   Shield,
@@ -43,6 +44,12 @@ export function AdminNav({ userEmail, adminName }: AdminNavProps) {
       href: '/admin/bookings',
       icon: CalendarCheck,
       active: pathname.startsWith('/admin/bookings'),
+    },
+    {
+      label: 'Pengaturan Website',
+      href: '/admin/settings',
+      icon: Settings,
+      active: pathname.startsWith('/admin/settings'),
     },
   ];
 

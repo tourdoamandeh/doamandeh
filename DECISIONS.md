@@ -49,3 +49,21 @@
 - **Context**: Konvensi `middleware.ts` telah deprecated di Next.js 16 dan digantikan oleh `proxy.ts`.
 - **Decision**:
   - Membuat `src/proxy.ts` dengan export fungsi `proxy` untuk pembaruan session Supabase dan menghapus `src/middleware.ts`.
+
+## DEC-007: Site Settings Schema & Resilient Fallback Strategy
+- **Date**: 2026-09-02
+- **Status**: Accepted
+- **Context**: CMS Phase 6A mengimplementasikan konfigurasi dinamis website (`hero_title`, `hero_subtitle`, `about_text`, `contact_phone`, `contact_whatsapp`, `contact_email`, `contact_address`, `sosmed_instagram`, `sosmed_facebook`, `sosmed_tiktok`).
+- **Decision**:
+  - Mengimplementasikan `getSiteSettingsAction` dan `updateSiteSettingsAction` di `src/lib/actions/admin/settings.ts` yang mendukung skema tabel `site_settings` (key-value `key TEXT PRIMARY KEY, value TEXT` maupun row-based).
+  - Menyediakan fallback aman (`DEFAULT_SITE_SETTINGS`) jika tabel belum dimigrasikan sehingga halaman `/admin/settings` tidak crash.
+
+## DEC-008: Supabase Storage Bucket 'services' Configuration
+- **Date**: 2026-09-02
+- **Status**: Accepted
+- **Context**: Admin CMS memerlukan fitur upload gambar langsung untuk foto katalog layanan wisata.
+- **Decision**:
+  - Menggunakan bucket publik Supabase Storage bernama `services`.
+  - Mengimplementasikan validasi ukuran file (maksimal 5MB) dan MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`) pada client dan server action `uploadServiceImageAction` (`src/lib/actions/admin/storage.ts`).
+  - Menyediakan opsi fallback input URL langsung pada UI `ServiceFormDialog`.
+

@@ -55,3 +55,35 @@ export const bookingSchema = z.object({
 });
 
 export type BookingInput = z.infer<typeof bookingSchema>;
+
+export const siteSettingsSchema = z.object({
+  hero_title: z.string().min(3, 'Judul hero minimal 3 karakter').default('Nikmati Liburan Terbaik Bersama Doamandeh'),
+  hero_subtitle: z.string().min(5, 'Subjudul hero minimal 5 karakter').default('Solusi lengkap kebutuhan aktivitas liburan Anda di Bali: Sewa Motor & Mobil, Tato Artistik, Villa Nyaman, Paket Wisata Tour, hingga Kelas Surfing.'),
+  about_text: z.string().min(10, 'Teks tentang kami minimal 10 karakter').default('Doamandeh Tours & Travel adalah agen wisata dan lifestyle terpercaya di Bali, menyediakan berbagai layanan pilihan mulai dari rental kendaraan, studio tato higienis, penginapan villa, paket tour eksklusif, hingga sekolah selancar untuk segala level.'),
+  contact_phone: z.string().default('+62 812-3456-7890'),
+  contact_whatsapp: z.string().default('+62 812-3456-7890'),
+  contact_email: z.string().email('Format email kontak tidak valid').or(z.literal('')).default('info@doamandeh.com'),
+  contact_address: z.string().default('Jl. Raya Canggu No. 88, Badung, Bali - Indonesia'),
+  sosmed_instagram: z.string().default('https://instagram.com/doamandeh'),
+  sosmed_facebook: z.string().default('https://facebook.com/doamandeh'),
+  sosmed_tiktok: z.string().default('https://tiktok.com/@doamandeh'),
+});
+
+export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
+
+export const DEFAULT_SITE_SETTINGS: SiteSettingsInput = {
+  hero_title: 'Nikmati Liburan Terbaik Bersama Doamandeh',
+  hero_subtitle:
+    'Solusi lengkap kebutuhan aktivitas liburan Anda di Bali: Sewa Motor & Mobil, Tato Artistik, Villa Nyaman, Paket Wisata Tour, hingga Kelas Surfing.',
+  about_text:
+    'Doamandeh Tours & Travel adalah agen wisata dan lifestyle terpercaya di Bali, menyediakan berbagai layanan pilihan mulai dari rental kendaraan, studio tato higienis, penginapan villa, paket tour eksklusif, hingga sekolah selancar untuk segala level.',
+  contact_phone: '+62 812-3456-7890',
+  contact_whatsapp: '+62 812-3456-7890',
+  contact_email: 'info@doamandeh.com',
+  contact_address: 'Jl. Raya Canggu No. 88, Badung, Bali - Indonesia',
+  sosmed_instagram: 'https://instagram.com/doamandeh',
+  sosmed_facebook: 'https://facebook.com/doamandeh',
+  sosmed_tiktok: 'https://tiktok.com/@doamandeh',
+};
+
+
