@@ -1,7 +1,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
-import { loginSchema, registerAdminSchema, LoginInput, RegisterAdminInput } from '@/lib/validations/admin';
+import { loginSchema, LoginInput } from '@/lib/validations/admin';
 import { Profile } from '@/types/database';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -94,65 +94,6 @@ export async function loginAdminAction(input: LoginInput): Promise<ActionResult<
     return {
       success: false,
       error: err instanceof Error ? err.message : 'Terjadi kesalahan sistem saat login.',
-    };
-  }
-}
-
-export async function registerAdminAction(input: RegisterAdminInput): Promise<ActionResult<{ email: string }>> {
-  const parsed = registerAdminSchema.safeParse(input);
-  if (!parsed.success) {
-    return {
-      success: false,
-      error: parsed.error.issues[0]?.message || 'Input pendaftaran tidak valid',
-    };
-  }
-
-  const { fullName, email, password } = parsed.data;
-
-  try {
-    const supabase = await createClient();
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-        },
-      },
-    });
-
-    if (authError || !authData.user) {
-      return {
-        success: false,
-        error: authError?.message || 'Gagal mendaftarkan akun admin.',
-      };
-    }
-
-    const userId = authData.user.id;
-
-    // Create or ensure profile has admin role
-    const { error: profileError } = await supabase.from('profiles').upsert({
-      id: userId,
-      email,
-      full_name: fullName,
-      role: 'admin',
-    });
-
-    if (profileError) {
-      return {
-        success: false,
-        error: 'Akun terbuat namun gagal mendaftarkan role admin: ' + profileError.message,
-      };
-    }
-
-    return {
-      success: true,
-      data: { email },
-    };
-  } catch (err) {
-    return {
-      success: false,
-      error: err instanceof Error ? err.message : 'Terjadi kesalahan sistem saat mendaftar.',
     };
   }
 }

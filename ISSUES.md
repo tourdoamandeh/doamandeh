@@ -41,7 +41,8 @@ No
 
 ## Catatan / Todo Lanjutan
 
-1. **Storage Bucket Foto Layanan**:
-   - Integrasi upload gambar langsung via Supabase Storage bucket jika user ingin mengunggah file foto dari admin CMS.
+1. **Storage Bucket Foto Layanan (Selesai pada Phase 6A)**:
+   - Integrasi upload gambar langsung via Supabase Storage bucket `services` dan input URL langsung telah selesai diimplementasikan di `ServiceFormDialog` dan `src/lib/actions/admin/storage.ts`.
 2. **WhatsApp Webhook / Notification (Opsional)**:
    - Integrasi notifikasi otomatis ke nomor WhatsApp admin saat ada booking baru masuk.
+
