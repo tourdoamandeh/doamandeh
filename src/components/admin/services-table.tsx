@@ -3,6 +3,7 @@
 import { useState, useTransition, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Service, ServiceCategory } from '@/types/database';
+import { createClient } from '@/lib/supabase/client';
 import {
   toggleServiceActiveAction,
   deleteServiceAction,
@@ -118,7 +119,19 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
     setDialogOpen(true);
   }
 
-  function handleFormSuccess() {
+  async function handleFormSuccess() {
+    try {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('services')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (data) {
+        setServices(data as Service[]);
+      }
+    } catch {
+      // ignore
+    }
     router.refresh();
   }
 

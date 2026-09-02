@@ -16,6 +16,7 @@ import {
   Link as LinkIcon,
   CheckCircle2,
   Sparkles,
+  Layers,
 } from 'lucide-react';
 
 interface ServiceFormDialogProps {
@@ -33,7 +34,80 @@ const CATEGORIES: { value: ServiceCategory; label: string }[] = [
   { value: 'surfing-lesson', label: 'Surfing Lesson' },
 ];
 
+const PRESET_IMAGES: Record<ServiceCategory, { label: string; url: string }[]> = {
+  'vehicle-rental': [
+    { label: 'Honda PCX 160', url: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop' },
+    { label: 'Scoopy Matic', url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop' },
+    { label: 'Mobil SUV / Avanza', url: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?q=80&w=800&auto=format&fit=crop' },
+    { label: 'City Car Matic', url: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=800&auto=format&fit=crop' },
+  ],
+  'tattoo': [
+    { label: 'Studio Tattoo', url: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?q=80&w=800&auto=format&fit=crop' },
+    { label: 'Tattoo Artist Session', url: 'https://images.unsplash.com/photo-1562962230-16e4623d36e6?q=80&w=800&auto=format&fit=crop' },
+    { label: 'Minimalist Custom Art', url: 'https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?q=80&w=800&auto=format&fit=crop' },
+  ],
+  'villa': [
+    { label: 'Private Pool Villa', url: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=800&auto=format&fit=crop' },
+    { label: 'Tropical Bali Villa', url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800&auto=format&fit=crop' },
+    { label: 'Modern Luxury Stay', url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop' },
+  ],
+  'travel': [
+    { label: 'Nusa Penida Tour', url: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800&auto=format&fit=crop' },
+    { label: 'Ubud Rice Terrace', url: 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=800&auto=format&fit=crop' },
+    { label: 'Waterfall Adventure', url: 'https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?q=80&w=800&auto=format&fit=crop' },
+  ],
+  'surfing-lesson': [
+    { label: 'Surfing Coach & Wave', url: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?q=80&w=800&auto=format&fit=crop' },
+    { label: 'Beginner Surf Session', url: 'https://images.unsplash.com/photo-1455729552865-3658a5d39692?q=80&w=800&auto=format&fit=crop' },
+    { label: 'Surfboard Beach', url: 'https://images.unsplash.com/photo-1508873696983-2df5293cb395?q=80&w=800&auto=format&fit=crop' },
+  ],
+};
+
 const MAX_IMAGE_SIZE_MB = 5;
+
+// Client-side image compression fallback to guarantee the image is always saved!
+async function compressImageToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(e.target?.result as string);
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        resolve(dataUrl);
+      };
+      img.onerror = () => resolve(e.target?.result as string);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 export function ServiceFormDialog({
   service,
@@ -58,16 +132,17 @@ export function ServiceFormDialog({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isActive, setIsActive] = useState(true);
 
-  // Image upload state
+  // Image mode & state
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [uploadMode, setUploadMode] = useState<'upload' | 'url'>('upload');
+  const [uploadMode, setUploadMode] = useState<'upload' | 'preset' | 'url'>('upload');
   const [isDragOver, setIsDragOver] = useState(false);
 
   // Synchronize state on open or when editing a different service
   useEffect(() => {
     if (isOpen) {
-      setCategory(service?.category || 'vehicle-rental');
+      const initialCat = service?.category || 'vehicle-rental';
+      setCategory(initialCat);
       setTitle(service?.title || '');
       setDescription(service?.description || '');
       setPrice(service?.price?.toString() || '0');
@@ -78,8 +153,8 @@ export function ServiceFormDialog({
       setIsActive(service?.is_active ?? true);
       setErrorMessage(null);
       setIsUploading(false);
-      setUploadSuccess(false);
-      setUploadMode(service?.image_url?.startsWith('http') ? 'upload' : 'upload');
+      setUploadSuccess(!!service?.image_url);
+      setUploadMode('upload');
     }
   }, [isOpen, service]);
 
@@ -117,12 +192,22 @@ export function ServiceFormDialog({
         setPreviewUrl(res.data.publicUrl);
         setUploadSuccess(true);
       } else {
-        setErrorMessage(
-          res.error || 'Gagal mengunggah ke storage. Anda dapat memasukkan URL gambar secara langsung.'
-        );
+        // Safe fallback: compress image to optimized data URL so image is always preserved
+        const dataUrl = await compressImageToDataUrl(file);
+        setImageUrl(dataUrl);
+        setPreviewUrl(dataUrl);
+        setUploadSuccess(true);
       }
     } catch (err) {
-      setErrorMessage('Terjadi kendala saat mengunggah file gambar.');
+      // Safe fallback: compress image to data URL
+      try {
+        const dataUrl = await compressImageToDataUrl(file);
+        setImageUrl(dataUrl);
+        setPreviewUrl(dataUrl);
+        setUploadSuccess(true);
+      } catch {
+        setErrorMessage('Gagal memproses file gambar. Silakan gunakan opsi URL atau preset gambar.');
+      }
     } finally {
       setIsUploading(false);
     }
@@ -153,6 +238,12 @@ export function ServiceFormDialog({
     }
   }
 
+  function handleSelectPreset(presetUrl: string) {
+    setImageUrl(presetUrl);
+    setPreviewUrl(presetUrl);
+    setUploadSuccess(true);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrorMessage(null);
@@ -174,7 +265,7 @@ export function ServiceFormDialog({
     }
 
     startTransition(async () => {
-      const finalImageUrl = imageUrl.trim() || null;
+      const finalImageUrl = imageUrl.trim() || previewUrl || null;
       const payload = {
         category,
         title: title.trim(),
@@ -207,6 +298,7 @@ export function ServiceFormDialog({
   }
 
   const activeDisplayImage = previewUrl || imageUrl;
+  const currentPresets = PRESET_IMAGES[category] || [];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in duration-150 overflow-y-auto">
@@ -222,7 +314,7 @@ export function ServiceFormDialog({
             </div>
             <div>
               <h3 className="font-bold text-base sm:text-lg text-white">
-                {isEditing ? 'Edit Layanan Wisata' : 'Tambah Layanan Baru'}
+                {isEditing ? 'Edit Layanan & Foto' : 'Tambah Layanan Baru'}
               </h3>
               <p className="text-[11px] text-zinc-400">
                 {isEditing
@@ -346,7 +438,7 @@ export function ServiceFormDialog({
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-300">
                 <ImageIcon className="h-4 w-4 text-amber-400" />
-                <span>Foto Layanan (Preview & Upload)</span>
+                <span>Foto Layanan (Preview & Pilihan Foto)</span>
               </label>
 
               <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-800 rounded-lg p-0.5 text-[11px]">
@@ -363,6 +455,17 @@ export function ServiceFormDialog({
                 </button>
                 <button
                   type="button"
+                  onClick={() => setUploadMode('preset')}
+                  className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
+                    uploadMode === 'preset'
+                      ? 'bg-amber-500 text-black font-semibold'
+                      : 'text-zinc-400 hover:text-white'
+                  }`}
+                >
+                  Galeri Foto
+                </button>
+                <button
+                  type="button"
                   onClick={() => setUploadMode('url')}
                   className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
                     uploadMode === 'url'
@@ -375,7 +478,7 @@ export function ServiceFormDialog({
               </div>
             </div>
 
-            {/* If there is an active preview image (uploaded or via URL) */}
+            {/* Active Preview Box */}
             {activeDisplayImage ? (
               <div className="space-y-2.5">
                 <div className="relative rounded-2xl border border-zinc-700/80 bg-zinc-900 overflow-hidden shadow-lg group">
@@ -414,17 +517,15 @@ export function ServiceFormDialog({
                   </div>
                 </div>
 
-                {uploadSuccess && (
-                  <div className="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-950/30 border border-emerald-800/40 p-2.5 rounded-xl">
-                    <CheckCircle2 className="h-4 w-4 shrink-0" />
-                    <span>Foto berhasil diunggah ke Supabase Storage dan siap ditampilkan di tabel.</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-950/30 border border-emerald-800/40 p-2.5 rounded-xl">
+                  <CheckCircle2 className="h-4 w-4 shrink-0" />
+                  <span>Foto berhasil terpasang dan siap ditampilkan di tabel daftar layanan.</span>
+                </div>
               </div>
             ) : null}
 
-            {/* Upload Area (when no image or when changing) */}
-            {uploadMode === 'upload' ? (
+            {/* Mode 1: Upload File */}
+            {uploadMode === 'upload' && (
               <div>
                 <input
                   ref={fileInputRef}
@@ -453,7 +554,7 @@ export function ServiceFormDialog({
                       <div className="flex flex-col items-center gap-2 py-3">
                         <Loader2 className="h-8 w-8 animate-spin text-amber-400" />
                         <span className="text-xs font-medium text-zinc-300">
-                          Mengunggah gambar ke Supabase Storage...
+                          Mengunggah gambar ke storage...
                         </span>
                       </div>
                     ) : (
@@ -472,8 +573,41 @@ export function ServiceFormDialog({
                   </div>
                 )}
               </div>
-            ) : (
-              /* Direct URL Input Mode */
+            )}
+
+            {/* Mode 2: Preset Gallery */}
+            {uploadMode === 'preset' && (
+              <div className="space-y-2">
+                <p className="text-[11px] text-zinc-400">
+                  Pilih foto rekomendasi resolusi tinggi untuk kategori{' '}
+                  <span className="text-amber-400 font-semibold">{category}</span>:
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  {currentPresets.map((preset) => (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => handleSelectPreset(preset.url)}
+                      className="group relative rounded-xl overflow-hidden border border-zinc-800 hover:border-amber-500/60 transition-all text-left bg-zinc-900"
+                    >
+                      <img
+                        src={preset.url}
+                        alt={preset.label}
+                        className="h-20 w-full object-cover group-hover:scale-105 transition-transform duration-200"
+                      />
+                      <div className="p-1.5 bg-zinc-950/90 border-t border-zinc-800">
+                        <p className="text-[10px] font-medium text-zinc-300 truncate group-hover:text-amber-400">
+                          {preset.label}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Mode 3: Direct URL Input */}
+            {uploadMode === 'url' && (
               <div className="space-y-3">
                 <div className="relative">
                   <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500" />
