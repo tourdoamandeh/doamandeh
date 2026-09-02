@@ -83,7 +83,11 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
         <SidebarHeader>
           {isCollapsed ? (
             <Tooltip>
-              <TooltipTrigger className="flex items-center justify-center p-1 cursor-pointer w-full bg-transparent border-0">
+              <TooltipTrigger
+                render={
+                  <div className="flex items-center justify-center p-1 cursor-pointer w-full" />
+                }
+              >
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground font-mono text-xs font-bold shadow-xs">
                   D
                 </div>
@@ -118,30 +122,30 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
               <SidebarMenu>
                 {navItems.map((item) => {
                   const Icon = item.icon;
-                  const button = (
-                    <SidebarMenuButton
-                      isActive={item.isActive}
-                      className={isCollapsed ? 'justify-center px-0 h-9 w-9 mx-auto' : ''}
-                    >
-                      <Icon className={`h-4 w-4 shrink-0 ${item.isActive ? 'text-sidebar-accent-foreground' : 'text-sidebar-foreground'}`} />
-                      {!isCollapsed && <span className="truncate">{item.title}</span>}
-                    </SidebarMenuButton>
-                  );
-
                   return (
                     <SidebarMenuItem key={item.title}>
                       <Link href={item.url} className="w-full block">
                         {isCollapsed ? (
                           <Tooltip>
-                            <TooltipTrigger className="w-full flex justify-center bg-transparent border-0 p-0">
-                              {button}
+                            <TooltipTrigger
+                              render={
+                                <SidebarMenuButton
+                                  isActive={item.isActive}
+                                  className="justify-center px-0 h-9 w-9 mx-auto"
+                                />
+                              }
+                            >
+                              <Icon className={`h-4 w-4 shrink-0 ${item.isActive ? 'text-sidebar-accent-foreground' : 'text-sidebar-foreground'}`} />
                             </TooltipTrigger>
                             <TooltipContent side="right" sideOffset={12}>
                               {item.title}
                             </TooltipContent>
                           </Tooltip>
                         ) : (
-                          button
+                          <SidebarMenuButton isActive={item.isActive}>
+                            <Icon className={`h-4 w-4 shrink-0 ${item.isActive ? 'text-sidebar-accent-foreground' : 'text-sidebar-foreground'}`} />
+                            <span className="truncate">{item.title}</span>
+                          </SidebarMenuButton>
                         )}
                       </Link>
                     </SidebarMenuItem>
@@ -160,10 +164,12 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
               <Link href="/" target="_blank" className="w-full block">
                 {isCollapsed ? (
                   <Tooltip>
-                    <TooltipTrigger className="w-full flex justify-center bg-transparent border-0 p-0">
-                      <SidebarMenuButton className="justify-center px-0 h-9 w-9 mx-auto">
-                        <ExternalLink className="h-4 w-4 shrink-0 text-sidebar-foreground" />
-                      </SidebarMenuButton>
+                    <TooltipTrigger
+                      render={
+                        <SidebarMenuButton className="justify-center px-0 h-9 w-9 mx-auto" />
+                      }
+                    >
+                      <ExternalLink className="h-4 w-4 shrink-0 text-sidebar-foreground" />
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={12}>
                       Website Public
@@ -184,11 +190,13 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
             <SidebarMenuItem>
               {isCollapsed ? (
                 <Tooltip>
-                  <TooltipTrigger className="w-full flex justify-center bg-transparent border-0 p-0">
-                    <div className="flex items-center justify-center rounded-lg border border-sidebar-border bg-sidebar-accent p-1.5 cursor-pointer w-9 h-9">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-sidebar text-sidebar-foreground font-mono text-xs font-semibold">
-                        {(adminName || 'A').charAt(0).toUpperCase()}
-                      </div>
+                  <TooltipTrigger
+                    render={
+                      <div className="flex items-center justify-center rounded-lg border border-sidebar-border bg-sidebar-accent p-1.5 cursor-pointer w-9 h-9 mx-auto" />
+                    }
+                  >
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-sidebar text-sidebar-foreground font-mono text-xs font-semibold">
+                      {(adminName || 'A').charAt(0).toUpperCase()}
                     </div>
                   </TooltipTrigger>
                   <TooltipContent side="right" sideOffset={12}>
@@ -213,14 +221,16 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
             <SidebarMenuItem>
               {isCollapsed ? (
                 <Tooltip>
-                  <TooltipTrigger className="w-full flex justify-center bg-transparent border-0 p-0">
-                    <SidebarMenuButton
-                      onClick={handleLogout}
-                      disabled={isLoggingOut}
-                      className="justify-center px-0 h-9 w-9 mx-auto text-sidebar-foreground hover:text-red-400 hover:bg-sidebar-accent cursor-pointer"
-                    >
-                      <LogOut className="h-4 w-4 shrink-0" />
-                    </SidebarMenuButton>
+                  <TooltipTrigger
+                    render={
+                      <SidebarMenuButton
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                        className="justify-center px-0 h-9 w-9 mx-auto text-sidebar-foreground hover:text-red-400 hover:bg-sidebar-accent cursor-pointer"
+                      />
+                    }
+                  >
+                    <LogOut className="h-4 w-4 shrink-0" />
                   </TooltipTrigger>
                   <TooltipContent side="right" sideOffset={12}>
                     Keluar (Logout)
