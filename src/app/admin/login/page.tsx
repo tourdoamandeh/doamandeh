@@ -2,46 +2,30 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { loginAdminAction, registerAdminAction } from '@/lib/actions/admin/auth';
-import { Shield, Lock, Mail, User, Loader2, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
+import { loginAdminAction } from '@/lib/actions/admin/auth';
+import { Shield, Lock, Mail, Loader2, AlertCircle, Sparkles } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Form states
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrorMessage(null);
-    setSuccessMessage(null);
 
     startTransition(async () => {
-      if (mode === 'login') {
-        const res = await loginAdminAction({ email, password });
-        if (!res.success) {
-          setErrorMessage(res.error || 'Gagal login.');
-        } else {
-          router.push(res.data?.redirectUrl || '/admin');
-          router.refresh();
-        }
+      const res = await loginAdminAction({ email, password });
+      if (!res.success) {
+        setErrorMessage(res.error || 'Gagal login ke akun admin.');
       } else {
-        const res = await registerAdminAction({ fullName, email, password });
-        if (!res.success) {
-          setErrorMessage(res.error || 'Gagal mendaftar.');
-        } else {
-          setSuccessMessage(
-            'Akun admin berhasil didaftarkan! Silakan login dengan akun yang telah dibuat.'
-          );
-          setMode('login');
-        }
+        router.push(res.data?.redirectUrl || '/admin');
+        router.refresh();
       }
     });
   }
@@ -64,38 +48,14 @@ export default function AdminLoginPage() {
 
         {/* Card */}
         <div className="rounded-3xl border border-zinc-800 bg-zinc-900/70 p-8 shadow-2xl backdrop-blur-md">
-          {/* Tabs */}
-          <div className="flex rounded-xl bg-zinc-950 p-1 mb-6 border border-zinc-800/80">
-            <button
-              type="button"
-              onClick={() => {
-                setMode('login');
-                setErrorMessage(null);
-                setSuccessMessage(null);
-              }}
-              className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-colors ${
-                mode === 'login'
-                  ? 'bg-amber-500 text-black shadow-sm'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              Login Admin
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMode('register');
-                setErrorMessage(null);
-                setSuccessMessage(null);
-              }}
-              className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-colors ${
-                mode === 'register'
-                  ? 'bg-amber-500 text-black shadow-sm'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              Daftar Admin Baru
-            </button>
+          <div className="mb-6 border-b border-zinc-800 pb-4">
+            <h2 className="text-base font-bold text-white flex items-center gap-2">
+              <Shield className="h-4 w-4 text-amber-400" />
+              <span>Login Administrator</span>
+            </h2>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Masukkan kredensial akun administrator Anda untuk melanjutkan.
+            </p>
           </div>
 
           {/* Feedback Messages */}
@@ -106,34 +66,8 @@ export default function AdminLoginPage() {
             </div>
           )}
 
-          {successMessage && (
-            <div className="mb-5 flex items-start gap-2 rounded-xl bg-emerald-950/40 border border-emerald-800/80 p-3.5 text-xs text-emerald-300">
-              <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span>{successMessage}</span>
-            </div>
-          )}
-
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === 'register' && (
-              <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                  Nama Lengkap Admin
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                  <input
-                    type="text"
-                    required
-                    placeholder="Contoh: Admin Doamandeh"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="w-full rounded-xl border border-zinc-700 bg-zinc-950 pl-9 pr-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
-                  />
-                </div>
-              </div>
-            )}
-
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
                 Email Akun Admin
@@ -178,9 +112,7 @@ export default function AdminLoginPage() {
               ) : (
                 <Shield className="h-4 w-4" />
               )}
-              <span>
-                {mode === 'login' ? 'Masuk ke Dashboard' : 'Daftarkan Akun Admin'}
-              </span>
+              <span>Masuk ke Dashboard</span>
             </button>
           </form>
         </div>
