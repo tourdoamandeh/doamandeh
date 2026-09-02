@@ -6,9 +6,6 @@ import { cn } from '@/lib/utils';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
-const SIDEBAR_WIDTH = '15rem';
-const SIDEBAR_WIDTH_MOBILE = '16rem';
-const SIDEBAR_WIDTH_ICON = '3.5rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
 
 interface SidebarContextValue {
@@ -45,7 +42,6 @@ export const SidebarProvider = React.forwardRef<
       open: openProp,
       onOpenChange: setOpenProp,
       className,
-      style,
       children,
       ...props
     },
@@ -54,7 +50,6 @@ export const SidebarProvider = React.forwardRef<
     const [isMobile, setIsMobile] = React.useState(false);
     const [openMobile, setOpenMobile] = React.useState(false);
 
-    // Internal open state
     const [_open, _setOpen] = React.useState(defaultOpen);
     const open = openProp ?? _open;
     const setOpen = React.useCallback(
@@ -70,22 +65,19 @@ export const SidebarProvider = React.forwardRef<
       [setOpenProp, open]
     );
 
-    // Responsive listener
     React.useEffect(() => {
       const checkMobile = () => {
-        setIsMobile(window.innerWidth < 1024);
+        setIsMobile(window.innerWidth < 768);
       };
       checkMobile();
       window.addEventListener('resize', checkMobile);
       return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // Toggle helper
     const toggleSidebar = React.useCallback(() => {
-      return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
+      return isMobile ? setOpenMobile((prev) => !prev) : setOpen((prev) => !prev);
     }, [isMobile, setOpen, setOpenMobile]);
 
-    // Keyboard shortcut (⌘B / Ctrl+B)
     React.useEffect(() => {
       const handleKeyDown = (event: KeyboardEvent) => {
         if (
@@ -118,15 +110,8 @@ export const SidebarProvider = React.forwardRef<
     return (
       <SidebarContext.Provider value={contextValue}>
         <div
-          style={
-            {
-              '--sidebar-width': SIDEBAR_WIDTH,
-              '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
-              ...style,
-            } as React.CSSProperties
-          }
           className={cn(
-            'group/sidebar-wrapper flex min-h-screen w-full bg-[#FAFAF9]',
+            'flex min-h-screen w-full bg-[#FAFAF9] text-[#171717]',
             className
           )}
           ref={ref}
@@ -161,21 +146,7 @@ export const Sidebar = React.forwardRef<
   ) => {
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
-    if (collapsible === 'none') {
-      return (
-        <div
-          className={cn(
-            'flex h-full w-[--sidebar-width] flex-col bg-[#101010] text-[#A3A3A3]',
-            className
-          )}
-          ref={ref}
-          {...props}
-        >
-          {children}
-        </div>
-      );
-    }
-
+    // Mobile sheet sidebar
     if (isMobile) {
       return (
         <>
@@ -185,22 +156,25 @@ export const Sidebar = React.forwardRef<
               className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs transition-opacity"
             />
           )}
-          <div
+          <aside
             ref={ref}
             data-mobile="true"
             data-state={openMobile ? 'open' : 'closed'}
             className={cn(
-              'fixed inset-y-0 left-0 z-50 flex h-full w-[--sidebar-width-mobile] flex-col border-r border-stone-800 bg-[#101010] p-3 text-[#A3A3A3] shadow-2xl transition-transform duration-200 ease-in-out',
+              'fixed inset-y-0 left-0 z-50 flex h-full w-64 flex-col border-r border-stone-800 bg-[#101010] p-3 text-[#A3A3A3] shadow-2xl transition-transform duration-200 ease-in-out',
               openMobile ? 'translate-x-0' : '-translate-x-full',
               className
             )}
             {...props}
           >
             {children}
-          </div>
+          </aside>
         </>
       );
     }
+
+    // Desktop collapsible sidebar
+    const widthClass = state === 'expanded' ? 'w-60' : 'w-14';
 
     return (
       <div
@@ -210,26 +184,21 @@ export const Sidebar = React.forwardRef<
         data-variant={variant}
         data-side={side}
         className={cn(
-          'group peer hidden md:block text-[#A3A3A3]',
+          'group/sidebar relative hidden shrink-0 md:block transition-[width] duration-200 ease-linear',
+          widthClass,
           className
         )}
       >
-        {/* Invisible gap holder for desktop layout flow */}
-        <div
+        {/* Fixed content inside the width-constrained container */}
+        <aside
           className={cn(
-            'relative h-screen bg-transparent transition-[width] duration-200 ease-linear',
-            state === 'expanded' ? 'w-[--sidebar-width]' : 'w-[--sidebar-width-icon]'
-          )}
-        />
-        <div
-          className={cn(
-            'fixed inset-y-0 left-0 z-20 hidden h-screen border-r border-stone-800 bg-[#101010] p-3 transition-[width] duration-200 ease-linear md:flex md:flex-col md:justify-between',
-            state === 'expanded' ? 'w-[--sidebar-width]' : 'w-[--sidebar-width-icon]'
+            'fixed inset-y-0 left-0 z-20 flex h-screen flex-col justify-between border-r border-stone-800 bg-[#101010] p-3 text-[#A3A3A3] transition-[width] duration-200 ease-linear overflow-x-hidden',
+            widthClass
           )}
           {...props}
         >
           {children}
-        </div>
+        </aside>
       </div>
     );
   }
@@ -279,7 +248,7 @@ export const SidebarRail = React.forwardRef<
       onClick={toggleSidebar}
       title="Toggle Sidebar"
       className={cn(
-        'absolute inset-y-0 -right-2 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-stone-700 group-data-[side=left]:-right-2 sm:flex cursor-w-resize',
+        'absolute inset-y-0 -right-2 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-stone-700 sm:flex cursor-w-resize',
         className
       )}
       {...props}
@@ -297,7 +266,7 @@ export const SidebarInset = React.forwardRef<
       ref={ref}
       data-slot="sidebar-inset"
       className={cn(
-        'relative flex min-h-screen flex-1 flex-col bg-[#FAFAF9] overflow-x-hidden',
+        'relative flex min-h-screen flex-1 min-w-0 flex-col bg-[#FAFAF9] overflow-x-hidden',
         className
       )}
       {...props}
@@ -314,7 +283,7 @@ export const SidebarHeader = React.forwardRef<
     <div
       ref={ref}
       data-slot="sidebar-header"
-      className={cn('flex flex-col gap-2 pb-3 border-b border-stone-800/80', className)}
+      className={cn('flex flex-col gap-2 pb-3 border-b border-stone-800/80 shrink-0', className)}
       {...props}
     />
   );
@@ -329,7 +298,7 @@ export const SidebarFooter = React.forwardRef<
     <div
       ref={ref}
       data-slot="sidebar-footer"
-      className={cn('flex flex-col gap-2 pt-3 border-t border-stone-800/80', className)}
+      className={cn('flex flex-col gap-2 pt-3 border-t border-stone-800/80 shrink-0', className)}
       {...props}
     />
   );
@@ -345,7 +314,7 @@ export const SidebarContent = React.forwardRef<
       ref={ref}
       data-slot="sidebar-content"
       className={cn(
-        'flex min-h-0 flex-1 flex-col gap-2 overflow-auto scrollbar-none py-2',
+        'flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden py-2',
         className
       )}
       {...props}
@@ -378,7 +347,7 @@ export const SidebarGroupLabel = React.forwardRef<
       ref={ref}
       data-slot="sidebar-group-label"
       className={cn(
-        'flex h-7 shrink-0 items-center rounded-md px-2 text-[10px] font-mono font-medium uppercase tracking-wider text-stone-500 outline-none transition-[margin,opacity] duration-200 ease-linear group-data-[collapsible=icon]:opacity-0',
+        'flex h-7 shrink-0 items-center rounded-md px-2 text-[10px] font-mono font-medium uppercase tracking-wider text-stone-500 outline-none transition-[opacity] duration-200 group-data-[state=collapsed]/sidebar:opacity-0',
         className
       )}
       {...props}
@@ -448,7 +417,7 @@ export const SidebarMenuButton = React.forwardRef<
         data-slot="sidebar-menu-button"
         data-active={isActive}
         className={cn(
-          'flex h-8 w-full items-center gap-2.5 rounded-lg px-2.5 text-xs font-medium text-[#A3A3A3] transition-colors hover:bg-stone-900 hover:text-white group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2',
+          'flex h-8 w-full items-center gap-2.5 rounded-lg px-2.5 text-xs font-medium text-[#A3A3A3] transition-colors hover:bg-stone-900 hover:text-white group-data-[state=collapsed]/sidebar:justify-center group-data-[state=collapsed]/sidebar:px-2',
           isActive && 'bg-stone-800 text-white font-semibold',
           className
         )}
