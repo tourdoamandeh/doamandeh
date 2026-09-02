@@ -14,34 +14,24 @@ import {
   Plus,
   Edit2,
   Trash2,
-  CheckCircle2,
-  XCircle,
   Loader2,
-  Car,
-  Palette,
-  Home,
-  Compass,
-  Waves,
   AlertTriangle,
   ArrowUpDown,
   X,
-  Sparkles,
   ImageIcon,
+  Package,
 } from 'lucide-react';
 
 interface ServicesTableProps {
   initialServices: Service[];
 }
 
-const CATEGORY_MAP: Record<
-  ServiceCategory,
-  { label: string; icon: React.ComponentType<{ className?: string }> }
-> = {
-  'vehicle-rental': { label: 'Sewa Kendaraan', icon: Car },
-  'tattoo': { label: 'Tato Studio', icon: Palette },
-  'villa': { label: 'Villa & Stay', icon: Home },
-  'travel': { label: 'Paket Travel', icon: Compass },
-  'surfing-lesson': { label: 'Surfing Lesson', icon: Waves },
+const CATEGORY_MAP: Record<ServiceCategory, string> = {
+  'vehicle-rental': 'Sewa Kendaraan',
+  'tattoo': 'Tato Studio',
+  'villa': 'Villa & Stay',
+  'travel': 'Paket Travel',
+  'surfing-lesson': 'Surfing Lesson',
 };
 
 function formatRupiah(amount: number): string {
@@ -56,7 +46,6 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
   const router = useRouter();
   const [services, setServices] = useState<Service[]>(initialServices);
 
-  // Sync state if initialServices updates from server
   useEffect(() => {
     setServices(initialServices);
   }, [initialServices]);
@@ -69,7 +58,7 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
 
-  // Custom Delete Confirmation Modal State
+  // Delete Confirmation Modal
   const [serviceToDelete, setServiceToDelete] = useState<Service | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [togglingId, setTogglingId] = useState<string | null>(null);
@@ -105,7 +94,6 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
       if (sortBy === 'price-desc') {
         return b.price - a.price;
       }
-      // 'newest' default
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
 
@@ -130,14 +118,13 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
         setServices(data as Service[]);
       }
     } catch {
-      // ignore
+      // fallback
     }
     router.refresh();
   }
 
   function handleToggleStatus(id: string, currentStatus: boolean) {
     setTogglingId(id);
-    // Optimistic local update
     setServices((prev) =>
       prev.map((s) => (s.id === id ? { ...s, is_active: !currentStatus } : s))
     );
@@ -145,7 +132,6 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
     startTransition(async () => {
       const res = await toggleServiceActiveAction(id, currentStatus);
       if (!res.success) {
-        // Rollback if error
         setServices(initialServices);
       }
       setTogglingId(null);
@@ -158,7 +144,6 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
     setIsDeleting(true);
     const targetId = serviceToDelete.id;
 
-    // Optimistic local deletion
     setServices((prev) => prev.filter((s) => s.id !== targetId));
 
     startTransition(async () => {
@@ -180,26 +165,26 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
   }
 
   return (
-    <div>
-      {/* Action Bar & Filter Controls */}
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 mb-6">
-        <div className="flex flex-1 flex-wrap items-center gap-3">
+    <div className="space-y-4">
+      {/* Dense Toolbar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex flex-1 flex-wrap items-center gap-2.5">
           {/* Live Search */}
-          <div className="relative flex-1 min-w-[240px] max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+          <div className="relative flex-1 min-w-[200px] max-w-sm">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
             <input
               type="text"
-              placeholder="Cari nama, fasilitas, atau deskripsi..."
+              placeholder="Cari nama layanan, deskripsi..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-zinc-800 bg-zinc-900/90 pl-9 pr-8 py-2.5 text-xs text-white placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
+              className="w-full rounded-lg border border-stone-200 bg-white pl-8 pr-7 py-1.5 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
             />
             {search && (
               <button
                 onClick={() => setSearch('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-zinc-500 hover:text-zinc-300"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-stone-400 hover:text-stone-600"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-3 w-3" />
               </button>
             )}
           </div>
@@ -208,7 +193,7 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-xl border border-zinc-800 bg-zinc-900/90 px-3 py-2.5 text-xs text-zinc-300 focus:border-amber-500 focus:outline-none"
+            className="rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-xs text-stone-700 focus:border-teal-700 focus:outline-none"
           >
             <option value="all">Semua Kategori</option>
             <option value="vehicle-rental">Sewa Kendaraan</option>
@@ -222,7 +207,7 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-xl border border-zinc-800 bg-zinc-900/90 px-3 py-2.5 text-xs text-zinc-300 focus:border-amber-500 focus:outline-none"
+            className="rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-xs text-stone-700 focus:border-teal-700 focus:outline-none"
           >
             <option value="all">Semua Status</option>
             <option value="active">Aktif Saja</option>
@@ -230,186 +215,176 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
           </select>
 
           {/* Sort By */}
-          <div className="flex items-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900/90 px-2.5 py-1 text-xs text-zinc-400">
-            <ArrowUpDown className="h-3.5 w-3.5 text-zinc-500" />
+          <div className="flex items-center gap-1 rounded-lg border border-stone-200 bg-white px-2 py-1 text-xs text-stone-600">
+            <ArrowUpDown className="h-3 w-3 text-stone-400" />
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="bg-transparent text-xs text-zinc-300 focus:outline-none py-1 cursor-pointer"
+              className="bg-transparent text-xs text-stone-700 focus:outline-none cursor-pointer"
             >
-              <option value="newest" className="bg-zinc-900 text-white">Terbaru</option>
-              <option value="title" className="bg-zinc-900 text-white">Nama (A-Z)</option>
-              <option value="price-asc" className="bg-zinc-900 text-white">Harga: Termurah</option>
-              <option value="price-desc" className="bg-zinc-900 text-white">Harga: Termahal</option>
+              <option value="newest">Terbaru</option>
+              <option value="title">Nama (A-Z)</option>
+              <option value="price-asc">Harga Terendah</option>
+              <option value="price-desc">Harga Tertinggi</option>
             </select>
           </div>
         </div>
 
-        {/* Add Service Button */}
+        {/* Primary Action Button */}
         <button
           onClick={handleOpenCreate}
-          className="flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-xs font-bold text-black hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/20"
+          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#0F766E] px-3.5 py-1.5 text-xs font-medium text-white hover:bg-[#115E59] transition-colors"
         >
-          <Plus className="h-4 w-4" />
-          <span>Tambah Layanan Baru</span>
+          <Plus className="h-3.5 w-3.5" />
+          <span>Tambah Layanan</span>
         </button>
       </div>
 
-      {/* Services Table */}
-      <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 shadow-xl">
+      {/* Compact Table */}
+      <div className="rounded-lg border border-stone-200 bg-white overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-zinc-300">
-            <thead className="border-b border-zinc-800 bg-zinc-900/80 text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
+          <table className="w-full text-left text-xs text-stone-700">
+            <thead className="bg-stone-50 text-[11px] font-semibold text-stone-500 uppercase tracking-wider border-b border-stone-200">
               <tr>
-                <th className="px-5 py-4">Foto & Detail Layanan</th>
-                <th className="px-5 py-4">Kategori</th>
-                <th className="px-5 py-4">Harga / Satuan</th>
-                <th className="px-5 py-4">Status</th>
-                <th className="px-5 py-4 text-right">Aksi</th>
+                <th className="px-4 py-2.5">Foto & Layanan</th>
+                <th className="px-4 py-2.5">Kategori</th>
+                <th className="px-4 py-2.5">Harga / Satuan</th>
+                <th className="px-4 py-2.5">Status</th>
+                <th className="px-4 py-2.5 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/60">
+            <tbody className="divide-y divide-stone-100">
               {filteredServices.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-16 text-center">
-                    <div className="max-w-sm mx-auto flex flex-col items-center">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-800/80 text-zinc-400 mb-3 border border-zinc-700/60">
-                        <Sparkles className="h-6 w-6 text-amber-400" />
-                      </div>
-                      <h4 className="text-sm font-bold text-white mb-1">
-                        Tidak Ada Layanan Ditemukan
-                      </h4>
-                      <p className="text-xs text-zinc-400 mb-4">
-                        {search || categoryFilter !== 'all' || statusFilter !== 'all'
-                          ? 'Tidak ada data layanan yang cocok dengan filter atau kata kunci pencarian Anda.'
-                          : 'Belum ada data layanan di katalog Doamandeh. Mulai tambahkan layanan pertama Anda.'}
-                      </p>
-                      {search || categoryFilter !== 'all' || statusFilter !== 'all' ? (
-                        <button
-                          onClick={resetFilters}
-                          className="px-4 py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-200 hover:bg-zinc-700 transition-colors"
-                        >
-                          Reset Semua Filter
-                        </button>
-                      ) : (
-                        <button
-                          onClick={handleOpenCreate}
-                          className="flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2 text-xs font-bold text-black hover:bg-amber-400 transition-colors"
-                        >
-                          <Plus className="h-4 w-4" />
-                          <span>Tambah Layanan Sekarang</span>
-                        </button>
-                      )}
-                    </div>
+                  <td colSpan={5} className="py-12 text-center">
+                    <Package className="h-6 w-6 text-stone-400 mx-auto mb-2" />
+                    <p className="text-xs font-medium text-stone-700 mb-1">
+                      Tidak ada data layanan ditemukan.
+                    </p>
+                    <p className="text-[11px] text-stone-500 mb-3">
+                      {search || categoryFilter !== 'all' || statusFilter !== 'all'
+                        ? 'Coba ubah kata kunci atau reset filter pencarian.'
+                        : 'Belum ada katalog layanan yang terdaftar.'}
+                    </p>
+                    {search || categoryFilter !== 'all' || statusFilter !== 'all' ? (
+                      <button
+                        onClick={resetFilters}
+                        className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50"
+                      >
+                        Reset Filter
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleOpenCreate}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F766E] px-3.5 py-1.5 text-xs font-medium text-white hover:bg-[#115E59]"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        <span>Tambah Layanan Sekarang</span>
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : (
                 filteredServices.map((service) => {
-                  const cat = CATEGORY_MAP[service.category] || {
-                    label: service.category,
-                    icon: Compass,
-                  };
-                  const CatIcon = cat.icon;
                   const isTogglingThis = togglingId === service.id;
+                  const catLabel = CATEGORY_MAP[service.category] || service.category;
 
                   return (
                     <tr
                       key={service.id}
-                      className="hover:bg-zinc-800/30 transition-colors group"
+                      className="h-12 hover:bg-stone-50/70 transition-colors"
                     >
-                      {/* Photo Thumbnail + Title & Description */}
-                      <td className="px-5 py-4 max-w-md">
-                        <div className="flex items-center gap-3.5">
-                          {/* Image Thumbnail with crisp styling */}
+                      {/* Photo + Title */}
+                      <td className="px-4 py-2 max-w-sm">
+                        <div className="flex items-center gap-3">
                           {service.image_url ? (
-                            <div className="relative h-14 w-16 sm:h-16 sm:w-20 rounded-xl overflow-hidden bg-zinc-950 shrink-0 border border-zinc-700/80 shadow-md">
-                              <img
-                                src={service.image_url}
-                                alt={service.title}
-                                className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-300"
-                              />
-                            </div>
+                            <img
+                              src={service.image_url}
+                              alt={service.title}
+                              className="h-8 w-11 rounded border border-stone-200 object-cover bg-stone-100 shrink-0"
+                              onError={(e) => {
+                                (e.target as HTMLElement).style.display = 'none';
+                              }}
+                            />
                           ) : (
                             <button
                               type="button"
                               onClick={() => handleOpenEdit(service)}
-                              title="Klik untuk menambahkan foto layanan"
-                              className="flex h-14 w-16 sm:h-16 sm:w-20 flex-col items-center justify-center rounded-xl bg-zinc-800/60 border border-dashed border-zinc-700/80 text-zinc-500 hover:border-amber-500/60 hover:text-amber-400 transition-colors shrink-0 group/img"
+                              title="Tambah foto layanan"
+                              className="flex h-8 w-11 flex-col items-center justify-center rounded border border-dashed border-stone-300 bg-stone-50 text-stone-400 hover:border-stone-400 hover:text-stone-600 transition-colors shrink-0"
                             >
-                              <ImageIcon className="h-5 w-5 mb-0.5 group-hover/img:scale-110 transition-transform" />
-                              <span className="text-[9px] font-medium">+ Foto</span>
+                              <ImageIcon className="h-3.5 w-3.5" />
                             </button>
                           )}
 
                           <div className="min-w-0 flex-1">
-                            <p className="font-semibold text-white group-hover:text-amber-400 transition-colors truncate text-xs sm:text-sm">
+                            <p className="font-medium text-stone-900 truncate">
                               {service.title}
                             </p>
-                            <p className="text-[11px] text-zinc-400 line-clamp-1 mt-0.5">
-                              {service.description || 'Tidak ada deskripsi tambahan.'}
+                            <p className="text-[11px] text-stone-500 line-clamp-1">
+                              {service.description || 'Tanpa deskripsi'}
                             </p>
                           </div>
                         </div>
                       </td>
 
-                      {/* Category Badge */}
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-zinc-800 text-zinc-300 border border-zinc-700/60">
-                          <CatIcon className="h-3 w-3 text-amber-400" />
-                          {cat.label}
+                      {/* Category */}
+                      <td className="px-4 py-2 whitespace-nowrap">
+                        <span className="inline-block px-2 py-0.5 rounded text-[11px] font-medium bg-stone-100 border border-stone-200 text-stone-700">
+                          {catLabel}
                         </span>
                       </td>
 
-                      {/* Price & Unit */}
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <p className="font-bold text-white text-xs sm:text-sm">
+                      {/* Price */}
+                      <td className="px-4 py-2 whitespace-nowrap">
+                        <span className="font-mono text-xs font-semibold text-stone-900 tabular-nums">
                           {formatRupiah(service.price)}
-                        </p>
-                        <p className="text-[10px] text-zinc-400 mt-0.5">
-                          {service.unit ? `/${service.unit.replace(/^per\s+/i, '')}` : '-'}
-                          {service.duration ? ` • ${service.duration}` : ''}
-                        </p>
+                        </span>
+                        <span className="text-[11px] text-stone-500 ml-1">
+                          {service.unit ? `/${service.unit.replace(/^per\s+/i, '')}` : ''}
+                        </span>
                       </td>
 
-                      {/* Status Toggle Switch */}
-                      <td className="px-5 py-4 whitespace-nowrap">
+                      {/* Status: Dot + Text */}
+                      <td className="px-4 py-2 whitespace-nowrap">
                         <button
                           onClick={() => handleToggleStatus(service.id, service.is_active)}
                           disabled={isPending || isTogglingThis}
-                          title="Klik untuk mengubah status ketersediaan layanan"
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${
-                            service.is_active
-                              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/25'
-                              : 'bg-zinc-800 text-zinc-400 border border-zinc-700 hover:bg-zinc-700'
-                          }`}
+                          title="Klik untuk mengubah status aktif"
+                          className="inline-flex items-center gap-1.5 text-xs font-medium hover:opacity-80 transition-opacity"
                         >
                           {isTogglingThis ? (
-                            <Loader2 className="h-3 w-3 animate-spin" />
+                            <Loader2 className="h-3 w-3 animate-spin text-stone-400" />
                           ) : service.is_active ? (
-                            <CheckCircle2 className="h-3 w-3 text-emerald-400" />
+                            <span className="inline-flex items-center gap-1.5 text-emerald-700">
+                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                              Aktif
+                            </span>
                           ) : (
-                            <XCircle className="h-3 w-3 text-zinc-500" />
+                            <span className="inline-flex items-center gap-1.5 text-stone-500">
+                              <span className="h-1.5 w-1.5 rounded-full bg-stone-400" />
+                              Nonaktif
+                            </span>
                           )}
-                          <span>{service.is_active ? 'Aktif' : 'Nonaktif'}</span>
                         </button>
                       </td>
 
                       {/* Actions */}
-                      <td className="px-5 py-4 whitespace-nowrap text-right">
-                        <div className="flex items-center justify-end gap-1.5">
+                      <td className="px-4 py-2 whitespace-nowrap text-right">
+                        <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => handleOpenEdit(service)}
-                            className="rounded-xl p-2 text-zinc-400 hover:bg-zinc-800 hover:text-amber-400 transition-colors"
-                            title="Edit Layanan & Foto"
+                            className="p-1 rounded text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+                            title="Edit Layanan"
                           >
-                            <Edit2 className="h-4 w-4" />
+                            <Edit2 className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() => setServiceToDelete(service)}
-                            className="rounded-xl p-2 text-zinc-400 hover:bg-red-950/40 hover:text-red-400 transition-colors"
+                            className="p-1 rounded text-stone-500 hover:bg-rose-50 hover:text-rose-600 transition-colors"
                             title="Hapus Layanan"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3.5 w-3.5" />
                           </button>
                         </div>
                       </td>
@@ -422,7 +397,7 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
         </div>
       </div>
 
-      {/* Service Modal Dialog (Create / Edit with Image Upload) */}
+      {/* Service Form Modal (Create / Edit) */}
       <ServiceFormDialog
         isOpen={dialogOpen}
         service={editingService}
@@ -430,32 +405,30 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
         onSuccess={handleFormSuccess}
       />
 
-      {/* Custom Delete Confirmation Dialog */}
+      {/* Delete Confirmation Modal */}
       {serviceToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="relative w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900 p-6 text-white shadow-2xl shadow-black">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 text-red-400 border border-red-500/20">
-                <AlertTriangle className="h-5 w-5" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="w-full max-w-sm rounded-lg border border-stone-200 bg-white p-5 text-stone-900 shadow-xl">
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-rose-50 text-rose-600 border border-rose-200">
+                <AlertTriangle className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white">Hapus Layanan?</h3>
-                <p className="text-xs text-zinc-400">Tindakan ini tidak dapat dibatalkan.</p>
+                <h3 className="text-xs font-bold text-stone-900">Hapus Layanan</h3>
+                <p className="text-[11px] text-stone-500">Tindakan ini permanen.</p>
               </div>
             </div>
 
-            <p className="text-xs text-zinc-300 leading-relaxed bg-zinc-950 p-3 rounded-xl border border-zinc-800/80 mb-6">
-              Apakah Anda yakin ingin menghapus layanan{' '}
-              <strong className="text-amber-400">{serviceToDelete.title}</strong>? Data booking
-              terkait mungkin terdampak jika layanan ini dihapus permanen.
+            <p className="text-xs text-stone-600 mb-5 leading-relaxed">
+              Yakin ingin menghapus <strong className="text-stone-900">{serviceToDelete.title}</strong>? Data ini akan dihapus dari katalog.
             </p>
 
-            <div className="flex items-center justify-end gap-3">
+            <div className="flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setServiceToDelete(null)}
                 disabled={isDeleting}
-                className="rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-2 text-xs font-medium text-zinc-300 hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50"
               >
                 Batal
               </button>
@@ -463,10 +436,10 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
                 type="button"
                 onClick={confirmDelete}
                 disabled={isDeleting}
-                className="flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2 text-xs font-bold text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-[#DC2626] px-3.5 py-1.5 text-xs font-medium text-white hover:bg-rose-700 transition-colors"
               >
-                {isDeleting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                <span>{isDeleting ? 'Menghapus...' : 'Ya, Hapus Layanan'}</span>
+                {isDeleting && <Loader2 className="h-3 w-3 animate-spin" />}
+                <span>{isDeleting ? 'Menghapus...' : 'Hapus'}</span>
               </button>
             </div>
           </div>

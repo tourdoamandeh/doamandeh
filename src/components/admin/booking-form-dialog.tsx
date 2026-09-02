@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { Service, BookingStatus } from '@/types/database';
 import { createBookingAction } from '@/lib/actions/admin/bookings';
-import { X, Loader2, Plus, AlertCircle } from 'lucide-react';
+import { X, Loader2, AlertCircle } from 'lucide-react';
 
 interface BookingFormDialogProps {
   services: Service[];
@@ -90,46 +90,44 @@ export function BookingFormDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
       <div
-        className="relative w-full max-w-lg rounded-2xl border border-zinc-800 bg-zinc-900 p-6 text-white shadow-2xl shadow-black/80 max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-lg my-6 rounded-lg border border-stone-200 bg-white p-5 sm:p-6 text-stone-900 shadow-xl max-h-[90vh] overflow-y-auto"
         role="dialog"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-800 pb-4 mb-5">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
-              <Plus className="h-4 w-4" />
-            </div>
-            <h3 className="font-bold text-lg text-white">Input Booking Manual</h3>
+        <div className="flex items-center justify-between pb-3 border-b border-stone-200 mb-4">
+          <div>
+            <h3 className="text-sm font-bold text-stone-900">Input Booking Manual</h3>
+            <p className="text-[11px] text-stone-500">Pencatatan reservasi offline atau langsung dari admin.</p>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
+            className="p-1 rounded text-stone-400 hover:text-stone-700 transition-colors"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
         {errorMessage && (
-          <div className="mb-4 flex items-start gap-2 rounded-xl bg-red-950/40 border border-red-800/80 p-3 text-xs text-red-300">
-            <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
+          <div className="mb-4 flex items-start gap-2 rounded-lg bg-rose-50 border border-rose-200 p-2.5 text-xs text-rose-800">
+            <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
             <span>{errorMessage}</span>
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           {/* Service Selection */}
           <div>
-            <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
               Pilih Layanan *
             </label>
             <select
               value={serviceId}
               onChange={(e) => handleServiceChange(e.target.value)}
               required
-              className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white focus:border-amber-500 focus:outline-none"
+              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 focus:border-teal-700 focus:outline-none"
             >
               <option value="" disabled>Pilih layanan...</option>
               {services.map((s) => (
@@ -142,8 +140,8 @@ export function BookingFormDialog({
 
           {/* Customer Name */}
           <div>
-            <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-              Nama Lengkap Customer *
+            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+              Nama Pelanggan *
             </label>
             <input
               type="text"
@@ -151,15 +149,15 @@ export function BookingFormDialog({
               placeholder="Contoh: Budi Santoso"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
+              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
             />
           </div>
 
           {/* Email & Phone Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                Email Customer *
+              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+                Email *
               </label>
               <input
                 type="email"
@@ -167,40 +165,40 @@ export function BookingFormDialog({
                 placeholder="customer@email.com"
                 value={customerEmail}
                 onChange={(e) => setCustomerEmail(e.target.value)}
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
+                className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                Nomor Telepon / WhatsApp *
+              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+                No. Telepon / WhatsApp *
               </label>
               <input
                 type="tel"
                 required
-                placeholder="081234567890"
+                placeholder="08123456789"
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
+                className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 font-mono placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
               />
             </div>
           </div>
 
           {/* Date & Price Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                Tanggal Pemakaian / Booking *
+              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+                Tanggal Pemakaian *
               </label>
               <input
                 type="date"
                 required
                 value={bookingDate}
                 onChange={(e) => setBookingDate(e.target.value)}
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white focus:border-amber-500 focus:outline-none"
+                className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 focus:border-teal-700 focus:outline-none font-mono"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
                 Total Biaya (IDR)
               </label>
               <input
@@ -209,22 +207,22 @@ export function BookingFormDialog({
                 placeholder="350000"
                 value={totalPrice}
                 onChange={(e) => setTotalPrice(e.target.value)}
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
+                className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 font-mono focus:border-teal-700 focus:outline-none"
               />
             </div>
           </div>
 
           {/* Status Selection */}
           <div>
-            <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
               Status Awal
             </label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as BookingStatus)}
-              className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white focus:border-amber-500 focus:outline-none"
+              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 focus:border-teal-700 focus:outline-none"
             >
-              <option value="pending">Pending (Menunggu Konfirmasi)</option>
+              <option value="pending">Pending (Menunggu)</option>
               <option value="confirmed">Confirmed (Dikonfirmasi)</option>
               <option value="completed">Completed (Selesai)</option>
               <option value="cancelled">Cancelled (Dibatalkan)</option>
@@ -233,32 +231,32 @@ export function BookingFormDialog({
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-              Catatan / Catatan Khusus
+            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+              Catatan Khusus
             </label>
             <textarea
               rows={2}
-              placeholder="Contoh: Permintaan jemput di Bandara / permintaan desain tato..."
+              placeholder="Permintaan penjemputan, spesifikasi kustom..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-amber-500 focus:outline-none resize-none"
+              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none resize-none"
             />
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-3 border-t border-zinc-800 pt-4 mt-6">
+          {/* Actions */}
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-stone-200 mt-4">
             <button
               type="button"
               onClick={onClose}
               disabled={isPending}
-              className="rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-2 text-xs font-medium text-zinc-300 hover:bg-zinc-700 transition-colors disabled:opacity-50"
+              className="rounded-lg border border-stone-200 bg-white px-3.5 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 disabled:opacity-50"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={isPending}
-              className="flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2 text-xs font-bold text-black hover:bg-amber-400 transition-colors shadow-lg shadow-amber-500/20 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F766E] px-4 py-1.5 text-xs font-medium text-white hover:bg-[#115E59] transition-colors disabled:opacity-50"
             >
               {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               <span>Simpan Booking</span>

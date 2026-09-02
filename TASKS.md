@@ -67,3 +67,4 @@
 
 - [2026-09-02] Phase 1–5 selesai, masuk Phase 6.
 - [2026-09-02] Phase 6A (CMS Advanced) selesai: Upload gambar Supabase Storage, Site Settings CMS, Service & Booking Management upgrade (filter, search, sort, detail modal, quick actions, custom dialogs, Zod validation).
+- [2026-09-02] Admin Operations UI Redesign (ADMIN_UI.md): Implementasi tema operations tool Linear/Stripe style (Instrument Sans + JetBrains Mono, sidebar dark #101010, background #FAFAF9, table compact row h-11, status dot+text, deep teal #0F766E, zero AI slop, zero gradients/glassmorphism).

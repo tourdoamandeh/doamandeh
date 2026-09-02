@@ -14,16 +14,19 @@ export default async function AdminDashboardLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex bg-[#FAFAF9] text-[#171717] font-sans antialiased selection:bg-teal-700 selection:text-white">
+      {/* Fixed Left Sidebar */}
       <AdminNav
         userEmail={user.email}
-        adminName={profile?.full_name || 'Admin'}
+        adminName={profile?.full_name || 'Administrator'}
       />
-      <main className="flex-1 min-w-0 overflow-y-auto">
-        <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 lg:pl-60">
+        <main className="flex-1 p-5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           {children}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

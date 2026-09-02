@@ -9,7 +9,6 @@ import {
   Settings,
   LogOut,
   ExternalLink,
-  Shield,
   Menu,
   X,
 } from 'lucide-react';
@@ -28,25 +27,25 @@ export function AdminNav({ userEmail, adminName }: AdminNavProps) {
 
   const navItems = [
     {
-      label: 'Dashboard',
+      label: 'Overview',
       href: '/admin',
       icon: LayoutDashboard,
       active: pathname === '/admin',
     },
     {
-      label: 'Kelola Layanan',
+      label: 'Layanan',
       href: '/admin/services',
       icon: Package,
       active: pathname.startsWith('/admin/services'),
     },
     {
-      label: 'Daftar Booking',
+      label: 'Booking',
       href: '/admin/bookings',
       icon: CalendarCheck,
       active: pathname.startsWith('/admin/bookings'),
     },
     {
-      label: 'Pengaturan Website',
+      label: 'Pengaturan',
       href: '/admin/settings',
       icon: Settings,
       active: pathname.startsWith('/admin/settings'),
@@ -61,52 +60,58 @@ export function AdminNav({ userEmail, adminName }: AdminNavProps) {
   return (
     <>
       {/* Mobile Top Header */}
-      <header className="lg:hidden sticky top-0 z-40 flex items-center justify-between border-b border-zinc-800 bg-zinc-950 px-4 py-3 text-white">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500 font-bold text-black text-sm">
+      <header className="lg:hidden fixed top-0 inset-x-0 z-40 flex h-14 items-center justify-between border-b border-stone-800 bg-[#101010] px-4 text-white">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-teal-700 font-mono text-xs font-bold text-white">
             D
           </div>
-          <span className="font-bold text-sm tracking-tight">Doamandeh Admin</span>
+          <span className="font-mono text-sm font-semibold tracking-tight">DOAMANDEH</span>
+          <span className="text-[10px] font-mono uppercase bg-stone-800 text-stone-400 px-1.5 py-0.5 rounded">OPS</span>
         </div>
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-900 hover:text-white"
+          className="rounded-md p-1.5 text-stone-400 hover:bg-stone-800 hover:text-white transition-colors"
+          aria-label="Toggle navigation menu"
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </header>
 
-      {/* Backdrop for mobile */}
+      {/* Mobile Backdrop */}
       {mobileOpen && (
         <div
           onClick={() => setMobileOpen(false)}
-          className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-xs"
+          className="lg:hidden fixed inset-0 z-40 bg-black/60"
         />
       )}
 
-      {/* Sidebar Navigation */}
+      {/* Fixed Left Sidebar (240px / w-60) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col justify-between border-r border-zinc-800/80 bg-zinc-950 p-4 transition-transform duration-200 lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-60 flex-col justify-between border-r border-stone-800 bg-[#101010] p-4 transition-transform duration-150 lg:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div>
-          {/* Logo & Brand */}
-          <div className="mb-8 flex items-center gap-3 px-2 pt-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 font-black text-black text-lg shadow-md shadow-amber-500/20">
-              D
-            </div>
-            <div>
-              <h2 className="font-bold tracking-tight text-white">Doamandeh</h2>
-              <div className="flex items-center gap-1 text-[11px] text-amber-400 font-medium">
-                <Shield className="h-3 w-3" />
-                <span>Admin CMS</span>
+          {/* Brand Header */}
+          <div className="mb-6 flex items-center justify-between px-2 pt-1 pb-3 border-b border-stone-800/80">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-teal-700 font-mono text-xs font-bold text-white">
+                D
+              </div>
+              <div>
+                <span className="font-mono text-xs font-bold tracking-wider text-white">DOAMANDEH</span>
+                <span className="block text-[10px] text-stone-400 font-mono tracking-tight">OPERATIONS</span>
               </div>
             </div>
           </div>
 
           {/* Navigation Links */}
-          <nav className="space-y-1.5">
+          <div className="px-2 mb-2">
+            <p className="text-[10px] font-mono font-medium uppercase tracking-wider text-stone-500">
+              Menu Utama
+            </p>
+          </div>
+          <nav className="space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -114,13 +119,13 @@ export function AdminNav({ userEmail, adminName }: AdminNavProps) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium transition-colors ${
                     item.active
-                      ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                      : 'text-zinc-400 hover:bg-zinc-900 hover:text-white'
+                      ? 'bg-stone-800/90 text-white font-semibold'
+                      : 'text-[#A3A3A3] hover:bg-stone-900 hover:text-white'
                   }`}
                 >
-                  <Icon className={`h-4 w-4 ${item.active ? 'text-amber-400' : 'text-zinc-400'}`} />
+                  <Icon className={`h-4 w-4 shrink-0 ${item.active ? 'text-teal-400' : 'text-stone-500'}`} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -129,30 +134,30 @@ export function AdminNav({ userEmail, adminName }: AdminNavProps) {
         </div>
 
         {/* User Info & Footer Actions */}
-        <div className="border-t border-zinc-800/80 pt-4 space-y-3">
+        <div className="border-t border-stone-800/80 pt-3 space-y-2">
           <Link
             href="/"
             target="_blank"
-            className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-xs font-medium text-zinc-300 hover:bg-zinc-900 hover:text-white transition-colors"
+            className="flex items-center justify-between rounded-lg border border-stone-800 bg-stone-900/60 px-2.5 py-1.5 text-[11px] font-medium text-stone-300 hover:bg-stone-800 hover:text-white transition-colors"
           >
             <span className="flex items-center gap-2">
-              <ExternalLink className="h-3.5 w-3.5 text-zinc-400" />
-              Lihat Website Public
+              <ExternalLink className="h-3.5 w-3.5 text-stone-400" />
+              Website Public
             </span>
           </Link>
 
-          <div className="rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-3">
-            <p className="truncate text-xs font-semibold text-white">{adminName || 'Admin'}</p>
-            <p className="truncate text-[11px] text-zinc-400">{userEmail || 'admin@doamandeh.com'}</p>
+          <div className="rounded-lg border border-stone-800/80 bg-stone-900/40 p-2.5">
+            <p className="truncate text-xs font-medium text-white">{adminName || 'Administrator'}</p>
+            <p className="truncate text-[11px] font-mono text-stone-400 mt-0.5">{userEmail || 'admin@doamandeh.com'}</p>
           </div>
 
           <button
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-900/30 bg-red-950/20 px-3 py-2 text-xs font-medium text-red-400 hover:bg-red-950/40 transition-colors disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-stone-800 bg-transparent px-2.5 py-1.5 text-xs font-medium text-stone-400 hover:bg-stone-900 hover:text-red-400 transition-colors disabled:opacity-50"
           >
             <LogOut className="h-3.5 w-3.5" />
-            <span>{isLoggingOut ? 'Keluar...' : 'Logout Admin'}</span>
+            <span>{isLoggingOut ? 'Keluar...' : 'Keluar (Logout)'}</span>
           </button>
         </div>
       </aside>
