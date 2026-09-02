@@ -1,5 +1,6 @@
 import { getCurrentAdmin } from '@/lib/actions/admin/auth';
 import { AdminNav } from '@/components/admin/admin-nav';
+import { Toaster } from '@/components/ui/sonner';
 import { redirect } from 'next/navigation';
 
 export default async function AdminDashboardLayout({
@@ -15,6 +16,9 @@ export default async function AdminDashboardLayout({
 
   return (
     <div className="min-h-screen flex bg-[#FAFAF9] text-[#171717] font-sans antialiased selection:bg-teal-700 selection:text-white">
+      {/* Toast Notifications Provider */}
+      <Toaster richColors position="top-right" />
+
       {/* Fixed Left Sidebar */}
       <AdminNav
         userEmail={user.email}

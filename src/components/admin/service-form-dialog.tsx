@@ -4,6 +4,7 @@ import { useState, useTransition, useRef, useEffect } from 'react';
 import { Service, ServiceCategory } from '@/types/database';
 import { createServiceAction, updateServiceAction } from '@/lib/actions/admin/services';
 import { uploadServiceImageAction } from '@/lib/actions/admin/storage';
+import { toast } from 'sonner';
 import {
   X,
   Loader2,
@@ -271,7 +272,9 @@ export function ServiceFormDialog({
         const res = await updateServiceAction(service.id, payload);
         if (!res.success) {
           setErrorMessage(res.error || 'Gagal memperbarui layanan');
+          toast.error(res.error || 'Gagal memperbarui layanan');
         } else {
+          toast.success(`Layanan "${payload.title}" berhasil diperbarui`);
           onSuccess?.();
           onClose();
         }
@@ -279,7 +282,9 @@ export function ServiceFormDialog({
         const res = await createServiceAction(payload);
         if (!res.success) {
           setErrorMessage(res.error || 'Gagal menambahkan layanan');
+          toast.error(res.error || 'Gagal menambahkan layanan');
         } else {
+          toast.success(`Layanan baru "${payload.title}" berhasil ditambahkan`);
           onSuccess?.();
           onClose();
         }

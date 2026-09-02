@@ -4,6 +4,7 @@ import { useState, useTransition, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Service, ServiceCategory } from '@/types/database';
 import { createClient } from '@/lib/supabase/client';
+import { toast } from 'sonner';
 import {
   toggleServiceActiveAction,
   deleteServiceAction,
@@ -133,6 +134,9 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
       const res = await toggleServiceActiveAction(id, currentStatus);
       if (!res.success) {
         setServices(initialServices);
+        toast.error(res.error || 'Gagal mengubah status layanan');
+      } else {
+        toast.success(`Status layanan diubah menjadi ${!currentStatus ? 'Aktif' : 'Nonaktif'}`);
       }
       setTogglingId(null);
       router.refresh();
@@ -143,6 +147,7 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
     if (!serviceToDelete) return;
     setIsDeleting(true);
     const targetId = serviceToDelete.id;
+    const targetTitle = serviceToDelete.title;
 
     setServices((prev) => prev.filter((s) => s.id !== targetId));
 
@@ -150,6 +155,9 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
       const res = await deleteServiceAction(targetId);
       if (!res.success) {
         setServices(initialServices);
+        toast.error(res.error || 'Gagal menghapus layanan');
+      } else {
+        toast.success(`Layanan "${targetTitle}" berhasil dihapus`);
       }
       setIsDeleting(false);
       setServiceToDelete(null);

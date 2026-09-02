@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { Booking, BookingStatus, Service, ServiceCategory } from '@/types/database';
+import { toast } from 'sonner';
 import {
   updateBookingStatusAction,
   deleteBookingAction,
@@ -117,7 +118,12 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
   function handleStatusChange(id: string, newStatus: BookingStatus) {
     setUpdatingId(id);
     startTransition(async () => {
-      await updateBookingStatusAction(id, newStatus);
+      const res = await updateBookingStatusAction(id, newStatus);
+      if (!res.success) {
+        toast.error(res.error || 'Gagal mengubah status booking');
+      } else {
+        toast.success(`Status booking diubah menjadi ${newStatus.toUpperCase()}`);
+      }
       setUpdatingId(null);
       if (selectedBooking && selectedBooking.id === id) {
         setSelectedBooking((prev) => (prev ? { ...prev, status: newStatus } : null));
@@ -128,8 +134,14 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
   function confirmDelete() {
     if (!bookingToDelete) return;
     setIsDeleting(true);
+    const targetName = bookingToDelete.customer_name;
     startTransition(async () => {
-      await deleteBookingAction(bookingToDelete.id);
+      const res = await deleteBookingAction(bookingToDelete.id);
+      if (!res.success) {
+        toast.error(res.error || 'Gagal menghapus data booking');
+      } else {
+        toast.success(`Booking atas nama "${targetName}" berhasil dihapus`);
+      }
       setIsDeleting(false);
       setBookingToDelete(null);
       if (selectedBooking && selectedBooking.id === bookingToDelete.id) {

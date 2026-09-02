@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { SiteSettingsInput, DEFAULT_SITE_SETTINGS } from '@/lib/validations/admin';
 import { updateSiteSettingsAction } from '@/lib/actions/admin/settings';
+import { toast } from 'sonner';
 import {
   Save,
   Loader2,
@@ -40,6 +41,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
         type: 'success',
         message: 'Pengaturan dikembalikan ke nilai default. Klik Simpan untuk menerapkan.',
       });
+      toast.info('Pengaturan dikembalikan ke nilai default. Klik Simpan untuk menerapkan.');
     }
   }
 
@@ -54,11 +56,13 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
           type: 'success',
           message: 'Pengaturan website berhasil disimpan.',
         });
+        toast.success('Pengaturan website berhasil disimpan dan diperbarui!');
       } else {
         setStatus({
           type: 'error',
           message: res.error || 'Gagal menyimpan pengaturan.',
         });
+        toast.error(res.error || 'Gagal menyimpan pengaturan.');
       }
     });
   }

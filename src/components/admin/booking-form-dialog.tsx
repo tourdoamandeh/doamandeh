@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { Service, BookingStatus } from '@/types/database';
 import { createBookingAction } from '@/lib/actions/admin/bookings';
+import { toast } from 'sonner';
 import { X, Loader2, AlertCircle } from 'lucide-react';
 
 interface BookingFormDialogProps {
@@ -83,7 +84,9 @@ export function BookingFormDialog({
 
       if (!res.success) {
         setErrorMessage(res.error || 'Gagal membuat booking');
+        toast.error(res.error || 'Gagal membuat booking');
       } else {
+        toast.success(`Booking manual untuk "${customerName.trim()}" berhasil disimpan`);
         onClose();
       }
     });
