@@ -4,14 +4,22 @@
 
 ## Outstanding To-Do Items
 
-- [ ] **1. Ganti gambar yang lebih relate**
-  - Perbarui aset foto pada seluruh seksi publik (Hero, About, Services, Testimonials, FAQ, CTA) dengan gambar destinasi, aktivitas wisata, dan lifestyle Bali yang lebih kontekstual dan berkualitas tinggi.
+- [ ] **1. Perbaiki foto relate**
+  - Perbarui aset foto pada seluruh seksi publik (Hero, About, Services, Testimonials, FAQ, CTA) dengan gambar destinasi, aktivitas wisata, dan lifestyle Bali yang lebih kontekstual, menarik, dan berkualitas tinggi sesuai 5 kategori layanan (Sewa Kendaraan, Tato, Villa, Surfing, Travel Tour).
 
-- [ ] **2. Cek font, ukuran font, dan font weight**
-  - Audit ulang konsistensi penerapan font Futura, hirarki ukuran font (dari `text-xs` hingga `text-6xl`), serta ketebalan `font-light`, `font-normal`, `font-[#131718]`, `font-bold` di seluruh rute dan komponen.
+- [ ] **2. Perbaiki DESIGN.md**
+  - Audit dan perbarui dokumen `DESIGN.md` agar mencerminkan standar terbaru proyek: penggunaan font **New York** / **Playfair Display**, palet warna Krem **`#FFF6C6`**, sistem animasi scroll `framer-motion`, serta aturan border **`border-2 border-[#fff6c6]`**.
 
-- [ ] **3. Copy writing**
-  - Tinjau dan refined penulisan judul (*headline*), deskripsi kartu layanan, paragraf filosofi seksi About, ulasan testimoni, serta pertanyaan FAQ agar lebih natural, elegan, persuasif, dan komunikatif.
+---
 
-- [ ] **4. Cek harmoni warna**
-  - Periksa keseimbangan dan kontras perpaduan palet warna pastel (`#FFF6C6`, `#FEC29F`, `#D1E6F6`, `#FFDAE4`), warna aksen dark brown (`#504139`), dan latar putih murni (`#FFFFFF`) di seluruh komponen.
+## Completed Items
+
+- [x] **Perbaiki warna krem `#FFF6C6` global**
+  - Mengganti seluruh penggunaan `#FFFFFF` / `bg-white` pada teks, icon, badge logo `D.`, dan box jam operasional menjadi warna krem `#FFF6C6`.
+- [x] **Add motion (Scroll animations & Stagger reveal)**
+  - Memasang `framer-motion` dan menerapkan komponen `FadeIn` / `FadeInStagger` di seluruh seksi landing page.
+- [x] **Perbaikan layout foto FAQ**
+  - Memperbaiki layout foto kanan FAQ dengan `items-stretch` dan `object-cover object-top` agar foto mengisi 100% tinggi tanpa melompat atau meninggalkan celah kosong.
+- [x] **Standardisasi border foto**
+  - Menyeragamkan bingkai foto carousel hero, tentang kami, ulasan pelanggan, dan CTA section menjadi `border-2 border-[#fff6c6]`.
+

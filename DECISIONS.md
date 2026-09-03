@@ -75,16 +75,14 @@
   - Menambahkan key `contact_whatsapp_2` (opsional) pada `siteSettingsSchema` dan `DEFAULT_SITE_SETTINGS` di `src/lib/validations/admin.ts`.
   - Mengupdate UI `SettingsForm` (`src/components/admin/settings-form.tsx`) dengan opsi penambahan / penghapusan nomor CS 2 secara dinamis.
 
-## DEC-010: Public Landing Page Editorial Redesign & Visual System Polish
+## DEC-010: Public Landing Page Editorial Redesign, Cream #FFF6C6 Palette & Framer Motion System
 - **Date**: 2026-09-03
 - **Status**: Accepted
-- **Context**: Halaman depan (Landing Page) Doamandeh memerlukan pembaruan visual total ke sistem desain Editorial Minimalist Bali yang elegan, responsif, dan konsisten.
+- **Context**: Tampilan landing page publik Doamandeh memerlukan pembaruan palet warna Krem, typography serif editorial, animasi motion ringan, dan standardisasi bingkai foto.
 - **Decision**:
-  - **Tipografi Futura**: Menetapkan font Futura Geometric Sans-Serif secara menyeluruh pada `--font-sans`, `--font-serif`, serta elemen `body, html` di `src/app/globals.css`.
-  - **Penghapusan Efek Grayscale**: Menghapus seluruh filter foto hitam-putih (`grayscale hover:grayscale-0`) pada seluruh komponen publik (About, Services, Testimonials, FAQ) agar semua gambar tampil dengan warna asli murni.
-  - **Testimonials Section**: Merancang carousel testimoni 6 kartu layanan (`bg-[#504139]`) dengan kontras teks terang (`#FFF6C6` & `#FEC29F`), nama pelanggan, lokasi kota, dan rating bintang di footer kartu.
-  - **FAQ Section**: Mengoptimalkan seksi FAQ agar ringkas dan pas dalam 1 layar (`py-12 lg:py-16`), serta menyembunyikan gambar `02` pada layar mobile (`hidden md:block`).
-  - **Pertipisan Garis Border**: Pertipis garis batas antar seksi menjadi transparan halus (`border-y border-[#131718]/15`).
-  - **CTA & Footer Polish**: Memperbarui tombol CTA menjadi 2 aksi (*Hubungi Kami* & *Cek Semua Layanan*), mengatur background footer ke `#FFFFFF`, kartu Jam Operasional ke `#504139`, dan menghapus garis pemisah grid footer.
-
+  - **Palet Warna Krem `#FFF6C6`**: Mengganti 100% warna `#FFFFFF` / `bg-white` pada teks, icon, indikator, badge logo `D.`, dan box jam operasional menjadi warna krem `#FFF6C6`.
+  - **Tipografi Editorial (New York / Playfair Display)**: Menyiapkan font `--font-new-york` via Google Font `Playfair Display` dan Apple system font `New York` di `layout.tsx` dan `globals.css`.
+  - **Sistem Animasi Scroll (Framer Motion)**: Memasang `framer-motion` dan membuat komponen `FadeIn` & `FadeInStagger` di `src/components/ui/fade-in.tsx` dengan durasi 0.6s dan *ease* editorial `[0.21, 0.47, 0.32, 0.98]`.
+  - **Fix Motion & Layout FAQ**: Mengunci foto kanan FAQ dengan `items-stretch` dan `object-cover object-top` agar foto mengisi 100% tinggi tanpa bergeser/melompat saat accordion diklik.
+  - **Standardisasi Border Foto**: Menyeragamkan bingkai foto pada seksi Hero Carousel, About, Testimonials, dan CTA menjadi `border-2 border-[#fff6c6]`.
 
