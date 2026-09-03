@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
 import { Service, ServiceCategory } from '@/types/database';
 import { PublicHeader } from '@/components/public/public-header';
@@ -10,62 +11,73 @@ import {
   Home,
   Compass,
   Waves,
-  ArrowRight,
+  ArrowUpRight,
   CheckCircle2,
   Clock,
-  Sparkles,
   AlertCircle,
 } from 'lucide-react';
 
 const CATEGORIES: Record<
   ServiceCategory,
   {
+    num: string;
     label: string;
     icon: React.ComponentType<{ className?: string }>;
     title: string;
     description: string;
     highlights: string[];
+    bgColor: string;
   }
 > = {
   'vehicle-rental': {
+    num: '01',
     label: 'Sewa Kendaraan',
     icon: Car,
     title: 'Sewa Kendaraan Motor & Mobil di Bali',
     description:
       'Layanan sewa kendaraan motor matic dan mobil pribadi dengan kondisi prima, bersih, dan siap antar ke lokasi penginapan atau bandara.',
     highlights: ['Unit Terawat & Servis Rutin', 'Helm & Jas Hujan Gratis', 'Antar Jemput Bandara/Hotel', 'Proses Cepat Tanpa Ribet'],
+    bgColor: 'bg-lightblue',
   },
   'tattoo': {
+    num: '02',
     label: 'Tato Studio',
     icon: Palette,
     title: 'Professional Tattoo Studio Bali',
     description:
       'Layanan pembuatan tato custom oleh tattoo artist berpengalaman. Mengutamakan standar higienis internasional, jarum single-use steril, dan tinta premium.',
     highlights: ['Jarum & Alat 100% Steril', 'Desain Custom Bebas Konsultasi', 'Artist Berpengalaman', 'Aftercare Guidance Lengkap'],
+    bgColor: 'bg-peach',
   },
   'villa': {
+    num: '03',
     label: 'Villa & Stay',
     icon: Home,
     title: 'Sewa Villa Eksklusif & Nyaman',
     description:
       'Pilihan villa estetik, private pool, dan fasilitas lengkap untuk liburan keluarga, pasangan, maupun teman di area strategis Bali.',
     highlights: ['Private Pool & WiFi Cepat', 'Suasana Tenang & Nyaman', 'Dekat Pusat Wisata & Pantai', 'Layanan Housekeeping'],
+    bgColor: 'bg-yellow',
   },
   'travel': {
+    num: '04',
     label: 'Paket Travel',
     icon: Compass,
     title: 'Paket Tour Wisata Bali Terfavorit',
     description:
       'Paket perjalanan wisata terencana untuk menjelajahi keindahan alam, budaya, dan spot foto terhits di Bali didampingi driver/guide ramah.',
     highlights: ['Mobil Nyaman Ber-AC', 'Driver Ramah & Berpengalaman', 'Itinerary Fleksibel', 'Bebas Pilih Destinasi'],
+    bgColor: 'bg-softpink',
   },
   'surfing-lesson': {
+    num: '05',
     label: 'Surfing Lesson',
     icon: Waves,
     title: 'Kelas Surfing Pemula & Intermediate',
     description:
       'Belajar selancar ombak di pantai Bali bersama instruktur ramah dan bersertifikat. Dijamin bisa berdiri di atas papan selancar di sesi pertama!',
     highlights: ['Papan Surfing & Rashguard Disediakan', 'Instruktur Sabar & Bersertifikat', 'Spot Pantai Ramah Pemula', 'Foto & Video Sesi Surfing'],
+    bgColor: 'bg-lightblue',
   },
 };
 
@@ -79,6 +91,26 @@ function formatRupiah(amount: number): string {
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const category = CATEGORIES[slug as ServiceCategory];
+
+  if (!category) {
+    return {
+      title: 'Kategori Tidak Ditemukan',
+    };
+  }
+
+  return {
+    title: category.title,
+    description: category.description,
+    openGraph: {
+      title: `${category.title} | Doamandeh Bali`,
+      description: category.description,
+    },
+  };
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
@@ -114,12 +146,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100 selection:bg-amber-500 selection:text-black">
+    <div className="min-h-screen flex flex-col bg-tissue text-black selection:bg-peach selection:text-black">
       <PublicHeader />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
-        {/* Category Navigation Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none">
+        {/* Editorial Category Navigation Pills */}
+        <div className="flex items-center gap-3 overflow-x-auto pb-4 mb-8 scrollbar-none font-serif">
           {(Object.keys(CATEGORIES) as ServiceCategory[]).map((key) => {
             const cat = CATEGORIES[key];
             const Icon = cat.icon;
@@ -128,39 +160,45 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               <Link
                 key={key}
                 href={`/category/${key}`}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-semibold whitespace-nowrap transition-all ${
-                  isActive
-                    ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20'
-                    : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800'
-                }`}
+                className={`flex items-center gap-2 px-6 py-3 rounded-full text-lg whitespace-nowrap transition-all shadow-sm ${isActive
+                    ? 'bg-black text-tissue'
+                    : 'bg-tissue text-black hover:bg-peach'
+                  }`}
               >
-                <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-black' : 'text-amber-400'}`} />
+                <Icon className={`h-4 w-4 ${isActive ? 'text-tissue' : 'text-black'}`} />
                 <span>{cat.label}</span>
+                <span className="text-xs opacity-60 italic font-serif">({cat.num})</span>
               </Link>
             );
           })}
         </div>
 
-        {/* Category Hero Banner */}
-        <section className="relative overflow-hidden rounded-3xl border border-zinc-800 bg-gradient-to-b from-zinc-900/90 to-zinc-950 p-8 sm:p-12 mb-12 shadow-2xl">
+        {/* Category Editorial Banner Card */}
+        <section className={`relative overflow-hidden rounded-[36px] border-none ${currentCategory.bgColor} p-8 sm:p-14 mb-12 shadow-sm`}>
           <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-300 border border-amber-500/20 mb-4">
-              <CategoryIcon className="h-3.5 w-3.5 text-amber-400" />
-              <span>Kategori: {currentCategory.label}</span>
+            <div className="flex items-center justify-between gap-4 mb-4 font-serif">
+              <span className="text-sm bg-tissue text-black px-4 py-1.5 rounded-full inline-flex items-center gap-2 shadow-sm">
+                <CategoryIcon className="h-4 w-4 text-black" />
+                <span>Kategori {currentCategory.num}</span>
+              </span>
+              <span className="italic text-3xl text-black/40">
+                {currentCategory.num} / 05
+              </span>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+
+            <h1 className="font-serif text-4xl sm:text-6xl text-black leading-tight mb-4">
               {currentCategory.title}
             </h1>
-            <p className="text-sm sm:text-base text-zinc-400 leading-relaxed mb-6">
+            <p className="text-sm sm:text-base text-black/80 leading-relaxed font-sans font-normal mb-8">
               {currentCategory.description}
             </p>
 
-            {/* Category Highlights */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-4 border-t border-zinc-800/80">
+            {/* Highlights */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-6 border-t border-black/15 font-sans">
               {currentCategory.highlights.map((highlight) => (
-                <div key={highlight} className="flex items-center gap-2 text-zinc-300">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-                  <span className="font-medium text-[11px]">{highlight}</span>
+                <div key={highlight} className="flex items-center gap-2 text-black">
+                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" />
+                  <span>{highlight}</span>
                 </div>
               ))}
             </div>
@@ -169,97 +207,123 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
         {/* Database Query Error */}
         {errorMessage && (
-          <div className="mb-8 p-4 rounded-2xl bg-red-950/40 border border-red-800/80 text-red-200 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+          <div className="mb-8 p-5 rounded-[24px] bg-yellow border-none text-black flex items-start gap-3 shadow-sm">
+            <AlertCircle className="w-5 h-5 text-black shrink-0 mt-0.5" />
             <div>
-              <h3 className="text-xs font-semibold text-red-300">Gagal Mengambil Data Layanan</h3>
-              <p className="text-xs text-red-400/90 mt-0.5">{errorMessage}</p>
+              <h3 className="text-base font-serif text-black">Gagal Mengambil Data Layanan</h3>
+              <p className="text-xs text-black/80 mt-0.5 font-sans">{errorMessage}</p>
             </div>
           </div>
         )}
 
         {/* Services List / Empty State */}
         <section>
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-8 border-b border-gray-100 pb-4">
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">Pilihan Paket & Layanan</h2>
-              <p className="text-xs text-zinc-400">Pilih layanan untuk melihat detail dan melakukan reservasi</p>
+              <h2 className="font-serif text-3xl sm:text-4xl text-black">Pilihan Paket & Layanan</h2>
+              <p className="text-xs text-black/70 mt-1 font-sans">Pilih layanan untuk melihat detail dan melakukan reservasi</p>
             </div>
-            <span className="text-xs font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-xl">
+            <span className="font-serif text-base text-black bg-yellow px-4 py-1.5 rounded-full shadow-sm">
               {services.length} Paket Tersedia
             </span>
           </div>
 
           {services.length === 0 && !errorMessage ? (
-            <div className="text-center py-20 px-6 rounded-3xl border border-zinc-800 bg-zinc-900/40">
-              <CategoryIcon className="h-12 w-12 text-zinc-600 mx-auto mb-4" />
-              <h3 className="text-base font-bold text-white mb-1">Belum Ada Layanan Tersedia</h3>
-              <p className="text-xs text-zinc-400 max-w-sm mx-auto mb-6">
+            <div className="text-center py-20 px-6 rounded-[32px] border-none bg-[#F9F9FB] shadow-sm">
+              <CategoryIcon className="h-12 w-12 text-black mx-auto mb-4 opacity-50" />
+              <h3 className="font-serif text-2xl text-black mb-2">Belum Ada Layanan Tersedia</h3>
+              <p className="text-xs text-black/70 max-w-sm mx-auto mb-6 font-sans">
                 Saat ini belum ada paket layanan aktif pada kategori ini. Silakan hubungi kami via WhatsApp untuk permintaan khusus.
               </p>
               <a
                 href="https://wa.me/6281234567890"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2 text-xs font-bold text-black hover:bg-amber-400 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 font-serif text-lg text-tissue hover:bg-black/90 transition-colors shadow-sm"
               >
                 <span>Tanya Ketersediaan via WhatsApp</span>
               </a>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {services.map((service) => (
                 <div
                   key={service.id}
-                  className="group relative flex flex-col justify-between rounded-3xl border border-zinc-800 bg-zinc-900/70 p-6 hover:border-amber-500/40 hover:bg-zinc-900 transition-all duration-200 hover:shadow-2xl hover:shadow-black/60"
+                  className="group relative flex flex-col justify-between overflow-hidden rounded-[32px] border-none bg-tissue hover:-translate-y-1 transition-all duration-200 shadow-md"
                 >
-                  <div>
-                    {/* Top Meta */}
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Tersedia
-                      </span>
-                      {service.duration && (
-                        <span className="inline-flex items-center gap-1 text-[11px] text-zinc-400 bg-zinc-800/80 px-2 py-0.5 rounded-md">
-                          <Clock className="h-3 w-3 text-zinc-500" />
-                          {service.duration}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Title & Description */}
-                    <h3 className="text-lg font-bold text-white group-hover:text-amber-400 transition-colors mb-2">
-                      {service.title}
-                    </h3>
-                    <p className="text-xs text-zinc-400 leading-relaxed line-clamp-3 mb-6">
-                      {service.description || 'Layanan berkualitas prima dari Doamandeh.'}
-                    </p>
-                  </div>
-
-                  {/* Pricing & CTA */}
-                  <div className="pt-4 border-t border-zinc-800/80 space-y-4">
-                    <div className="flex items-baseline justify-between">
-                      <div>
-                        <span className="text-[10px] text-zinc-500 block">Harga</span>
-                        <span className="text-xl font-black text-white">
-                          {formatRupiah(service.price)}
+                  {/* Card Image Header */}
+                  <div className={`relative h-56 w-full ${currentCategory.bgColor} p-3 overflow-hidden border-none`}>
+                    {service.image_url ? (
+                      <div className="relative w-full h-full rounded-[24px] overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={service.image_url}
+                          alt={service.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full h-full rounded-[24px] flex flex-col items-center justify-center bg-tissue/80 text-black gap-2">
+                        <CategoryIcon className="w-10 h-10 text-black" />
+                        <span className="font-serif text-xs italic text-black/70">
+                          {currentCategory.label}
                         </span>
                       </div>
-                      {service.unit && (
-                        <span className="text-xs font-medium text-zinc-400 bg-zinc-800/60 px-2.5 py-1 rounded-lg">
-                          /{service.unit.replace(/^per\s+/i, '')}
-                        </span>
-                      )}
+                    )}
+
+                    <div className="absolute top-5 left-5">
+                      <span className="font-serif text-xs bg-tissue text-black px-3.5 py-1 rounded-full shadow-sm">
+                        Tersedia
+                      </span>
                     </div>
 
-                    <Link
-                      href={`/services/${service.id}`}
-                      className="w-full flex items-center justify-center gap-2 rounded-xl bg-amber-500 group-hover:bg-amber-400 py-3 px-4 text-xs font-bold text-black transition-all shadow-md shadow-amber-500/10"
-                    >
-                      <span>Lihat Detail & Booking</span>
-                      <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
-                    </Link>
+                    {service.duration && (
+                      <div className="absolute top-5 right-5">
+                        <span className="font-serif text-xs text-black bg-tissue px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                          <Clock className="h-3 w-3 text-black" />
+                          {service.duration}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="p-8 flex-1 flex flex-col justify-between space-y-6">
+                    <div>
+                      <h3 className="font-serif text-2xl text-black group-hover:underline mb-2">
+                        <Link href={`/services/${service.id}`}>{service.title}</Link>
+                      </h3>
+                      <p className="text-xs text-black/75 leading-relaxed font-sans line-clamp-3">
+                        {service.description || 'Layanan berkualitas prima dari Doamandeh.'}
+                      </p>
+                    </div>
+
+                    {/* Pricing & CTA */}
+                    <div className="pt-5 border-t border-gray-100 space-y-4 font-serif">
+                      <div className="flex items-baseline justify-between">
+                        <div>
+                          <span className="text-xs italic text-black/60 block mb-0.5">
+                            Harga
+                          </span>
+                          <span className="font-serif text-3xl font-normal text-black">
+                            {formatRupiah(service.price)}
+                          </span>
+                        </div>
+                        {service.unit && (
+                          <span className="text-xs text-black bg-yellow px-3.5 py-1 rounded-full shadow-sm">
+                            /{service.unit.replace(/^per\s+/i, '')}
+                          </span>
+                        )}
+                      </div>
+
+                      <Link
+                        href={`/services/${service.id}`}
+                        className="w-full flex items-center justify-center gap-2 rounded-full bg-black text-tissue text-lg py-3.5 px-6 hover:bg-black/90 transition-all shadow-sm"
+                      >
+                        <span>Detail & Booking</span>
+                        <ArrowUpRight className="h-4 w-4" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               ))}

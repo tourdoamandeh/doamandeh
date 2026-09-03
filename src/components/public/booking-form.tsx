@@ -18,6 +18,7 @@ import {
   MessageCircle,
   RefreshCw,
   ShieldCheck,
+  ArrowUpRight,
 } from 'lucide-react';
 
 interface BookingFormProps {
@@ -113,71 +114,71 @@ export function BookingForm({ service }: BookingFormProps) {
   if (completedBooking) {
     const waText = encodeURIComponent(
       `Halo Doamandeh Tours and Travel,\nSaya telah melakukan booking layanan melalui website:\n\n` +
-        `• *Layanan*: ${completedBooking.serviceTitle}\n` +
-        `• *Nama*: ${completedBooking.customerName}\n` +
-        `• *Tanggal*: ${completedBooking.bookingDate}\n` +
-        `• *Total*: ${completedBooking.totalPrice ? formatRupiah(completedBooking.totalPrice) : '-'}\n` +
-        `• *No. Ref*: ${completedBooking.id.slice(0, 8)}\n\n` +
-        `Mohon info konfirmasi dan petunjuk selanjutnya. Terima kasih!`
+      `• *Layanan*: ${completedBooking.serviceTitle}\n` +
+      `• *Nama*: ${completedBooking.customerName}\n` +
+      `• *Tanggal*: ${completedBooking.bookingDate}\n` +
+      `• *Total*: ${completedBooking.totalPrice ? formatRupiah(completedBooking.totalPrice) : '-'}\n` +
+      `• *No. Ref*: ${completedBooking.id.slice(0, 8)}\n\n` +
+      `Mohon info konfirmasi dan petunjuk selanjutnya. Terima kasih!`
     );
     const waUrl = `https://wa.me/6281234567890?text=${waText}`;
 
     return (
-      <div className="rounded-3xl border border-emerald-500/30 bg-zinc-900/90 p-6 sm:p-8 text-center shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-200">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-5 shadow-lg shadow-emerald-500/10">
+      <div className="rounded-[32px] bg-lightblue p-8 sm:p-10 text-center shadow-sm border-none">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-black text-[#D1E6F6] mb-5 shadow-sm">
           <CheckCircle2 className="h-8 w-8" />
         </div>
 
-        <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
+        <h3 className="font-serif text-3xl sm:text-4xl text-black mb-2">
           Pemesanan Berhasil Dikirim!
         </h3>
-        <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-md mx-auto mb-6">
-          Terima kasih, <strong className="text-white">{completedBooking.customerName}</strong>. Permintaan booking Anda telah kami terima dan berstatus <span className="text-amber-400 font-semibold">Pending</span>.
+        <p className="text-xs sm:text-sm text-black/80 leading-relaxed max-w-md mx-auto mb-6 font-sans">
+          Terima kasih, <strong className="text-black">{completedBooking.customerName}</strong>. Permintaan booking Anda telah kami terima dan berstatus <span className="font-semibold underline">Pending</span>.
         </p>
 
         {/* Booking Summary Card */}
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-5 text-left text-xs space-y-2.5 mb-6">
-          <div className="flex justify-between items-center border-b border-zinc-800/80 pb-2">
-            <span className="text-zinc-500">ID Referensi</span>
-            <span className="font-mono text-zinc-300 font-semibold">{completedBooking.id.slice(0, 8)}...</span>
+        <div className="rounded-[24px] bg-tissue p-6 text-left text-xs font-sans space-y-3 mb-6 shadow-sm">
+          <div className="flex justify-between items-center border-b border-gray-100 pb-2">
+            <span className="text-black/60">ID Referensi</span>
+            <span className="font-mono text-black font-bold">{completedBooking.id.slice(0, 8)}...</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-zinc-500">Layanan</span>
-            <span className="font-semibold text-white">{completedBooking.serviceTitle}</span>
+            <span className="text-black/60">Layanan</span>
+            <span className="font-semibold text-black">{completedBooking.serviceTitle}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-zinc-500">Tanggal Pemakaian</span>
-            <span className="font-semibold text-amber-400">{completedBooking.bookingDate}</span>
+            <span className="text-black/60">Tanggal Pemakaian</span>
+            <span className="font-semibold text-black">{completedBooking.bookingDate}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-zinc-500">No. WhatsApp</span>
-            <span className="text-zinc-300">{completedBooking.customerPhone}</span>
+            <span className="text-black/60">No. WhatsApp</span>
+            <span className="text-black">{completedBooking.customerPhone}</span>
           </div>
-          <div className="flex justify-between items-center border-t border-zinc-800/80 pt-2">
-            <span className="text-zinc-500 font-semibold">Estimasi Total Biaya</span>
-            <span className="font-bold text-emerald-400 text-sm">
+          <div className="flex justify-between items-center border-t border-gray-100 pt-3">
+            <span className="font-medium text-black">Estimasi Total Biaya</span>
+            <span className="font-serif text-2xl font-normal text-black">
               {completedBooking.totalPrice ? formatRupiah(completedBooking.totalPrice) : '-'}
             </span>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="space-y-3">
+        <div className="space-y-3 font-serif">
           <a
             href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 hover:bg-emerald-400 py-3.5 px-6 text-xs font-bold text-black transition-all shadow-lg shadow-emerald-500/20"
+            className="w-full flex items-center justify-center gap-2 rounded-full bg-black text-tissue text-xl py-4 px-6 hover:bg-black/90 transition-all shadow-sm border-none"
           >
-            <MessageCircle className="h-4 w-4" />
+            <MessageCircle className="h-5 w-5" />
             <span>Konfirmasi Langsung via WhatsApp</span>
           </a>
 
           <button
             onClick={handleReset}
-            className="w-full flex items-center justify-center gap-2 rounded-2xl border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 py-3 px-4 text-xs font-medium text-zinc-300 transition-colors"
+            className="w-full flex items-center justify-center gap-2 rounded-full bg-tissue text-black text-lg py-3 px-4 hover:bg-slate-50 transition-colors border-none shadow-sm"
           >
-            <RefreshCw className="h-3.5 w-3.5 text-zinc-500" />
+            <RefreshCw className="h-4 w-4" />
             <span>Pesan Layanan Lainnya</span>
           </button>
         </div>
@@ -187,30 +188,27 @@ export function BookingForm({ service }: BookingFormProps) {
 
   // --- FORM STATE ---
   return (
-    <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6 sm:p-8 shadow-2xl backdrop-blur-md">
-      <div className="flex items-center justify-between border-b border-zinc-800 pb-4 mb-6">
+    <div className="rounded-[36px] bg-yellow p-8 sm:p-10 shadow-sm border-none">
+      <div className="flex items-center justify-between border-b border-black/15 pb-4 mb-6">
         <div>
-          <h3 className="text-lg font-bold text-white">Form Reservasi & Booking</h3>
-          <p className="text-xs text-zinc-400 mt-0.5">Isi data di bawah untuk memesan layanan ini</p>
+          <h3 className="font-serif text-3xl text-black">Form Reservasi</h3>
+          <p className="text-xs text-black/70 mt-0.5 font-sans">Isi data di bawah untuk memesan layanan ini</p>
         </div>
         <div className="text-right">
-          <span className="text-xs text-zinc-400 block">Harga</span>
-          <span className="text-base font-extrabold text-amber-400">
+          <span className="text-[10px] text-black/60 font-serif italic block">Harga</span>
+          <span className="font-serif text-2xl sm:text-3xl font-normal text-black">
             {formatRupiah(service.price)}
-          </span>
-          <span className="text-[10px] text-zinc-400 block">
-            /{service.unit?.replace(/^per\s+/i, '') || 'layanan'}
           </span>
         </div>
       </div>
 
       {/* Error Alert */}
       {errorMessage && (
-        <div className="mb-6 flex items-start gap-3 rounded-2xl bg-red-950/40 border border-red-800/80 p-4 text-xs text-red-300 animate-in fade-in">
-          <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
+        <div className="mb-6 flex items-start gap-3 rounded-2xl bg-red-100 border border-red-200 p-4 text-xs text-red-900 animate-in fade-in">
+          <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold text-red-200">Gagal Mengirim Form</p>
-            <p className="text-red-400/90 mt-0.5">{errorMessage}</p>
+            <p className="font-serif text-base text-red-950">Gagal Mengirim Form</p>
+            <p className="text-red-800 mt-0.5 font-sans">{errorMessage}</p>
           </div>
         </div>
       )}
@@ -219,11 +217,11 @@ export function BookingForm({ service }: BookingFormProps) {
       <form onSubmit={handleSubmit} className="space-y-4 text-xs">
         {/* Customer Name */}
         <div>
-          <label className="block font-semibold text-zinc-300 mb-1.5">
-            Nama Lengkap Anda <span className="text-amber-400">*</span>
+          <label className="block font-serif text-lg text-black mb-1.5">
+            Nama Lengkap Anda <span className="text-red-500">*</span>
           </label>
           <div className="relative">
-            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-black/40" />
             <input
               type="text"
               required
@@ -236,26 +234,25 @@ export function BookingForm({ service }: BookingFormProps) {
                   setFieldErrors((prev) => ({ ...prev, customerName: '' }));
                 }
               }}
-              className={`w-full rounded-xl border bg-zinc-950 pl-10 pr-4 py-3 text-xs text-white placeholder-zinc-500 focus:outline-none disabled:opacity-50 transition-colors ${
-                fieldErrors.customerName
-                  ? 'border-red-500 focus:border-red-400'
-                  : 'border-zinc-800 focus:border-amber-500'
-              }`}
+              className={`w-full rounded-2xl border bg-tissue pl-11 pr-4 py-3.5 text-xs text-black font-sans placeholder-black/40 focus:outline-none disabled:opacity-50 transition-colors ${fieldErrors.customerName
+                ? 'border-red-500'
+                : 'border-gray-200 focus:border-black'
+                }`}
             />
           </div>
           {fieldErrors.customerName && (
-            <p className="text-[11px] text-red-400 mt-1">{fieldErrors.customerName}</p>
+            <p className="text-[11px] font-sans text-red-600 mt-1">{fieldErrors.customerName}</p>
           )}
         </div>
 
         {/* Email & Phone Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block font-semibold text-zinc-300 mb-1.5">
-              Alamat Email <span className="text-amber-400">*</span>
+            <label className="block font-serif text-lg text-black mb-1.5">
+              Alamat Email <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-black/40" />
               <input
                 type="email"
                 required
@@ -268,24 +265,23 @@ export function BookingForm({ service }: BookingFormProps) {
                     setFieldErrors((prev) => ({ ...prev, customerEmail: '' }));
                   }
                 }}
-                className={`w-full rounded-xl border bg-zinc-950 pl-10 pr-4 py-3 text-xs text-white placeholder-zinc-500 focus:outline-none disabled:opacity-50 transition-colors ${
-                  fieldErrors.customerEmail
-                    ? 'border-red-500 focus:border-red-400'
-                    : 'border-zinc-800 focus:border-amber-500'
-                }`}
+                className={`w-full rounded-2xl border bg-tissue pl-11 pr-4 py-3.5 text-xs text-black font-sans placeholder-black/40 focus:outline-none disabled:opacity-50 transition-colors ${fieldErrors.customerEmail
+                  ? 'border-red-500'
+                  : 'border-gray-200 focus:border-black'
+                  }`}
               />
             </div>
             {fieldErrors.customerEmail && (
-              <p className="text-[11px] text-red-400 mt-1">{fieldErrors.customerEmail}</p>
+              <p className="text-[11px] font-sans text-red-600 mt-1">{fieldErrors.customerEmail}</p>
             )}
           </div>
 
           <div>
-            <label className="block font-semibold text-zinc-300 mb-1.5">
-              Nomor WhatsApp / HP <span className="text-amber-400">*</span>
+            <label className="block font-serif text-lg text-black mb-1.5">
+              No. WhatsApp / HP <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+              <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-black/40" />
               <input
                 type="tel"
                 required
@@ -298,26 +294,25 @@ export function BookingForm({ service }: BookingFormProps) {
                     setFieldErrors((prev) => ({ ...prev, customerPhone: '' }));
                   }
                 }}
-                className={`w-full rounded-xl border bg-zinc-950 pl-10 pr-4 py-3 text-xs text-white placeholder-zinc-500 focus:outline-none disabled:opacity-50 transition-colors ${
-                  fieldErrors.customerPhone
-                    ? 'border-red-500 focus:border-red-400'
-                    : 'border-zinc-800 focus:border-amber-500'
-                }`}
+                className={`w-full rounded-2xl border bg-tissue pl-11 pr-4 py-3.5 text-xs text-black font-sans placeholder-black/40 focus:outline-none disabled:opacity-50 transition-colors ${fieldErrors.customerPhone
+                  ? 'border-red-500'
+                  : 'border-gray-200 focus:border-black'
+                  }`}
               />
             </div>
             {fieldErrors.customerPhone && (
-              <p className="text-[11px] text-red-400 mt-1">{fieldErrors.customerPhone}</p>
+              <p className="text-[11px] font-sans text-red-600 mt-1">{fieldErrors.customerPhone}</p>
             )}
           </div>
         </div>
 
         {/* Booking Date */}
         <div>
-          <label className="block font-semibold text-zinc-300 mb-1.5">
-            Tanggal Reservasi / Pemakaian <span className="text-amber-400">*</span>
+          <label className="block font-serif text-lg text-black mb-1.5">
+            Tanggal Reservasi <span className="text-red-500">*</span>
           </label>
           <div className="relative">
-            <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-black/40" />
             <input
               type="date"
               required
@@ -330,39 +325,38 @@ export function BookingForm({ service }: BookingFormProps) {
                   setFieldErrors((prev) => ({ ...prev, bookingDate: '' }));
                 }
               }}
-              className={`w-full rounded-xl border bg-zinc-950 pl-10 pr-4 py-3 text-xs text-white focus:outline-none disabled:opacity-50 transition-colors ${
-                fieldErrors.bookingDate
-                  ? 'border-red-500 focus:border-red-400'
-                  : 'border-zinc-800 focus:border-amber-500'
-              }`}
+              className={`w-full rounded-2xl border bg-tissue pl-11 pr-4 py-3.5 text-xs text-black font-sans focus:outline-none disabled:opacity-50 transition-colors ${fieldErrors.bookingDate
+                ? 'border-red-500'
+                : 'border-gray-200 focus:border-black'
+                }`}
             />
           </div>
           {fieldErrors.bookingDate && (
-            <p className="text-[11px] text-red-400 mt-1">{fieldErrors.bookingDate}</p>
+            <p className="text-[11px] font-sans text-red-600 mt-1">{fieldErrors.bookingDate}</p>
           )}
         </div>
 
         {/* Notes */}
         <div>
-          <label className="block font-semibold text-zinc-300 mb-1.5">
-            Catatan Tambahan / Permintaan Khusus <span className="text-zinc-500 font-normal">(Opsional)</span>
+          <label className="block font-serif text-lg text-black mb-1.5">
+            Catatan Tambahan <span className="text-black/50 text-sm italic font-serif">(Opsional)</span>
           </label>
           <div className="relative">
-            <FileText className="absolute left-3.5 top-3 h-4 w-4 text-zinc-500" />
+            <FileText className="absolute left-4 top-4 h-4 w-4 text-black/40" />
             <textarea
               rows={3}
               disabled={isPending}
               placeholder="Contoh: Lokasi penjemputan bandara, jam kedatangan, preferensi desain tato, dll."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-xl border border-zinc-800 bg-zinc-950 pl-10 pr-4 py-3 text-xs text-white placeholder-zinc-500 focus:border-amber-500 focus:outline-none resize-none disabled:opacity-50"
+              className="w-full rounded-2xl border border-gray-200 bg-tissue pl-11 pr-4 py-3 text-xs text-black font-sans placeholder-black/40 focus:border-black focus:outline-none resize-none disabled:opacity-50"
             />
           </div>
         </div>
 
         {/* Security & Guarantee Note */}
-        <div className="flex items-center gap-2 pt-1 text-[11px] text-zinc-400">
-          <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" />
+        <div className="flex items-center gap-2 pt-1 text-xs text-black/70 font-sans">
+          <ShieldCheck className="h-4 w-4 text-black shrink-0" />
           <span>Data reservasi Anda aman & tim kami akan segera menghubungi untuk konfirmasi.</span>
         </div>
 
@@ -370,17 +364,17 @@ export function BookingForm({ service }: BookingFormProps) {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full flex items-center justify-center gap-2 rounded-2xl bg-amber-500 hover:bg-amber-400 py-3.5 px-6 text-xs font-bold text-black transition-all shadow-lg shadow-amber-500/20 disabled:opacity-50 mt-4 cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 rounded-full bg-black text-tissue font-serif text-xl py-4 px-8 hover:bg-black/90 transition-all border-none shadow-sm disabled:opacity-50 mt-4 cursor-pointer"
         >
           {isPending ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Memproses Booking Anda...</span>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Memproses Booking...</span>
             </>
           ) : (
             <>
-              <Calendar className="h-4 w-4" />
               <span>Kirim Permintaan Booking</span>
+              <ArrowUpRight className="h-5 w-5" />
             </>
           )}
         </button>

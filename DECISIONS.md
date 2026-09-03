@@ -75,3 +75,16 @@
   - Menambahkan key `contact_whatsapp_2` (opsional) pada `siteSettingsSchema` dan `DEFAULT_SITE_SETTINGS` di `src/lib/validations/admin.ts`.
   - Mengupdate UI `SettingsForm` (`src/components/admin/settings-form.tsx`) dengan opsi penambahan / penghapusan nomor CS 2 secara dinamis.
 
+## DEC-010: Public Landing Page Editorial Redesign & Visual System Polish
+- **Date**: 2026-09-03
+- **Status**: Accepted
+- **Context**: Halaman depan (Landing Page) Doamandeh memerlukan pembaruan visual total ke sistem desain Editorial Minimalist Bali yang elegan, responsif, dan konsisten.
+- **Decision**:
+  - **Tipografi Futura**: Menetapkan font Futura Geometric Sans-Serif secara menyeluruh pada `--font-sans`, `--font-serif`, serta elemen `body, html` di `src/app/globals.css`.
+  - **Penghapusan Efek Grayscale**: Menghapus seluruh filter foto hitam-putih (`grayscale hover:grayscale-0`) pada seluruh komponen publik (About, Services, Testimonials, FAQ) agar semua gambar tampil dengan warna asli murni.
+  - **Testimonials Section**: Merancang carousel testimoni 6 kartu layanan (`bg-[#504139]`) dengan kontras teks terang (`#FFF6C6` & `#FEC29F`), nama pelanggan, lokasi kota, dan rating bintang di footer kartu.
+  - **FAQ Section**: Mengoptimalkan seksi FAQ agar ringkas dan pas dalam 1 layar (`py-12 lg:py-16`), serta menyembunyikan gambar `02` pada layar mobile (`hidden md:block`).
+  - **Pertipisan Garis Border**: Pertipis garis batas antar seksi menjadi transparan halus (`border-y border-[#131718]/15`).
+  - **CTA & Footer Polish**: Memperbarui tombol CTA menjadi 2 aksi (*Hubungi Kami* & *Cek Semua Layanan*), mengatur background footer ke `#FFFFFF`, kartu Jam Operasional ke `#504139`, dan menghapus garis pemisah grid footer.
+
+

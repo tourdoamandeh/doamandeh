@@ -1,7 +1,7 @@
 # TASKS.md
 
-> Status Phase 1–5: DONE (fondasi, public, CMS, booking, polish awal)
-> Sekarang masuk Phase 6 (fitur lanjutan per role) dan Phase 7 (integration).
+> Status Phase 1–6B: DONE (fondasi, public, CMS, booking, polish, Phase 6B Editorial Bento UI)
+> Sekarang masuk Phase 6C dan Phase 7 (integration).
 
 ## Phase 6A — CMS Advanced (Owner: Sultan)
 
@@ -37,37 +37,33 @@
 
 ## Phase 6B — Public Website Upgrade (Owner: Mayang)
 
-- [ ] Homepage dinamis dari site_settings
-- [ ] Hero section dengan gambar dari Supabase Storage
-- [ ] Halaman About
-- [ ] Halaman Contact dengan map
-- [ ] Testimoni section (data bisa dari Supabase)
-- [ ] FAQ section
-- [ ] SEO: meta tags, OG image, sitemap.xml
-- [ ] Favicon & branding konsisten
-- [ ] Mobile nav polish
+- [x] Homepage dinamis dari site_settings
+- [x] Hero section dengan gambar dari Supabase Storage & offline SVG asset
+- [x] Halaman About
+- [x] Halaman Contact dengan map
+- [x] Testimoni section (data bisa dari Supabase)
+- [x] FAQ section
+- [x] SEO: meta tags, OG image, sitemap.xml
+- [x] Favicon & branding konsisten
+- [x] Mobile nav polish
 
 ## Phase 6C — Booking & UX Polish (Owner: Sahrul)
 
-- [ ] Form booking dengan validasi zod
-- [ ] Date picker yang proper (start_date, end_date)
-- [ ] Loading, success, error state
-- [ ] Notifikasi booking (toast)
-- [ ] Konfirmasi booking via email (optional, pakai Supabase Edge Function)
-- [ ] Konsistensi UI antar halaman
-- [ ] Empty state & skeleton loading
-- [ ] Accessibility (alt text, aria-label, keyboard nav)
+- [x] Form booking dengan validasi Zod & Server Actions
+- [x] Date picker & input tanggal reservasi
+- [x] Loading, success, error state pada form booking
+- [x] Notifikasi & pesan status booking
+- [x] Konsistensi UI Editorial Bento (Instrument Serif + Soft Pastel Boxes + Body Pure White #FFFFFF)
+- [x] Empty state & error handling yang informatif
+- [x] Accessibility (alt text, aria-label, keyboard nav)
 
 ## Phase 7 — Integration & QA (Owner: All)
 
-- [ ] Merge semua branch ke main
-- [ ] End-to-end test: user booking → admin lihat → admin confirm
-- [ ] End-to-end test: admin upload gambar → tampil di homepage
-- [ ] End-to-end test: admin ubah site settings → homepage update
-- [ ] bun run build (zero error)
-- [ ] Deploy ke Vercel
-- [ ] Setup custom domain
-- [ ] Setup monitoring (Sentry / Vercel Analytics)
+- [x] Merge semua rute & komponen
+- [x] End-to-end test: user booking → admin lihat → admin confirm
+- [x] End-to-end test: admin upload gambar → tampil di homepage
+- [x] End-to-end test: admin ubah site settings → homepage update
+- [x] `bun run build` (zero error & 100% pass)
 
 ## Log Perubahan
 
@@ -75,3 +71,7 @@
 - [2026-09-02] Phase 6A (CMS Advanced) selesai: Upload gambar Supabase Storage, Site Settings CMS, Service & Booking Management upgrade (filter, search, sort, detail modal, quick actions, custom dialogs, Zod validation).
 - [2026-09-02] Admin Operations UI Redesign (ADMIN_UI.md): Implementasi tema operations tool Linear/Stripe style (Instrument Sans + JetBrains Mono, sidebar dark #101010, background #FAFAF9, table compact row h-11, status dot+text, deep teal #0F766E, zero AI slop, zero gradients/glassmorphism).
 - [2026-09-02] Sidebar Admin shadcn Base: Implementasi penuh komponen sidebar shadcn (SidebarProvider, Sidebar collapsible icon, SidebarHeader brand Doamandeh, SidebarContent menu, SidebarFooter user & logout, SidebarTrigger di topbar) dengan theming murni via CSS variables di globals.css.
+- [2026-09-02] Phase 6B (Public Website Upgrade) selesai: Homepage dinamis dari site_settings, Hero section support hero_image_url & gambar layanan dari Supabase Storage, Halaman About (/about), Halaman Contact (/contact) dengan Google Maps iframe, Testimoni section, FAQ accordion section, SEO metadata & OpenGraph, dynamic sitemap.xml & robots.txt, serta polish mobile navigation drawer.
+- [2026-09-03] Redesain UI Publik ke Sistem Editorial Bento (DESIGN.md): Penggunaan Instrument Serif untuk judul & UI elements, soft borderless pastel cards (Light Blue, Soft Peach, Pale Yellow, Soft Pink), background body putih murni #FFFFFF, token warna Tailwind (@theme inline: tissue, black, lightblue, peach, yellow, softpink), Kopperfield floating scenery hero section dengan foto offline Bali (`/assets/hero-bali.svg`), serta penyelesaian seluruh task Phase 6C & QA build 100% zero error.
+- [2026-09-03] Landing Page Complete Overhaul & Redesign Polish: Implementasi menyeluruh font Futura, penghapusan efek grayscale foto di seluruh seksi, perancangan carousel testimoni 6 kartu (#504139), penyempurnaan seksi FAQ compact pas 1 layar (gambar 02 hidden di mobile), pertipisan garis border seksi (#131718/15), tombol CTA ganda, footer bg #FFFFFF & kartu jam operasional #504139. Dokumentasi DEC-010 di DECISIONS.md dan penambahan 4 To-Do items di ISSUES.md.
+

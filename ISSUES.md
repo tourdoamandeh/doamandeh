@@ -1,48 +1,17 @@
-# ISSUES.md
+# ISSUES & NEXT TO-DO LIST
 
-## ISSUE-001
+> Daftar item tugas dan evaluasi untuk sesi berikutnya.
 
-Status: Done
-Priority: High
-Title: [Bug] Admin login redirect tidak stabil
+## Outstanding To-Do Items
 
-Description:
-Setelah login, kadang masih kembali redirect ke /admin/login karena cookie auth tidak tersalin saat pembuatan redirect response di middleware dan layout.
+- [ ] **1. Ganti gambar yang lebih relate**
+  - Perbarui aset foto pada seluruh seksi publik (Hero, About, Services, Testimonials, FAQ, CTA) dengan gambar destinasi, aktivitas wisata, dan lifestyle Bali yang lebih kontekstual dan berkualitas tinggi.
 
-Steps:
-1. Buka /admin/login
-2. Login sebagai admin
-3. Cek redirect ke /admin
+- [ ] **2. Cek font, ukuran font, dan font weight**
+  - Audit ulang konsistensi penerapan font Futura, hirarki ukuran font (dari `text-xs` hingga `text-6xl`), serta ketebalan `font-light`, `font-normal`, `font-[#131718]`, `font-bold` di seluruh rute dan komponen.
 
-Expected:
-Pengguna langsung masuk ke dashboard /admin dengan sesi login yang valid dan persisten.
+- [ ] **3. Copy writing**
+  - Tinjau dan refined penulisan judul (*headline*), deskripsi kartu layanan, paragraf filosofi seksi About, ulasan testimoni, serta pertanyaan FAQ agar lebih natural, elegan, persuasif, dan komunikatif.
 
-Actual:
-Sebelumnya kadang kembali terpental ke /admin/login.
-
-Error Log:
-N/A (Redirect loop pada middleware / session cookie loss)
-
-Suspected Files:
-- src/lib/supabase/middleware.ts
-- src/lib/actions/admin/auth.ts
-- src/app/admin/login/page.tsx
-- src/app/admin/(dashboard)/layout.tsx
-
-Suggested Fix:
-1. Salin seluruh cookies dari `supabaseResponse` ke `redirectResponse` saat rute admin dialihkan di `src/lib/supabase/middleware.ts`.
-2. Pisahkan rute `/admin/login` dari protected layout route group `src/app/admin/(dashboard)/layout.tsx`.
-3. Verifikasi role admin dari tabel `public.profiles` di server action `loginAdminAction`.
-
-Blocker:
-No
-
----
-
-## Catatan / Todo Lanjutan
-
-1. **Storage Bucket Foto Layanan (Selesai pada Phase 6A)**:
-   - Integrasi upload gambar langsung via Supabase Storage bucket `services` dan input URL langsung telah selesai diimplementasikan di `ServiceFormDialog` dan `src/lib/actions/admin/storage.ts`.
-2. **WhatsApp Webhook / Notification (Opsional)**:
-   - Integrasi notifikasi otomatis ke nomor WhatsApp admin saat ada booking baru masuk.
-
+- [ ] **4. Cek harmoni warna**
+  - Periksa keseimbangan dan kontras perpaduan palet warna pastel (`#FFF6C6`, `#FEC29F`, `#D1E6F6`, `#FFDAE4`), warna aksen dark brown (`#504139`), dan latar putih murni (`#FFFFFF`) di seluruh komponen.

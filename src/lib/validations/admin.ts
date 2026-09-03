@@ -51,6 +51,7 @@ export type BookingInput = z.infer<typeof bookingSchema>;
 export const siteSettingsSchema = z.object({
   hero_title: z.string().min(3, 'Judul hero minimal 3 karakter').default('Nikmati Liburan Terbaik Bersama Doamandeh'),
   hero_subtitle: z.string().min(5, 'Subjudul hero minimal 5 karakter').default('Solusi lengkap kebutuhan aktivitas liburan Anda di Bali: Sewa Motor & Mobil, Tato Artistik, Villa Nyaman, Paket Wisata Tour, hingga Kelas Surfing.'),
+  hero_image_url: z.string().optional().default(''),
   about_text: z.string().min(10, 'Teks tentang kami minimal 10 karakter').default('Doamandeh Tours & Travel adalah agen wisata dan lifestyle terpercaya di Bali, menyediakan berbagai layanan pilihan mulai dari rental kendaraan, studio tato higienis, penginapan villa, paket tour eksklusif, hingga sekolah selancar untuk segala level.'),
   contact_phone: z.string().default('+62 812-3456-7890'),
   contact_whatsapp: z.string().default('+62 812-3456-7890'),
@@ -68,6 +69,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettingsInput = {
   hero_title: 'Nikmati Liburan Terbaik Bersama Doamandeh',
   hero_subtitle:
     'Solusi lengkap kebutuhan aktivitas liburan Anda di Bali: Sewa Motor & Mobil, Tato Artistik, Villa Nyaman, Paket Wisata Tour, hingga Kelas Surfing.',
+  hero_image_url: '',
   about_text:
     'Doamandeh Tours & Travel adalah agen wisata dan lifestyle terpercaya di Bali, menyediakan berbagai layanan pilihan mulai dari rental kendaraan, studio tato higienis, penginapan villa, paket tour eksklusif, hingga sekolah selancar untuk segala level.',
   contact_phone: '+62 812-3456-7890',

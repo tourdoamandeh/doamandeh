@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
 import { Service, ServiceCategory } from '@/types/database';
 import { PublicHeader } from '@/components/public/public-header';
@@ -14,7 +15,6 @@ import {
   ArrowLeft,
   CheckCircle2,
   Phone,
-  ShieldCheck,
   Clock,
   Sparkles,
   AlertCircle,
@@ -22,32 +22,37 @@ import {
 
 const CATEGORY_INFO: Record<
   ServiceCategory,
-  { label: string; icon: React.ComponentType<{ className?: string }>; description: string }
+  { label: string; icon: React.ComponentType<{ className?: string }>; description: string; bgColor: string }
 > = {
   'vehicle-rental': {
     label: 'Sewa Kendaraan',
     icon: Car,
     description: 'Sewa motor & mobil bersih, terawat, dan siap pakai untuk keliling Bali.',
+    bgColor: 'bg-lightblue',
   },
   'tattoo': {
     label: 'Tato Studio',
     icon: Palette,
     description: 'Studio tato steril, higienis, dan dikerjakan oleh artist profesional.',
+    bgColor: 'bg-peach',
   },
   'villa': {
     label: 'Villa & Stay',
     icon: Home,
     description: 'Akomodasi villa eksklusif dengan kenyamanan maksimal untuk liburan Anda.',
+    bgColor: 'bg-yellow',
   },
   'travel': {
     label: 'Paket Travel',
     icon: Compass,
     description: 'Paket perjalanan wisata terarah mengelilingi spot terbaik di Bali.',
+    bgColor: 'bg-softpink',
   },
   'surfing-lesson': {
     label: 'Surfing Lesson',
     icon: Waves,
     description: 'Belajar selancar aman dan seru dipandu instruktur bersertifikat.',
+    bgColor: 'bg-lightblue',
   },
 };
 
@@ -61,6 +66,40 @@ function formatRupiah(amount: number): string {
 
 interface ServiceDetailPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: ServiceDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  try {
+    const supabase = await createClient();
+    const { data: service } = await supabase
+      .from('services')
+      .select('title, description')
+      .eq('id', id)
+      .single();
+
+    if (!service) {
+      return {
+        title: 'Layanan Tidak Ditemukan',
+      };
+    }
+
+    return {
+      title: `${service.title} | Doamandeh Tours & Travel`,
+      description:
+        service.description ||
+        'Pesan layanan wisata & lifestyle Bali online bersama Doamandeh Tours and Travel.',
+      openGraph: {
+        title: `${service.title} | Doamandeh Bali`,
+        description: service.description || undefined,
+      },
+    };
+  } catch (err) {
+    return {
+      title: 'Detail Layanan Wisata',
+    };
+  }
 }
 
 export default async function ServiceDetailPage({ params }: ServiceDetailPageProps) {
@@ -83,6 +122,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
     label: service.category,
     icon: Compass,
     description: 'Layanan wisata terpercaya dari Doamandeh.',
+    bgColor: 'bg-lightblue',
   };
   const CategoryIcon = categoryInfo.icon;
 
@@ -98,37 +138,37 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
   const relatedServices = (relatedData as Service[]) || [];
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100 selection:bg-amber-500 selection:text-black">
+    <div className="min-h-screen flex flex-col bg-tissue text-black selection:bg-peach selection:text-black">
       <PublicHeader />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Breadcrumb & Back */}
-        <div className="flex items-center gap-2 text-xs text-zinc-400 mb-8">
+        <div className="flex items-center gap-2 text-base font-serif text-black/70 mb-8">
           <Link
             href="/"
-            className="flex items-center gap-1 hover:text-amber-400 transition-colors"
+            className="flex items-center gap-1 hover:text-black hover:underline"
           >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            <span>Kembali ke Beranda</span>
+            <ArrowLeft className="h-4 w-4" />
+            <span>Beranda</span>
           </Link>
           <span>/</span>
           <Link
             href={`/category/${service.category}`}
-            className="hover:text-amber-400 transition-colors"
+            className="hover:text-black hover:underline"
           >
             {categoryInfo.label}
           </Link>
           <span>/</span>
-          <span className="text-zinc-200 font-semibold truncate max-w-xs">{service.title}</span>
+          <span className="text-black font-serif truncate max-w-xs">{service.title}</span>
         </div>
 
         {/* Inactive Notice Banner */}
         {!service.is_active && (
-          <div className="mb-8 p-4 rounded-2xl bg-amber-950/40 border border-amber-800/80 text-amber-200 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="mb-8 p-5 rounded-[24px] bg-yellow border-none text-black flex items-start gap-3 shadow-sm">
+            <AlertCircle className="w-5 h-5 text-black shrink-0 mt-0.5" />
             <div>
-              <h3 className="text-xs font-semibold text-amber-300">Layanan Sedang Tidak Aktif</h3>
-              <p className="text-xs text-amber-400/90 mt-0.5">
+              <h3 className="font-serif text-lg">Layanan Sedang Tidak Aktif</h3>
+              <p className="text-xs text-black/80 mt-0.5 font-sans">
                 Layanan ini sedang dalam pembaruan ketersediaan. Anda tetap dapat bertanya ketersediaan via WhatsApp kami.
               </p>
             </div>
@@ -139,45 +179,57 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Left Column: Service Details */}
           <div className="lg:col-span-7 space-y-8">
+            {/* Service Main Image Header */}
+            {service.image_url && (
+              <div className="relative h-72 sm:h-96 w-full rounded-[36px] overflow-hidden shadow-sm border-none">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={service.image_url}
+                  alt={service.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+
             <div>
               {/* Category Badge & Duration */}
-              <div className="flex flex-wrap items-center gap-2 mb-3">
+              <div className="flex flex-wrap items-center gap-2 mb-4 font-serif">
                 <Link
                   href={`/category/${service.category}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold bg-zinc-900 border border-zinc-800 text-amber-400 hover:border-zinc-700 transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm bg-lightblue text-black shadow-sm"
                 >
-                  <CategoryIcon className="h-3.5 w-3.5" />
+                  <CategoryIcon className="h-4 w-4" />
                   <span>{categoryInfo.label}</span>
                 </Link>
 
                 {service.duration && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-xs font-medium bg-zinc-900 border border-zinc-800 text-zinc-300">
-                    <Clock className="h-3.5 w-3.5 text-zinc-500" />
+                  <span className="inline-flex items-center gap-1 px-4 py-1.5 rounded-full text-sm bg-yellow text-black shadow-sm">
+                    <Clock className="h-3.5 w-3.5 text-black" />
                     <span>{service.duration}</span>
                   </span>
                 )}
 
                 {service.is_active && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <CheckCircle2 className="h-3 w-3" />
+                  <span className="inline-flex items-center gap-1 px-4 py-1.5 rounded-full text-sm bg-softpink text-black shadow-sm">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
                     Siap Dipesan
                   </span>
                 )}
               </div>
 
               {/* Title */}
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mb-4">
+              <h1 className="font-serif text-4xl sm:text-6xl text-black leading-tight mb-4">
                 {service.title}
               </h1>
 
               {/* Price Banner */}
-              <div className="inline-flex items-baseline gap-2 p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800/80 mb-6">
-                <span className="text-xs text-zinc-400 font-medium">Harga Layanan:</span>
-                <span className="text-2xl sm:text-3xl font-black text-amber-400">
+              <div className="inline-flex items-baseline gap-3 p-5 rounded-[24px] bg-yellow shadow-sm mb-6 border-none">
+                <span className="font-serif italic text-xs text-black/70">Harga Layanan:</span>
+                <span className="font-serif text-3xl sm:text-4xl font-normal text-black">
                   {formatRupiah(service.price)}
                 </span>
                 {service.unit && (
-                  <span className="text-xs font-medium text-zinc-400">
+                  <span className="font-serif text-sm text-black">
                     /{service.unit.replace(/^per\s+/i, '')}
                   </span>
                 )}
@@ -185,45 +237,45 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
             </div>
 
             {/* Description Section */}
-            <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8 space-y-4">
-              <h2 className="text-base font-bold text-white flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-amber-400" />
+            <div className="rounded-[32px] border-none bg-[#FBFBFB] p-8 sm:p-10 space-y-5 shadow-sm">
+              <h2 className="font-serif text-2xl text-black flex items-center gap-2 border-b border-gray-100 pb-3">
+                <Sparkles className="h-5 w-5 text-black" />
                 Deskripsi & Ketentuan Layanan
               </h2>
-              <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-line">
+              <p className="text-sm text-black/90 leading-relaxed whitespace-pre-line font-sans font-normal">
                 {service.description ||
                   'Layanan berkualitas tinggi dari Doamandeh Tours and Travel yang siap melengkapi kenyamanan dan keseruan aktivitas Anda di Bali.'}
               </p>
 
               {/* Value Inclusions */}
-              <div className="pt-6 border-t border-zinc-800/80 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div className="flex items-center gap-2 text-zinc-300">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+              <div className="pt-6 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-sans">
+                <div className="flex items-center gap-2 text-black">
+                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" />
                   <span>Pelayanan ramah & profesional</span>
                 </div>
-                <div className="flex items-center gap-2 text-zinc-300">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                <div className="flex items-center gap-2 text-black">
+                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" />
                   <span>Jaminan kualitas & kenyamanan</span>
                 </div>
-                <div className="flex items-center gap-2 text-zinc-300">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                <div className="flex items-center gap-2 text-black">
+                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" />
                   <span>Konfirmasi pemesanan cepat via WA</span>
                 </div>
-                <div className="flex items-center gap-2 text-zinc-300">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                  <span>Harga transparan tanpa biaya tersembunyi</span>
+                <div className="flex items-center gap-2 text-black">
+                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" />
+                  <span>Harga transparan tanpa hidden fee</span>
                 </div>
               </div>
             </div>
 
             {/* WhatsApp Direct Help Banner */}
-            <div className="rounded-3xl border border-emerald-500/20 bg-emerald-950/20 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="rounded-[32px] border-none bg-peach p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
               <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-emerald-400" />
+                <h3 className="font-serif text-2xl text-black flex items-center gap-2">
+                  <Phone className="h-5 w-5 text-black" />
                   Ada Pertanyaan Khusus?
                 </h3>
-                <p className="text-xs text-zinc-400 mt-1">
+                <p className="text-xs text-black/80 mt-1 font-sans">
                   Konsultasikan jadwal, kebutuhan khusus, atau permintaan kustom langsung dengan tim kami.
                 </p>
               </div>
@@ -233,7 +285,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 rounded-xl bg-emerald-500 hover:bg-emerald-400 px-4 py-2.5 text-xs font-bold text-black transition-colors"
+                className="shrink-0 rounded-full bg-black text-tissue px-6 py-3 font-serif text-lg hover:bg-black/90 transition-colors shadow-sm"
               >
                 Chat WhatsApp
               </a>
@@ -242,7 +294,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
             {/* Related Services in Category */}
             {relatedServices.length > 0 && (
               <div className="space-y-4 pt-4">
-                <h2 className="text-sm font-bold text-white">
+                <h2 className="font-serif text-2xl text-black">
                   Layanan Lainnya di Kategori {categoryInfo.label}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -250,12 +302,12 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                     <Link
                       key={rel.id}
                       href={`/services/${rel.id}`}
-                      className="group rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 hover:border-amber-500/40 transition-all"
+                      className="group rounded-[24px] border-none bg-tissue p-6 shadow-sm hover:bg-lightblue transition-all"
                     >
-                      <h4 className="font-bold text-xs text-white group-hover:text-amber-400 transition-colors line-clamp-1 mb-1">
+                      <h4 className="font-serif text-xl text-black group-hover:underline line-clamp-1 mb-1">
                         {rel.title}
                       </h4>
-                      <p className="text-[11px] font-bold text-amber-400">
+                      <p className="font-serif text-lg text-black">
                         {formatRupiah(rel.price)}
                       </p>
                     </Link>
