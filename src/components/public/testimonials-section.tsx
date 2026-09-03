@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Star } from 'lucide-react';
+import { FadeIn } from '@/components/ui/fade-in';
 
 interface Testimonial {
   id: string;
@@ -23,7 +24,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: 'Jakarta',
     serviceCategory: 'Paket Tour',
     rating: 5,
-    comment: 'Paket perjalanan 1 hari ke Nusa Penida sangat terorganisir. Driver ramah dan banyak membantu mengambil foto tempat indah!',
+    comment: 'Awalnya ragu ikut one-day tour ke Nusa Penida karena takut capek. Ternyata seru banget! Driver-nya super sabar, on-time, dan jago banget cari spot foto sepi buat kita.',
     date: 'Agustus 2026',
     image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80',
   },
@@ -33,7 +34,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: 'Surabaya',
     serviceCategory: 'Villa Stay',
     rating: 5,
-    comment: 'Villanya bersih, private pool luas dan sangat privat. Proses booking cepat tanpa hambatan via website.',
+    comment: 'Nyari villa buat keluarga tuh lumayan tricky, tapi Doamandeh ngasih rekomendasi yang pas banget. Villanya asri, bersih, dan private pool-nya aman buat anak-anak main seharian.',
     date: 'Agustus 2026',
     image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80',
   },
@@ -43,7 +44,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: 'Jakarta',
     serviceCategory: 'Sewa Motor',
     rating: 5,
-    comment: 'Sewa motor NMAX mulus dan mesin terawat prima. Langsung diantar tepat waktu ke penginapan di Canggu. Recommended!',
+    comment: 'Sewa NMAX di sini prosesnya gampang banget, nggak ribet. Motornya diantar langsung ke villa kita di Canggu, kondisinya mulus dan bensin udah keisi penuh. Thanks, Doamandeh!',
     date: 'Juli 2026',
     image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=600&q=80',
   },
@@ -53,7 +54,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: 'Medan',
     serviceCategory: 'Sewa Mobil',
     rating: 5,
-    comment: 'Mobil Innova Reborn sangat bersih dan AC dingin. Driver ramah serta paham rute Bali untuk menghindari kemacetan.',
+    comment: 'Bawa rombongan keluarga besar jadi gampang karena sewa Innova Reborn plus driver. Bapak supirnya ramah banget dan hafal jalan tikus, jadi kita nggak tua di jalan karena macet.',
     date: 'Juli 2026',
     image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80',
   },
@@ -63,7 +64,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: 'Australia',
     serviceCategory: 'Tattoo Studio',
     rating: 5,
-    comment: 'Super clean studio with meticulous fineline tattoo design. Needle unsealed right in front of me! Professional artist.',
+    comment: 'Ini pengalaman tato pertama gue di Bali dan studionya bersih banget! Jarumnya baru dan dibuka di depan kita. Senimannya teliti banget ngerjain fineline custom design gue.',
     date: 'Juni 2026',
     image: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=600&q=80',
   },
@@ -73,7 +74,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: 'Bandung',
     serviceCategory: 'Surfing Lesson',
     rating: 5,
-    comment: 'Instruktur surfing sangat sabar & ramah. Langsung bisa stand up di surfboard pada sesi pertama di Pantai Kuta!',
+    comment: 'Nekat nyoba surfing walau nggak terlalu jago berenang, haha! Untung instrukturnya sabar banget ngajarin teknik dasar sampai akhirnya aku bisa berdiri di papan pas ombak datang.',
     date: 'Juni 2026',
     image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=600&q=80',
   },
@@ -91,46 +92,43 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section className="bg-[#504139] text-[#FFF6C6] font-sans py-20 lg:py-32 overflow-hidden border-y border-white/10">
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
+    <section className="bg-[#607a8f] text-[#fff6c6] font-sans py-20 lg:py-32 overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-8 sm:px-12 lg:px-16">
+        <FadeIn direction="up">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
 
           {/* Kolom Kiri: Teks & Kontrol Navigasi */}
           <div className="lg:col-span-3 flex flex-col justify-end lg:pb-6">
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#FEC29F] mb-6">
-              Ulasan Pelanggan
-            </span>
 
-            <h2 className="text-4xl md:text-5xl font-bold leading-[1.1] tracking-tight mb-12 text-[#FFF6C6]">
+            <h2 className="text-4xl md:text-5xl font-medium leading-[1.1] tracking-tight mb-12 text-[#fff6c6]">
               Kisah &amp; pengalaman liburan impian.
             </h2>
 
             <div className="flex flex-wrap items-center justify-between gap-6">
               <Link
                 href="/reviews"
-                className="text-[10px] uppercase tracking-widest font-bold border-b border-[#FFF6C6]/40 pb-1 text-[#FFF6C6] hover:text-white hover:border-white transition-colors"
+                className="text-[10px] uppercase tracking-widest font-bold border-b border-[#FFFFFF]/40 pb-1 text-[#fff6c6] hover:text-white hover:border-white transition-colors"
               >
                 Lihat Semua Ulasan
               </Link>
 
               {/* Tombol Panah Navigasi Minimalis */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={prevSlide}
                   aria-label="Ulasan sebelumnya"
-                  className="p-2 text-[#FFF6C6] hover:text-white hover:opacity-75 transition-opacity cursor-pointer"
+                  className="p-3 rounded-full border border-[#FFF6C6]/30 text-[#fff6c6] hover:bg-[#FFF6C6] hover:text-[#607a8f] transition-all cursor-pointer shadow-sm"
                 >
-                  <ArrowLeft className="w-6 h-6 stroke-[1.5]" />
+                  <ArrowLeft className="w-5 h-5 stroke-[1.5]" />
                 </button>
                 <button
                   type="button"
                   onClick={nextSlide}
                   aria-label="Ulasan selanjutnya"
-                  className="p-2 text-[#FFF6C6] hover:text-white hover:opacity-75 transition-opacity cursor-pointer"
+                  className="p-3 rounded-full border border-[#FFF6C6]/30 text-[#fff6c6] hover:bg-[#FFF6C6] hover:text-[#607a8f] transition-all cursor-pointer shadow-sm"
                 >
-                  <ArrowRight className="w-6 h-6 stroke-[1.5]" />
+                  <ArrowRight className="w-5 h-5 stroke-[1.5]" />
                 </button>
               </div>
             </div>
@@ -151,7 +149,7 @@ export function TestimonialsSection() {
                   className="w-[85vw] sm:w-[50vw] lg:w-[33.333%] shrink-0 px-3 lg:px-4 flex flex-col group cursor-grab active:cursor-grabbing"
                 >
                   {/* Foto Persegi Warna Asli (Aspect Square) */}
-                  <div className="relative aspect-square w-full mb-5 bg-[#3D312A] rounded-none overflow-hidden border border-white/10">
+                  <div className="relative aspect-square w-full mb-5 bg-[#4a6173] rounded-none overflow-hidden border-2 border-[#fff6c6] shadow-sm">
                     <Image
                       src={item.image}
                       alt={`Testimonial dari ${item.name}`}
@@ -161,25 +159,25 @@ export function TestimonialsSection() {
                     />
                   </div>
 
-                  {/* Header Konten: Nama (Cream) & Layanan/Lokasi (Peach) */}
+                  {/* Header Konten: Nama (FFFFFF) & Layanan/Lokasi (Peach) */}
                   <div className="mb-3">
-                    <h3 className="text-sm font-bold uppercase tracking-widest text-[#FFF6C6] mb-1">
+                    <h3 className="text-sm font-medium uppercase tracking-widest text-[#fff6c6] mb-1">
                       {item.name}
                     </h3>
-                    <p className="text-[11px] font-semibold uppercase tracking-widest text-[#FEC29F]">
+                    <p className="text-[11px] font-medium uppercase tracking-widest text-[#fff6c6]">
                       {item.location}, {item.serviceCategory}
                     </p>
                   </div>
 
                   {/* Teks Ulasan */}
-                  <p className="text-sm text-white/85 leading-relaxed font-normal line-clamp-3 mb-4 pr-4">
+                  <p className="text-sm text-[#fff6c6]/85 leading-relaxed font-normal line-clamp-3 mb-4 pr-4">
                     &ldquo;{item.comment}&rdquo;
                   </p>
 
                   {/* Bintang & Tanggal */}
                   <div className="flex items-center gap-1 mt-auto pt-2">
                     {Array.from({ length: item.rating }).map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-[#FFF6C6] text-[#FFF6C6]" />
+                      <Star key={i} className="h-3 w-3 fill-[#FFFFFF] text-[#fff6c6]" />
                     ))}
                   </div>
                 </article>
@@ -188,6 +186,7 @@ export function TestimonialsSection() {
           </div>
 
         </div>
+        </FadeIn>
       </div>
     </section>
   );
