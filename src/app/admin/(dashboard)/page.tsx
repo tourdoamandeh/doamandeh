@@ -1,12 +1,18 @@
 import { createClient } from '@/lib/supabase/server';
 import { Service, Booking } from '@/types/database';
 import Link from 'next/link';
+import { Plus, ArrowRight, Package } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { buttonVariants } from '@/components/ui/button';
 import {
-  CalendarCheck,
-  ArrowRight,
-  Plus,
-  ArrowUpRight,
-} from 'lucide-react';
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from '@/components/ui/table';
+import { OverviewCharts } from '@/components/admin/overview-charts';
 
 function formatRupiah(amount: number): string {
   return new Intl.NumberFormat('id-ID', {
@@ -19,7 +25,7 @@ function formatRupiah(amount: number): string {
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
 
-  // 1. Fetch all services
+  // 1. Fetch services
   const { data: servicesData } = await supabase
     .from('services')
     .select('*')
@@ -27,7 +33,7 @@ export default async function AdminDashboardPage() {
 
   const services: Service[] = (servicesData as Service[]) || [];
 
-  // 2. Fetch all bookings with service relation
+  // 2. Fetch bookings
   const { data: bookingsData } = await supabase
     .from('bookings')
     .select('*, service:services(*)')
@@ -36,7 +42,7 @@ export default async function AdminDashboardPage() {
   const bookings: (Booking & { service?: Service | null })[] =
     (bookingsData as (Booking & { service?: Service | null })[]) || [];
 
-  // Metrics calculation
+  // Metrics
   const totalServices = services.length;
   const activeServices = services.filter((s) => s.is_active).length;
 
@@ -67,245 +73,277 @@ export default async function AdminDashboardPage() {
   const recentBookings = bookings.slice(0, 6);
 
   return (
-    <div className="space-y-6 font-sans">
-      {/* Header Operations */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b-2 border-brown/20">
+    <div className="space-y-8 font-sans">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-brown/70">
-            // DOAMANDEH TOURS &amp; TRAVEL
-          </p>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight uppercase text-brown mt-0.5">
-            Overview Operasional
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            Overview
           </h1>
-          <p className="text-xs text-brown/80 mt-1 font-light">
-            Ringkasan pemesanan paket wisata, status katalog aktif, dan estimasi nilai reservasi.
+          <p className="text-sm text-muted-foreground mt-1">
+            Ringkasan pemesanan paket wisata, status katalog aktif, dan estimasi nilai transaksi.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <Link
-            href="/admin/services"
-            className="inline-flex items-center gap-2 rounded-none bg-brown text-softyellow hover:bg-black border-2 border-brown hover:border-black px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors shadow-none"
-          >
-            <Plus className="h-4 w-4 stroke-[2.5]" />
-            <span>Tambah Layanan</span>
-          </Link>
+        <div className="flex items-center gap-3">
           <Link
             href="/admin/bookings"
-            className="inline-flex items-center gap-2 rounded-none bg-softwhite text-brown hover:bg-softyellow border-2 border-brown px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors shadow-none"
+            className={buttonVariants({ variant: 'outline', size: 'sm' })}
           >
-            <span>Semua Booking ({pendingBookings})</span>
+            Lihat Booking ({pendingBookings} pending)
+          </Link>
+          <Link
+            href="/admin/services"
+            className={buttonVariants({ size: 'sm', className: 'bg-primary hover:bg-primary/90 text-primary-foreground' })}
+          >
+            <Plus className="size-4 mr-1.5" />
+            Tambah Layanan
           </Link>
         </div>
       </div>
 
-      {/* KPI Bento Row (DESIGN.md Flat Geometric with 2px borders) */}
+      {/* KPI Cards Row (ADMIN_UI.md standard) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Booking */}
-        <div className="rounded-none border-2 border-brown bg-softwhite p-5 shadow-none">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brown/70">
-            Total Booking
-          </p>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-3xl font-bold tracking-tight text-brown">
-              {totalBookings}
+        <Card className="p-6 bg-card border-border shadow-none">
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Total Booking
             </span>
-            <span className="text-xs font-bold uppercase tracking-wider text-softblue">
+            <span className="text-xs font-medium text-success">
               {confirmedBookings + completedBookings} sukses
             </span>
           </div>
-          <p className="text-[11px] text-brown/75 font-light mt-1">Pemesanan customer tercatat</p>
-        </div>
-
-        {/* Pending Action */}
-        <div className="rounded-none border-2 border-brown bg-softyellow p-5 shadow-none">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brown/70">
-            Perlu Konfirmasi
-          </p>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-3xl font-bold tracking-tight text-black">
-              {pendingBookings}
-            </span>
-            <span className="text-xs font-bold uppercase tracking-wider text-brown">
-              {pendingBookings > 0 ? 'Tindakan diperlukan' : 'Aman'}
-            </span>
+          <div className="text-3xl font-mono tabular-nums text-foreground">
+            {totalBookings}
           </div>
-          <p className="text-[11px] text-brown/75 font-light mt-1">Menunggu respon admin</p>
-        </div>
+        </Card>
+
+        {/* Perlu Konfirmasi */}
+        <Card className="p-6 bg-card border-border shadow-none">
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Perlu Konfirmasi
+            </span>
+            {pendingBookings > 0 ? (
+              <span className="text-xs font-medium text-warning">Perlu respon</span>
+            ) : (
+              <span className="text-xs font-medium text-muted-foreground">Aman</span>
+            )}
+          </div>
+          <div className="text-3xl font-mono tabular-nums text-foreground">
+            {pendingBookings}
+          </div>
+        </Card>
 
         {/* Layanan Aktif */}
-        <div className="rounded-none border-2 border-brown bg-softwhite p-5 shadow-none">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brown/70">
-            Katalog Aktif
-          </p>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-3xl font-bold tracking-tight text-brown">
-              {activeServices}
+        <Card className="p-6 bg-card border-border shadow-none">
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Katalog Aktif
             </span>
-            <span className="text-xs font-bold uppercase tracking-wider text-brown/60">
+            <span className="text-xs text-muted-foreground">
               dari {totalServices} paket
             </span>
           </div>
-          <p className="text-[11px] text-brown/75 font-light mt-1">Ditampilkan di publik</p>
-        </div>
-
-        {/* Revenue Estimate */}
-        <div className="rounded-none border-2 border-brown bg-softwhite p-5 shadow-none">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brown/70">
-            Estimasi Transaksi
-          </p>
-          <div className="mt-2">
-            <span className="text-2xl font-bold tracking-tight text-brown truncate block">
-              {formatRupiah(estimatedRevenue)}
-            </span>
+          <div className="text-3xl font-mono tabular-nums text-foreground">
+            {activeServices}
           </div>
-          <p className="text-[11px] text-brown/75 font-light mt-1">Status confirmed &amp; completed</p>
-        </div>
+        </Card>
+
+        {/* Estimasi Transaksi */}
+        <Card className="p-6 bg-card border-border shadow-none">
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Estimasi Transaksi
+            </span>
+            <span className="text-xs text-muted-foreground">Confirmed</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-mono tabular-nums text-foreground truncate">
+            {formatRupiah(estimatedRevenue)}
+          </div>
+        </Card>
       </div>
 
-      {/* Main Operations Grid */}
+      {/* Charts Section (shadcn Chart components) */}
+      <OverviewCharts
+        bookings={bookings}
+        services={services}
+        categoryCounts={categoryCounts}
+      />
+
+      {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Bookings (2/3 width) */}
-        <div className="lg:col-span-2 rounded-none border-2 border-brown bg-softwhite overflow-hidden shadow-none">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b-2 border-brown bg-softyellow/60">
+        {/* Recent Bookings Table (2/3) */}
+        <Card className="lg:col-span-2 bg-card border-border shadow-none">
+          <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-border">
             <div>
-              <h2 className="text-xs font-bold uppercase tracking-widest text-brown">
-                Pemesanan Terkini
-              </h2>
-              <p className="text-[11px] text-brown/70 mt-0.5">
+              <CardTitle className="text-base font-semibold">Pemesanan Terkini</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Aktivitas reservasi paket tour &amp; layanan terakhir
               </p>
             </div>
             <Link
               href="/admin/bookings"
-              className="text-xs uppercase tracking-wider font-bold text-brown hover:text-black inline-flex items-center gap-1.5 border-b border-brown"
+              className={buttonVariants({ variant: 'ghost', size: 'sm', className: 'text-xs text-muted-foreground hover:text-foreground flex items-center gap-1' })}
             >
               <span>Semua</span>
-              <ArrowRight className="h-3.5 w-3.5" />
+              <ArrowRight className="size-3.5" />
             </Link>
-          </div>
+          </CardHeader>
 
-          {recentBookings.length === 0 ? (
-            <div className="p-10 text-center">
-              <CalendarCheck className="h-8 w-8 text-brown/40 mx-auto mb-2" />
-              <p className="text-xs font-bold uppercase tracking-wider text-brown">
-                Belum ada data reservasi.
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-black">
-                <thead className="bg-brown text-softyellow text-[10px] font-bold uppercase tracking-wider border-b-2 border-brown">
-                  <tr>
-                    <th className="px-4 py-3">Pelanggan</th>
-                    <th className="px-4 py-3">Layanan</th>
-                    <th className="px-4 py-3">Tanggal</th>
-                    <th className="px-4 py-3">Biaya</th>
-                    <th className="px-4 py-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-brown/20">
+          <CardContent className="p-0">
+            {recentBookings.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="size-12 rounded-lg bg-muted flex items-center justify-center mb-3">
+                  <Package className="size-6 text-muted-foreground" />
+                </div>
+                <h3 className="text-sm font-semibold mb-1">Belum ada booking</h3>
+                <p className="text-xs text-muted-foreground">
+                  Data reservasi dari pelanggan akan muncul di sini.
+                </p>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/50 hover:bg-muted/50 border-b border-border">
+                    <TableHead className="text-xs uppercase tracking-wide text-muted-foreground h-11">
+                      Pelanggan
+                    </TableHead>
+                    <TableHead className="text-xs uppercase tracking-wide text-muted-foreground h-11">
+                      Layanan
+                    </TableHead>
+                    <TableHead className="text-xs uppercase tracking-wide text-muted-foreground h-11">
+                      Tanggal
+                    </TableHead>
+                    <TableHead className="text-xs uppercase tracking-wide text-muted-foreground h-11">
+                      Biaya
+                    </TableHead>
+                    <TableHead className="text-xs uppercase tracking-wide text-muted-foreground h-11 text-right">
+                      Status
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {recentBookings.map((b) => (
-                    <tr key={b.id} className="h-12 hover:bg-brown/5 transition-colors">
-                      <td className="px-4 py-2 font-semibold text-black truncate max-w-[140px]">
+                    <TableRow key={b.id} className="h-11 hover:bg-muted/40 border-b border-border transition-colors">
+                      <TableCell className="font-medium text-xs truncate max-w-[140px]">
                         {b.customer_name}
-                      </td>
-                      <td className="px-4 py-2 text-brown/90 truncate max-w-[160px]">
-                        {b.service?.title || 'Layanan Umum'}
-                      </td>
-                      <td className="px-4 py-2 font-mono text-[11px] text-black whitespace-nowrap">
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground truncate max-w-[160px]">
+                        {b.service?.title || 'Layanan'}
+                      </TableCell>
+                      <TableCell className="font-mono text-xs text-muted-foreground tabular-nums whitespace-nowrap">
                         {b.booking_date}
-                      </td>
-                      <td className="px-4 py-2 font-bold text-xs text-black whitespace-nowrap">
+                      </TableCell>
+                      <TableCell className="font-mono text-xs font-medium tabular-nums whitespace-nowrap">
                         {b.total_price ? formatRupiah(b.total_price) : '-'}
-                      </td>
-                      <td className="px-4 py-2 whitespace-nowrap">
-                        {b.status === 'pending' && (
-                          <span className="inline-block px-2 py-0.5 rounded-none border border-brown bg-softyellow text-[10px] font-bold uppercase tracking-wider text-brown">
-                            Pending
+                      </TableCell>
+                      <TableCell className="text-right whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium">
+                          <span
+                            className={`size-2 rounded-full ${
+                              b.status === 'confirmed'
+                                ? 'bg-success'
+                                : b.status === 'completed'
+                                ? 'bg-info'
+                                : b.status === 'pending'
+                                ? 'bg-warning'
+                                : 'bg-danger'
+                            }`}
+                          />
+                          <span
+                            className={`capitalize ${
+                              b.status === 'confirmed'
+                                ? 'text-success'
+                                : b.status === 'completed'
+                                ? 'text-info'
+                                : b.status === 'pending'
+                                ? 'text-warning'
+                                : 'text-danger'
+                            }`}
+                          >
+                            {b.status}
                           </span>
-                        )}
-                        {b.status === 'confirmed' && (
-                          <span className="inline-block px-2 py-0.5 rounded-none border border-softblue bg-softblue text-[10px] font-bold uppercase tracking-wider text-softyellow">
-                            Confirmed
-                          </span>
-                        )}
-                        {b.status === 'completed' && (
-                          <span className="inline-block px-2 py-0.5 rounded-none border border-black bg-black text-[10px] font-bold uppercase tracking-wider text-softyellow">
-                            Completed
-                          </span>
-                        )}
-                        {b.status === 'cancelled' && (
-                          <span className="inline-block px-2 py-0.5 rounded-none border border-brown bg-white text-[10px] font-bold uppercase tracking-wider text-black">
-                            Cancelled
-                          </span>
-                        )}
-                      </td>
-                    </tr>
+                        </span>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
 
-        {/* Category Breakdown & Operations (1/3 width) */}
+        {/* Status Breakdown & Quick Access (1/3) */}
         <div className="space-y-6">
-          {/* Distribution Card */}
-          <div className="rounded-none border-2 border-brown bg-softwhite p-5 shadow-none">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-brown mb-3 pb-2 border-b-2 border-brown/20">
-              Distribusi Katalog Layanan
-            </h2>
-            <div className="space-y-2 text-xs">
+          <Card className="bg-card border-border shadow-none">
+            <CardHeader className="pb-3 border-b border-border">
+              <CardTitle className="text-base font-semibold">Status Reservasi</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-2.5">
               {[
-                { label: 'Sewa Kendaraan', count: categoryCounts['vehicle-rental'] },
-                { label: 'Tato Studio', count: categoryCounts['tattoo'] },
-                { label: 'Villa & Stay', count: categoryCounts['villa'] },
-                { label: 'Paket Travel', count: categoryCounts['travel'] },
-                { label: 'Surfing Lesson', count: categoryCounts['surfing-lesson'] },
+                {
+                  label: 'Terkonfirmasi (Confirmed)',
+                  count: confirmedBookings,
+                  colorClass: 'text-success bg-success-bg border-success/30',
+                },
+                {
+                  label: 'Selesai (Completed)',
+                  count: completedBookings,
+                  colorClass: 'text-info bg-info-bg border-info/30',
+                },
+                {
+                  label: 'Menunggu (Pending)',
+                  count: pendingBookings,
+                  colorClass: 'text-warning bg-warning-bg border-warning/30',
+                },
+                {
+                  label: 'Dibatalkan (Cancelled)',
+                  count: bookings.filter((b) => b.status === 'cancelled').length,
+                  colorClass: 'text-danger bg-danger-bg border-danger/30',
+                },
               ].map((item) => (
                 <div
                   key={item.label}
-                  className="flex items-center justify-between py-2 border-b border-brown/15 last:border-0"
+                  className="flex items-center justify-between py-1.5 border-b border-border/50 last:border-0 text-xs"
                 >
-                  <span className="text-brown font-medium">{item.label}</span>
-                  <span className="font-bold text-xs text-black">
-                    {item.count} unit
+                  <span className="text-muted-foreground font-medium">{item.label}</span>
+                  <span
+                    className={`font-mono tabular-nums font-semibold px-2 py-0.5 rounded border text-[11px] ${item.colorClass}`}
+                  >
+                    {item.count}
                   </span>
                 </div>
               ))}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          {/* Operational Quick Links */}
-          <div className="rounded-none border-2 border-brown bg-softwhite p-5 space-y-3 shadow-none">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-brown pb-2 border-b-2 border-brown/20">
-              Menu Cepat
-            </h2>
-            <div className="space-y-2 text-xs">
+          <Card className="bg-card border-border shadow-none">
+            <CardHeader className="pb-3 border-b border-border">
+              <CardTitle className="text-base font-semibold">Akses Cepat</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-2">
               <Link
                 href="/admin/services"
-                className="flex items-center justify-between p-3 rounded-none bg-softyellow/50 border border-brown text-brown font-bold uppercase tracking-wider hover:bg-brown hover:text-softyellow transition-colors"
+                className={buttonVariants({ variant: 'outline', className: 'w-full justify-start text-xs h-9' })}
               >
-                <span>Kelola Layanan Wisata</span>
-                <ArrowUpRight className="h-4 w-4" />
+                Kelola Katalog Layanan
               </Link>
               <Link
                 href="/admin/bookings"
-                className="flex items-center justify-between p-3 rounded-none bg-softyellow/50 border border-brown text-brown font-bold uppercase tracking-wider hover:bg-brown hover:text-softyellow transition-colors"
+                className={buttonVariants({ variant: 'outline', className: 'w-full justify-start text-xs h-9' })}
               >
-                <span>Kelola Reservasi Booking</span>
-                <ArrowUpRight className="h-4 w-4" />
+                Kelola Reservasi Booking
               </Link>
               <Link
                 href="/admin/settings"
-                className="flex items-center justify-between p-3 rounded-none bg-softyellow/50 border border-brown text-brown font-bold uppercase tracking-wider hover:bg-brown hover:text-softyellow transition-colors"
+                className={buttonVariants({ variant: 'outline', className: 'w-full justify-start text-xs h-9' })}
               >
-                <span>Pengaturan Konten Website</span>
-                <ArrowUpRight className="h-4 w-4" />
+                Pengaturan Konten &amp; CMS
               </Link>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

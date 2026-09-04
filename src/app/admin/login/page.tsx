@@ -2,17 +2,26 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { loginAdminAction } from '@/lib/actions/admin/auth';
-import { Lock, Mail, Loader2, AlertCircle, Shield } from 'lucide-react';
 import Link from 'next/link';
+import { loginAdminAction } from '@/lib/actions/admin/auth';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Loader2, AlertCircle } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Form states
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -32,104 +41,99 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-softyellow px-4 py-12 text-black font-sans selection:bg-brown selection:text-softyellow">
-      <div className="w-full max-w-sm space-y-5">
-        {/* Brand Monogram Header */}
-        <div className="text-center">
-          <Link href="/" className="inline-block group mb-3">
-            <div className="h-14 w-14 bg-brown text-softyellow flex items-center justify-center text-3xl font-light tracking-tighter border-2 border-brown rounded-none mx-auto group-hover:bg-black transition-colors">
-              D.
-            </div>
-          </Link>
-          <h1 className="text-lg font-bold tracking-widest uppercase text-brown">
-            DOAMANDEH CMS
-          </h1>
-          <p className="text-[11px] font-medium tracking-wider uppercase text-brown/70 mt-0.5">
-            Portal Administrasi &amp; Operasional
-          </p>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-12 text-foreground font-sans">
+      <div className="w-full max-w-sm space-y-6">
+        {/* Brand Logo Header */}
+        <div className="flex flex-col items-center text-center space-y-2">
+          <div className="size-10 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold text-base shadow-none">
+            D
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight text-foreground">
+              Doamandeh Admin
+            </h1>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Operations &amp; Content Management System
+            </p>
+          </div>
         </div>
 
-        {/* Editorial Geometric Card */}
-        <div className="rounded-none border-2 border-brown bg-softwhite p-6 sm:p-8 shadow-none">
-          <div className="mb-5 pb-3 border-b-2 border-brown/30 flex items-center justify-between">
-            <div>
-              <h2 className="text-xs font-bold uppercase tracking-widest text-brown">
-                Autentikasi Staf
-              </h2>
-              <p className="text-[10px] text-brown/70 mt-0.5">
-                Masukkan kredensial administrator resmi.
-              </p>
-            </div>
-            <Shield className="h-4 w-4 text-brown/70" />
-          </div>
+        {/* Auth Card */}
+        <Card className="bg-card border-border shadow-none">
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-base font-semibold">Masuk ke Akun</CardTitle>
+            <CardDescription className="text-xs text-muted-foreground">
+              Masukkan kredensial administrator untuk melanjutkan.
+            </CardDescription>
+          </CardHeader>
 
-          {/* Feedback Messages */}
-          {errorMessage && (
-            <div className="mb-5 flex items-start gap-2.5 rounded-none bg-softyellow border-2 border-brown p-3 text-xs text-brown">
-              <AlertCircle className="h-4 w-4 text-brown shrink-0 mt-0.5" />
-              <span className="font-medium">{errorMessage}</span>
-            </div>
-          )}
+          <CardContent className="space-y-4">
+            {errorMessage && (
+              <div className="flex items-start gap-2.5 rounded bg-destructive/10 border border-destructive/20 p-3 text-xs text-destructive">
+                <AlertCircle className="size-4 shrink-0 mt-0.5" />
+                <span className="font-medium">{errorMessage}</span>
+              </div>
+            )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
-                Alamat Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-brown/60" />
-                <input
+            <form id="admin-login-form" onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-xs font-medium">
+                  Email
+                </Label>
+                <Input
+                  id="email"
                   type="email"
                   required
                   placeholder="admin@doamandeh.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-none border-2 border-brown bg-softyellow/50 pl-9 pr-3 py-2.5 text-xs text-black placeholder:text-brown/40 focus:border-black focus:bg-white focus:outline-none transition-colors"
+                  className="h-9 text-sm"
+                  autoComplete="email"
                 />
               </div>
-            </div>
 
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
-                Kata Sandi
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-brown/60" />
-                <input
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-xs font-medium">
+                    Password
+                  </Label>
+                </div>
+                <Input
+                  id="password"
                   type="password"
                   required
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-none border-2 border-brown bg-softyellow/50 pl-9 pr-3 py-2.5 text-xs text-black placeholder:text-brown/40 focus:border-black focus:bg-white focus:outline-none transition-colors"
+                  className="h-9 text-sm"
+                  autoComplete="current-password"
                 />
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={isPending}
-              className="w-full flex items-center justify-center gap-2 rounded-none bg-brown py-3 text-xs font-bold uppercase tracking-widest text-softyellow hover:bg-black hover:border-black border-2 border-brown transition-colors disabled:opacity-50 mt-5 cursor-pointer shadow-none"
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-9 text-xs font-medium"
+              >
+                {isPending && <Loader2 className="size-3.5 animate-spin mr-2" />}
+                <span>Masuk ke Dashboard</span>
+              </Button>
+            </form>
+          </CardContent>
+
+          <CardFooter className="flex justify-center border-t border-border pt-4 text-xs text-muted-foreground">
+            <Link
+              href="/"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline"
             >
-              {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-              <span>Masuk ke Dashboard</span>
-            </button>
-          </form>
-        </div>
+              ← Kembali ke Website Publik
+            </Link>
+          </CardFooter>
+        </Card>
 
-        {/* Footer Note */}
-        <div className="text-center space-y-1">
-          <p className="text-[10px] uppercase tracking-widest font-medium text-brown/60">
-            Akses Terbatas © {new Date().getFullYear()} DOAMANDEH.
-          </p>
-          <Link
-            href="/"
-            className="inline-block text-[10px] uppercase tracking-widest text-brown underline hover:text-black font-semibold"
-          >
-            ← Kembali ke Website Publik
-          </Link>
-        </div>
+        <p className="text-center text-[11px] text-muted-foreground">
+          Doamandeh Tours &amp; Travel © {new Date().getFullYear()}
+        </p>
       </div>
     </div>
   );

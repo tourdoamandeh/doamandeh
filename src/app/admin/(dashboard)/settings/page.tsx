@@ -8,16 +8,13 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="space-y-6 font-sans">
-      {/* Editorial Header */}
-      <div className="pb-2 border-b-2 border-brown/20">
-        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-brown/70">
-          // KONTEN DINAMIS WEBSITE &amp; CMS
-        </p>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight uppercase text-brown mt-0.5">
-          Pengaturan Konten &amp; Operasional
+      {/* Page Header */}
+      <div className="pb-6 border-b border-border">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          Settings
         </h1>
-        <p className="text-xs text-brown/80 mt-1 font-light">
-          Ubah seluruh teks judul, kutipan hero per layanan, ulasan testimoni, pertanyaan FAQ, kontak WhatsApp, dan jam operasional tanpa hardcode.
+        <p className="text-sm text-muted-foreground mt-1">
+          Pengaturan konten website publik, jam operasional, ulasan testimoni, dan FAQ dinamis.
         </p>
       </div>
 

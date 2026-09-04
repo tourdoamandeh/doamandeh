@@ -99,3 +99,34 @@ CREATE POLICY "Allow authenticated manage site_settings"
   USING (true)
   WITH CHECK (true);
 
+-- 6. Storage Bucket & RLS Policies for Images / Services
+-- Run this in Supabase SQL Editor to allow public read and authenticated admin upload to 'images' bucket:
+
+-- Allow public read access to images bucket
+CREATE POLICY "Allow public read images bucket"
+  ON storage.objects
+  FOR SELECT
+  USING (bucket_id = 'images' OR bucket_id = 'services');
+
+-- Allow authenticated users (admin) to upload to images bucket
+CREATE POLICY "Allow authenticated insert images bucket"
+  ON storage.objects
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (bucket_id = 'images' OR bucket_id = 'services');
+
+-- Allow authenticated users to update images in images bucket
+CREATE POLICY "Allow authenticated update images bucket"
+  ON storage.objects
+  FOR UPDATE
+  TO authenticated
+  USING (bucket_id = 'images' OR bucket_id = 'services');
+
+-- Allow authenticated users to delete images in images bucket
+CREATE POLICY "Allow authenticated delete images bucket"
+  ON storage.objects
+  FOR DELETE
+  TO authenticated
+  USING (bucket_id = 'images' OR bucket_id = 'services');
+
+

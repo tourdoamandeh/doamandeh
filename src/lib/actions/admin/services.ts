@@ -5,6 +5,7 @@ import { serviceSchema, ServiceInput } from '@/lib/validations/admin';
 import { Service } from '@/types/database';
 import { revalidatePath } from 'next/cache';
 import { ActionResult } from './auth';
+import { deleteServiceImageAction } from './storage';
 
 export async function createServiceAction(input: ServiceInput): Promise<ActionResult<Service>> {
   const parsed = serviceSchema.safeParse(input);
@@ -154,6 +155,17 @@ export async function deleteServiceAction(id: string): Promise<ActionResult<{ id
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return { success: false, error: 'Sesi telah berakhir. Silakan login kembali.' };
+    }
+
+    // If service has an image, delete it from storage
+    const { data: serviceData } = await supabase
+      .from('services')
+      .select('image_url')
+      .eq('id', id)
+      .single();
+
+    if (serviceData?.image_url) {
+      await deleteServiceImageAction(serviceData.image_url).catch(() => {});
     }
 
     const { error } = await supabase

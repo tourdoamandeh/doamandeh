@@ -3,6 +3,39 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
   --font-sans: "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif;
   --font-serif: "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif;
 
@@ -34,6 +67,12 @@
   --input: #E7E8DF;
   --ring: #2C2E31;
 
+  --chart-1: #504139;
+  --chart-2: #5F7A8E;
+  --chart-3: #2C2E31;
+  --chart-4: #8C7355;
+  --chart-5: #A3907C;
+
   /* Sidebar Theme Variables (DESIGN.md) */
   --sidebar: #2C2E31;
   --sidebar-foreground: #FFF6C6;
@@ -43,6 +82,60 @@
   --sidebar-accent-foreground: #FFF6C6;
   --sidebar-border: #504139;
   --sidebar-ring: #FFF6C6;
+}
+
+/* ADMIN — neutral shadcn dashboard (ADMIN_UI.md) */
+[data-theme="admin"] {
+  --background: #fafaf9;
+  --foreground: #171717;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --card-foreground: #171717;
+  --popover: #ffffff;
+  --popover-foreground: #171717;
+  --primary: #0f766e;
+  --primary-foreground: #ffffff;
+  --primary-hover: #0d655f;
+  --secondary: #f5f5f4;
+  --secondary-foreground: #171717;
+  --muted: #f5f5f4;
+  --muted-foreground: #737373;
+  --accent: #f5f5f4;
+  --accent-foreground: #171717;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e7e5e4;
+  --border-strong: #d6d3d1;
+  --input: #e7e5e4;
+  --ring: #0f766e;
+  --radius: 0.5rem;
+
+  /* Chart Tokens (ADMIN_UI.md teal palette) */
+  --chart-1: #0f766e;
+  --chart-2: #0284c7;
+  --chart-3: #f59e0b;
+  --chart-4: #10b981;
+  --chart-5: #6366f1;
+
+  /* Status Tokens */
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --warning: #d97706;
+  --warning-bg: #fffbeb;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --info: #2563eb;
+  --info-bg: #eff6ff;
+
+  /* Sidebar (dark theme) */
+  --sidebar: #101010;
+  --sidebar-foreground: #a3a3a3;
+  --sidebar-primary: #0f766e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1f1f1f;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #262626;
+  --sidebar-ring: #0f766e;
 }
 
 /* Explicit Utility Classes for Color Tokens */
@@ -134,15 +227,55 @@
   color: #504139;
 }
 
-*,
-*::before,
-*::after,
-body,
-html,
-button,
-input,
-select,
-textarea {
-  font-family: var(--font-futura), "Futura", "Futura PT", "Futura-PT", "League Spartan", "Century Gothic", sans-serif !important;
+/* Scoped Typography: Public Brand vs Admin */
+html:not([data-theme="admin"]),
+html:not([data-theme="admin"]) body {
+  font-family: var(--font-futura), "Futura", "Futura PT", "Futura-PT", "League Spartan", "Century Gothic", sans-serif;
   scroll-behavior: smooth;
 }
+
+html:not([data-theme="admin"]) button,
+html:not([data-theme="admin"]) input,
+html:not([data-theme="admin"]) select,
+html:not([data-theme="admin"]) textarea {
+  font-family: inherit;
+}
+
+[data-theme="admin"],
+[data-theme="admin"] body {
+  font-family: "Instrument Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+[data-theme="admin"] button,
+[data-theme="admin"] input,
+[data-theme="admin"] select,
+[data-theme="admin"] textarea {
+  font-family: inherit;
+}
+
+[data-theme="admin"] code,
+[data-theme="admin"] kbd,
+[data-theme="admin"] samp,
+[data-theme="admin"] pre,
+[data-theme="admin"] .font-mono {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Status & Surface Helper Utilities for Admin (ADMIN_UI.md) */
+[data-theme="admin"] .bg-surface { background-color: var(--surface); }
+[data-theme="admin"] .bg-card { background-color: var(--card); }
+[data-theme="admin"] .bg-popover { background-color: var(--popover); }
+[data-theme="admin"] .bg-background { background-color: var(--background); }
+[data-theme="admin"] .bg-success { background-color: var(--success); }
+[data-theme="admin"] .text-success { color: var(--success); }
+[data-theme="admin"] .bg-success-bg { background-color: var(--success-bg); }
+[data-theme="admin"] .bg-warning { background-color: var(--warning); }
+[data-theme="admin"] .text-warning { color: var(--warning); }
+[data-theme="admin"] .bg-warning-bg { background-color: var(--warning-bg); }
+[data-theme="admin"] .bg-danger { background-color: var(--danger); }
+[data-theme="admin"] .text-danger { color: var(--danger); }
+[data-theme="admin"] .bg-danger-bg { background-color: var(--danger-bg); }
+[data-theme="admin"] .bg-info { background-color: var(--info); }
+[data-theme="admin"] .text-info { color: var(--info); }
+[data-theme="admin"] .bg-info-bg { background-color: var(--info-bg); }
+[data-theme="admin"] .hover\:bg-primary-hover:hover { background-color: var(--primary-hover); }

@@ -27,8 +27,8 @@ export default async function AdminDashboardLayout({
         adminName={profile?.full_name || 'Administrator'}
       />
 
-      {/* Main Content Area in SidebarInset with Soft Yellow Palette */}
-      <SidebarInset className="bg-softyellow min-h-screen text-black font-sans selection:bg-brown selection:text-softyellow">
+      {/* Main Content Area in SidebarInset */}
+      <SidebarInset className="bg-background min-h-screen text-foreground font-sans">
         {/* Top Operations Header with SidebarTrigger & Breadcrumb */}
         <AdminHeader />
 

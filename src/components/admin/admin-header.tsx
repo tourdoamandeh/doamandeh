@@ -26,20 +26,20 @@ export function AdminHeader() {
   const currentTitle = PATH_TITLES[pathname] || 'Operasional CMS';
 
   return (
-    <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-2 border-b-2 border-brown bg-softwhite px-4 sm:px-6 transition-[width,height] ease-linear font-sans">
-      <div className="flex items-center gap-2.5">
-        <SidebarTrigger className="-ml-1 rounded-none text-brown hover:bg-brown/15 p-1.5 transition-colors cursor-pointer" />
-        <Separator orientation="vertical" className="mr-2 h-4 bg-brown/30" />
+    <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-4 sm:px-6 transition-[width,height] ease-linear font-sans">
+      <div className="flex items-center gap-3">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="h-4" />
         <Breadcrumb>
-          <BreadcrumbList className="text-[11px] uppercase tracking-wider font-semibold">
+          <BreadcrumbList className="text-xs">
             <BreadcrumbItem className="hidden sm:inline-flex">
-              <BreadcrumbLink href="/admin" className="text-brown/70 hover:text-brown">
+              <BreadcrumbLink href="/admin" className="text-muted-foreground hover:text-foreground">
                 Doamandeh Admin
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator className="hidden sm:inline-flex text-brown/40" />
+            <BreadcrumbSeparator className="hidden sm:inline-flex" />
             <BreadcrumbItem>
-              <BreadcrumbPage className="text-brown font-bold tracking-widest">
+              <BreadcrumbPage className="font-medium text-foreground">
                 {currentTitle}
               </BreadcrumbPage>
             </BreadcrumbItem>
@@ -51,10 +51,10 @@ export function AdminHeader() {
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-1.5 text-xs uppercase tracking-widest font-bold text-brown hover:text-black border-b-2 border-brown/30 pb-0.5 hover:border-black transition-colors"
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
           <span className="hidden sm:inline">Website Publik</span>
-          <ExternalLink className="h-3.5 w-3.5 stroke-[2]" />
+          <ExternalLink className="size-3.5" />
         </Link>
       </div>
     </header>

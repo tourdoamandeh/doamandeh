@@ -18,10 +18,28 @@ import {
   X,
   ArrowUpDown,
   MessageCircle,
-  ExternalLink,
   AlertTriangle,
   FileText,
 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from '@/components/ui/table';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+} from '@/components/ui/drawer';
 
 interface BookingsTableProps {
   initialBookings: (Booking & { service?: Service | null })[];
@@ -30,9 +48,9 @@ interface BookingsTableProps {
 
 const CATEGORY_MAP: Record<ServiceCategory, string> = {
   'vehicle-rental': 'Sewa Kendaraan',
-  'tattoo': 'Tato Studio',
-  'villa': 'Villa & Stay',
-  'travel': 'Paket Travel',
+  tattoo: 'Tato Studio',
+  villa: 'Villa & Stay',
+  travel: 'Paket Travel',
   'surfing-lesson': 'Surfing Lesson',
 };
 
@@ -104,6 +122,7 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
 
+  // Count by Status
   const statusCounts = {
     all: initialBookings.length,
     pending: initialBookings.filter((b) => b.status === 'pending').length,
@@ -117,31 +136,30 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
     startTransition(async () => {
       const res = await updateBookingStatusAction(id, newStatus);
       if (!res.success) {
-        toast.error(res.error || 'Gagal mengubah status booking');
+        toast.error(res.error || 'Gagal mengupdate status');
       } else {
-        toast.success(`Status booking diubah menjadi ${newStatus.toUpperCase()}`);
+        toast.success(`Status booking diubah ke "${newStatus}"`);
+        if (selectedBooking && selectedBooking.id === id) {
+          setSelectedBooking({ ...selectedBooking, status: newStatus });
+        }
       }
       setUpdatingId(null);
-      if (selectedBooking && selectedBooking.id === id) {
-        setSelectedBooking((prev) => (prev ? { ...prev, status: newStatus } : null));
-      }
     });
   }
 
   function confirmDelete() {
     if (!bookingToDelete) return;
     setIsDeleting(true);
-    const targetName = bookingToDelete.customer_name;
     startTransition(async () => {
       const res = await deleteBookingAction(bookingToDelete.id);
       if (!res.success) {
-        toast.error(res.error || 'Gagal menghapus data booking');
+        toast.error(res.error || 'Gagal menghapus booking');
       } else {
-        toast.success(`Booking atas nama "${targetName}" berhasil dihapus`);
+        toast.success('Data booking berhasil dihapus');
       }
       setIsDeleting(false);
       setBookingToDelete(null);
-      if (selectedBooking && selectedBooking.id === bookingToDelete.id) {
+      if (selectedBooking?.id === bookingToDelete.id) {
         setSelectedBooking(null);
       }
     });
@@ -166,8 +184,8 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
 
   return (
     <div className="space-y-4 font-sans">
-      {/* Dense Status Segment Filter */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+      {/* Status Filter Tabs */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
         {[
           { key: 'all', label: 'Semua', count: statusCounts.all },
           { key: 'pending', label: 'Pending', count: statusCounts.pending },
@@ -178,18 +196,16 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
           <button
             key={tab.key}
             onClick={() => setStatusFilter(tab.key)}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-none text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
               statusFilter === tab.key
-                ? 'bg-brown text-softyellow border-2 border-brown'
-                : 'bg-softwhite border-2 border-brown/40 text-brown hover:bg-softyellow'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-card border border-border text-muted-foreground hover:text-foreground'
             }`}
           >
             <span>{tab.label}</span>
             <span
-              className={`px-1.5 py-0.2 rounded-none text-[10px] font-bold ${
-                statusFilter === tab.key
-                  ? 'bg-softyellow text-brown'
-                  : 'bg-softyellow/60 text-brown'
+              className={`text-[11px] font-mono tabular-nums ${
+                statusFilter === tab.key ? 'text-primary-foreground/80' : 'text-muted-foreground'
               }`}
             >
               {tab.count}
@@ -203,20 +219,20 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
         <div className="flex flex-1 flex-wrap items-center gap-2.5">
           {/* Search Input */}
           <div className="relative flex-1 min-w-[200px] max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-brown/60" />
-            <input
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+            <Input
               type="text"
-              placeholder="Cari nama, email, no. telp..."
+              placeholder="Search bookings..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-none border-2 border-brown bg-softwhite pl-9 pr-8 py-2 text-xs text-black placeholder:text-brown/40 focus:border-black focus:outline-none"
+              className="pl-9 pr-8 h-9 text-xs"
             />
             {search && (
               <button
                 onClick={() => setSearch('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-brown/60 hover:text-black"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-muted-foreground hover:text-foreground cursor-pointer"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="size-3.5" />
               </button>
             )}
           </div>
@@ -225,23 +241,23 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-none border-2 border-brown bg-softwhite px-3 py-2 text-xs font-medium uppercase text-brown focus:border-black focus:outline-none cursor-pointer"
+            className="h-9 rounded border border-border bg-card px-3 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
           >
             <option value="all">Semua Kategori</option>
             <option value="vehicle-rental">Sewa Kendaraan</option>
             <option value="tattoo">Tato Studio</option>
-            <option value="villa">Villa & Stay</option>
+            <option value="villa">Villa &amp; Stay</option>
             <option value="travel">Paket Travel</option>
             <option value="surfing-lesson">Surfing Lesson</option>
           </select>
 
           {/* Sort By */}
-          <div className="flex items-center gap-1.5 rounded-none border-2 border-brown bg-softwhite px-2.5 py-1.5 text-xs text-brown">
-            <ArrowUpDown className="h-3.5 w-3.5 text-brown/60" />
+          <div className="flex items-center gap-1.5 h-9 rounded border border-border bg-card px-2.5 text-xs text-muted-foreground">
+            <ArrowUpDown className="size-3.5" />
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="bg-transparent text-xs font-medium uppercase text-brown focus:outline-none cursor-pointer"
+              className="bg-transparent text-xs text-foreground focus:outline-none cursor-pointer"
             >
               <option value="newest">Booking Terbaru</option>
               <option value="oldest">Booking Terlama</option>
@@ -252,60 +268,71 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
         </div>
 
         {/* Primary Action Button */}
-        <button
+        <Button
           onClick={() => setDialogOpen(true)}
-          className="inline-flex items-center justify-center gap-2 rounded-none bg-brown text-softyellow hover:bg-black border-2 border-brown hover:border-black px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-none"
+          size="sm"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground h-9"
         >
-          <Plus className="h-4 w-4 stroke-[2.5]" />
+          <Plus className="size-4 mr-1.5" />
           <span>Tambah Booking</span>
-        </button>
+        </Button>
       </div>
 
-      {/* Bookings Table */}
-      <div className="rounded-none border-2 border-brown bg-softwhite overflow-hidden shadow-none">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-black">
-            <thead className="bg-brown text-softyellow text-[10px] font-bold uppercase tracking-wider border-b-2 border-brown">
-              <tr>
-                <th className="px-4 py-3">Pelanggan</th>
-                <th className="px-4 py-3">Layanan</th>
-                <th className="px-4 py-3">Tanggal</th>
-                <th className="px-4 py-3">Total Biaya</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 text-right">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-brown/20">
+      {/* Bookings Table Card */}
+      <Card className="bg-card border-border shadow-none overflow-hidden">
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/50 hover:bg-muted/50 border-b border-border">
+                <TableHead className="text-xs uppercase tracking-wide text-muted-foreground h-11">
+                  Pelanggan
+                </TableHead>
+                <TableHead className="text-xs uppercase tracking-wide text-muted-foreground h-11">
+                  Layanan
+                </TableHead>
+                <TableHead className="text-xs uppercase tracking-wide text-muted-foreground h-11">
+                  Tanggal
+                </TableHead>
+                <TableHead className="text-xs uppercase tracking-wide text-muted-foreground h-11">
+                  Total Biaya
+                </TableHead>
+                <TableHead className="text-xs uppercase tracking-wide text-muted-foreground h-11">
+                  Status
+                </TableHead>
+                <TableHead className="text-xs uppercase tracking-wide text-muted-foreground h-11 text-right">
+                  Aksi
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {filteredBookings.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="py-14 text-center">
-                    <Calendar className="h-8 w-8 text-brown/40 mx-auto mb-2" />
-                    <p className="text-xs font-bold uppercase tracking-wider text-brown mb-1">
-                      Tidak ada data reservasi ditemukan.
-                    </p>
-                    <p className="text-[11px] text-brown/70 mb-4 font-light">
+                <TableRow>
+                  <TableCell colSpan={6} className="py-12 text-center">
+                    <div className="size-12 rounded-lg bg-muted flex items-center justify-center mx-auto mb-3">
+                      <Calendar className="size-6 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-sm font-semibold mb-1">Tidak ada data reservasi</h3>
+                    <p className="text-xs text-muted-foreground mb-4">
                       {search || statusFilter !== 'all' || categoryFilter !== 'all'
-                        ? 'Coba ubah kata kunci atau reset filter status.'
-                        : 'Belum ada pemesanan yang tercatat di sistem.'}
+                        ? 'Coba sesuaikan kata kunci atau reset filter status.'
+                        : 'Belum ada data pemesanan yang tercatat di sistem.'}
                     </p>
                     {search || statusFilter !== 'all' || categoryFilter !== 'all' ? (
-                      <button
-                        onClick={resetFilters}
-                        className="rounded-none border-2 border-brown bg-softwhite px-4 py-2 text-xs font-bold uppercase tracking-wider text-brown hover:bg-softyellow cursor-pointer"
-                      >
+                      <Button variant="outline" size="sm" onClick={resetFilters}>
                         Reset Filter
-                      </button>
+                      </Button>
                     ) : (
-                      <button
+                      <Button
+                        size="sm"
                         onClick={() => setDialogOpen(true)}
-                        className="inline-flex items-center gap-2 rounded-none bg-brown text-softyellow hover:bg-black border-2 border-brown px-4 py-2 text-xs font-bold uppercase tracking-wider cursor-pointer"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
                       >
-                        <Plus className="h-4 w-4" />
-                        <span>Input Booking Baru</span>
-                      </button>
+                        <Plus className="size-4 mr-1.5" />
+                        Tambah Booking Baru
+                      </Button>
                     )}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : (
                 filteredBookings.map((booking) => {
                   const isUpdatingThis = updatingId === booking.id;
@@ -314,116 +341,136 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
                     : null;
 
                   return (
-                    <tr
+                    <TableRow
                       key={booking.id}
-                      className="h-14 hover:bg-brown/5 transition-colors"
+                      className="h-11 hover:bg-muted/40 border-b border-border transition-colors"
                     >
                       {/* Customer */}
-                      <td className="px-4 py-2.5">
-                        <p className="font-bold text-black uppercase tracking-tight truncate max-w-[150px]">
+                      <TableCell>
+                        <p className="font-medium text-xs text-foreground truncate max-w-[150px]">
                           {booking.customer_name}
                         </p>
-                        <div className="flex items-center gap-2 text-[11px] text-brown font-mono mt-0.5">
-                          <span>{booking.customer_phone}</span>
-                        </div>
-                      </td>
+                        <p className="text-[11px] text-muted-foreground font-mono">
+                          {booking.customer_phone}
+                        </p>
+                      </TableCell>
 
                       {/* Service */}
-                      <td className="px-4 py-2.5">
-                        <p className="font-semibold text-black truncate max-w-[160px]">
-                          {booking.service?.title || 'Layanan Umum'}
+                      <TableCell>
+                        <p className="text-xs text-foreground truncate max-w-[160px]">
+                          {booking.service?.title || 'Layanan'}
                         </p>
                         {catLabel && (
-                          <span className="text-[10px] uppercase tracking-wider font-bold text-brown/70">
+                          <span className="text-[11px] text-muted-foreground">
                             {catLabel}
                           </span>
                         )}
-                      </td>
+                      </TableCell>
 
                       {/* Booking Date */}
-                      <td className="px-4 py-2.5 font-mono text-[11px] text-black whitespace-nowrap">
+                      <TableCell className="font-mono text-xs text-muted-foreground tabular-nums whitespace-nowrap">
                         {formatDateIndo(booking.booking_date)}
-                      </td>
+                      </TableCell>
 
                       {/* Price */}
-                      <td className="px-4 py-2.5 font-bold text-xs text-black whitespace-nowrap">
+                      <TableCell className="font-mono text-xs font-medium tabular-nums whitespace-nowrap">
                         {booking.total_price ? formatRupiah(booking.total_price) : '-'}
-                      </td>
+                      </TableCell>
 
-                      {/* Status: Badge + Quick Confirm */}
-                      <td className="px-4 py-2.5 whitespace-nowrap">
+                      {/* Status: Dot + Quick Confirm */}
+                      <TableCell className="whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          {booking.status === 'pending' && (
-                            <span className="inline-block px-2.5 py-1 rounded-none border border-brown bg-softyellow text-[10px] font-bold uppercase tracking-wider text-brown">
-                              Pending
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium">
+                            <span
+                              className={`size-2 rounded-full ${
+                                booking.status === 'confirmed'
+                                  ? 'bg-success'
+                                  : booking.status === 'completed'
+                                  ? 'bg-info'
+                                  : booking.status === 'pending'
+                                  ? 'bg-warning'
+                                  : 'bg-danger'
+                              }`}
+                            />
+                            <span
+                              className={`capitalize ${
+                                booking.status === 'confirmed'
+                                  ? 'text-success'
+                                  : booking.status === 'completed'
+                                  ? 'text-info'
+                                  : booking.status === 'pending'
+                                  ? 'text-warning'
+                                  : 'text-danger'
+                              }`}
+                            >
+                              {booking.status}
                             </span>
-                          )}
-                          {booking.status === 'confirmed' && (
-                            <span className="inline-block px-2.5 py-1 rounded-none border border-softblue bg-softblue text-[10px] font-bold uppercase tracking-wider text-softyellow">
-                              Confirmed
-                            </span>
-                          )}
-                          {booking.status === 'completed' && (
-                            <span className="inline-block px-2.5 py-1 rounded-none border border-black bg-black text-[10px] font-bold uppercase tracking-wider text-softyellow">
-                              Completed
-                            </span>
-                          )}
-                          {booking.status === 'cancelled' && (
-                            <span className="inline-block px-2.5 py-1 rounded-none border border-brown bg-white text-[10px] font-bold uppercase tracking-wider text-black">
-                              Cancelled
-                            </span>
-                          )}
+                          </span>
 
-                          {/* Quick Confirm Button */}
+                          {/* Quick Confirm Button for Pending */}
                           {booking.status === 'pending' && (
-                            <button
+                            <Button
+                              size="sm"
+                              variant="outline"
                               onClick={() => handleStatusChange(booking.id, 'confirmed')}
                               disabled={isPending || isUpdatingThis}
-                              className="px-2.5 py-1 rounded-none border border-brown bg-brown text-[10px] font-bold uppercase tracking-wider text-softyellow hover:bg-black hover:border-black transition-colors cursor-pointer"
+                              className="h-6 text-[11px] px-2"
                               title="Konfirmasi Booking"
                             >
-                              {isUpdatingThis ? <Loader2 className="h-3 w-3 animate-spin" /> : 'Confirm'}
-                            </button>
+                              {isUpdatingThis ? (
+                                <Loader2 className="size-3 animate-spin" />
+                              ) : (
+                                'Confirm'
+                              )}
+                            </Button>
                           )}
                         </div>
-                      </td>
+                      </TableCell>
 
                       {/* Actions */}
-                      <td className="px-4 py-2.5 whitespace-nowrap text-right">
-                        <div className="flex items-center justify-end gap-1.5">
+                      <TableCell className="text-right whitespace-nowrap">
+                        <div className="inline-flex items-center gap-1">
                           <a
                             href={generateWhatsAppLink(booking)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1.5 rounded-none border border-brown text-brown hover:bg-brown hover:text-softyellow transition-colors"
+                            className={buttonVariants({
+                              variant: 'ghost',
+                              size: 'sm',
+                              className: 'size-7 p-0 text-muted-foreground hover:text-foreground',
+                            })}
                             title="WhatsApp Customer"
                           >
-                            <MessageCircle className="h-3.5 w-3.5" />
+                            <MessageCircle className="size-3.5" />
                           </a>
-                          <button
+                          <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => setSelectedBooking(booking)}
-                            className="p-1.5 rounded-none border border-brown text-brown hover:bg-brown hover:text-softyellow transition-colors cursor-pointer"
+                            className="size-7 p-0 text-muted-foreground hover:text-foreground"
                             title="Lihat Detail"
                           >
-                            <Eye className="h-3.5 w-3.5" />
-                          </button>
-                          <button
+                            <Eye className="size-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => setBookingToDelete(booking)}
-                            className="p-1.5 rounded-none border border-black text-black hover:bg-black hover:text-softyellow transition-colors cursor-pointer"
+                            className="size-7 p-0 text-muted-foreground hover:text-destructive"
                             title="Hapus Booking"
                           >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
+                            <Trash2 className="size-3.5" />
+                          </Button>
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })
               )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
       {/* Manual Booking Dialog */}
       <BookingFormDialog
@@ -432,165 +479,187 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
         onClose={() => setDialogOpen(false)}
       />
 
-      {/* Booking Detail Modal */}
-      {selectedBooking && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-none overflow-y-auto font-sans">
-          <div className="relative w-full max-w-md my-6 rounded-none border-2 border-brown bg-softwhite p-6 text-black shadow-none max-h-[90vh] overflow-y-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b-2 border-brown mb-5">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-brown/70">
-                  // DETAIL RESERVASI
-                </p>
-                <h3 className="text-base font-bold uppercase tracking-wider text-brown mt-0.5">
-                  Informasi Pemesanan
-                </h3>
-              </div>
-              <button
-                onClick={() => setSelectedBooking(null)}
-                className="p-1 rounded-none border border-brown text-brown hover:bg-brown hover:text-softyellow transition-colors cursor-pointer"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
+      {/* Booking Detail Drawer */}
+      <Drawer
+        open={!!selectedBooking}
+        onOpenChange={(open) => {
+          if (!open) setSelectedBooking(null);
+        }}
+        swipeDirection="right"
+      >
+        <DrawerContent className="sm:max-w-md [--drawer-content-width:100%] sm:[--drawer-content-width:28rem] bg-card text-foreground font-sans border-l border-border flex flex-col h-screen max-h-screen">
+          {selectedBooking && (
+            <>
+              {/* Header */}
+              <DrawerHeader className="px-6 py-4 border-b border-border flex flex-row items-center justify-between shrink-0">
+                <div>
+                  <DrawerTitle className="text-base font-semibold text-foreground">
+                    Detail Pemesanan
+                  </DrawerTitle>
+                  <DrawerDescription className="text-xs text-muted-foreground font-mono mt-0.5">
+                    ID: #{selectedBooking.id.slice(0, 8)}
+                  </DrawerDescription>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedBooking(null)}
+                  className="size-8 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                >
+                  <X className="size-4" />
+                </button>
+              </DrawerHeader>
 
-            {/* Content */}
-            <div className="space-y-4 text-xs">
-              {/* Service & Price */}
-              <div className="p-3.5 rounded-none bg-softyellow/40 border border-brown/30 space-y-1.5">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-brown">
-                  Layanan Dipesan
-                </p>
-                <p className="font-bold text-sm text-black">
-                  {selectedBooking.service?.title || 'Layanan Wisata'}
-                </p>
-                <div className="flex items-center justify-between pt-2 border-t border-brown/20 text-brown">
-                  <span className="font-medium">Total Biaya</span>
-                  <span className="font-bold text-black text-sm">
-                    {selectedBooking.total_price ? formatRupiah(selectedBooking.total_price) : '-'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Customer Contact */}
-              <div className="p-3.5 rounded-none bg-softyellow/40 border border-brown/30 space-y-2">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-brown">
-                  Kontak Pelanggan
-                </p>
-                <div className="flex justify-between">
-                  <span className="text-brown">Nama</span>
-                  <span className="font-bold text-black">{selectedBooking.customer_name}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-brown">Email</span>
-                  <span className="font-mono text-black">{selectedBooking.customer_email}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-brown">Telepon</span>
-                  <span className="font-mono text-black font-bold">{selectedBooking.customer_phone}</span>
-                </div>
-              </div>
-
-              {/* Schedule */}
-              <div className="p-3.5 rounded-none bg-softyellow/40 border border-brown/30 space-y-1">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-brown">
-                  Jadwal Pemakaian
-                </p>
-                <div className="flex justify-between">
-                  <span className="text-brown">Tanggal Booking</span>
-                  <span className="font-bold text-black">
-                    {formatDateIndo(selectedBooking.booking_date)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Notes */}
-              {selectedBooking.notes && (
-                <div className="p-3.5 rounded-none bg-softyellow/40 border border-brown/30 space-y-1">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-brown flex items-center gap-1.5">
-                    <FileText className="h-3.5 w-3.5" /> Catatan Khusus
+              {/* Content Details */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 text-xs">
+                {/* Customer Info Card */}
+                <div className="p-3 rounded-md border border-border bg-muted/20 space-y-2">
+                  <p className="text-[11px] uppercase tracking-wide font-medium text-muted-foreground">
+                    Informasi Pelanggan
                   </p>
-                  <p className="text-black leading-relaxed font-light">{selectedBooking.notes}</p>
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div>
+                      <span className="text-[11px] text-muted-foreground block">Nama</span>
+                      <span className="font-medium text-foreground">{selectedBooking.customer_name}</span>
+                    </div>
+                    <div>
+                      <span className="text-[11px] text-muted-foreground block">Telepon / WA</span>
+                      <span className="font-mono text-foreground">{selectedBooking.customer_phone}</span>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-[11px] text-muted-foreground block">Email</span>
+                      <span className="font-mono text-foreground">{selectedBooking.customer_email}</span>
+                    </div>
+                  </div>
                 </div>
-              )}
 
-              {/* WhatsApp Action */}
-              <a
-                href={generateWhatsAppLink(selectedBooking)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2.5 rounded-none bg-brown hover:bg-black text-softyellow border-2 border-brown hover:border-black py-3 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
-              >
-                <MessageCircle className="h-4 w-4" />
-                <span>Hubungi via WhatsApp</span>
-                <ExternalLink className="h-3.5 w-3.5" />
-              </a>
+                {/* Service & Price */}
+                <div className="p-3 rounded-md border border-border bg-muted/20 space-y-2">
+                  <p className="text-[11px] uppercase tracking-wide font-medium text-muted-foreground">
+                    Layanan &amp; Jadwal
+                  </p>
+                  <div className="space-y-1.5 pt-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Paket Layanan:</span>
+                      <span className="font-medium text-foreground">
+                        {selectedBooking.service?.title || 'Layanan Umum'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Tanggal Reservasi:</span>
+                      <span className="font-mono text-foreground">
+                        {formatDateIndo(selectedBooking.booking_date)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between pt-1 border-t border-border">
+                      <span className="font-medium text-foreground">Total Tagihan:</span>
+                      <span className="font-mono tabular-nums font-semibold text-foreground">
+                        {selectedBooking.total_price ? formatRupiah(selectedBooking.total_price) : 'N/A'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
-              {/* Status Selector */}
-              <div className="pt-3 border-t-2 border-brown">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-brown mb-2.5">
-                  Ubah Status Booking
-                </p>
-                <div className="grid grid-cols-4 gap-2">
-                  {(['pending', 'confirmed', 'completed', 'cancelled'] as BookingStatus[]).map(
-                    (st) => (
-                      <button
+                {/* Notes */}
+                {selectedBooking.notes && (
+                  <div className="p-3 rounded-md border border-border bg-muted/20 space-y-1">
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <FileText className="size-3.5" />
+                      <span className="text-[11px] font-medium uppercase tracking-wide">Catatan Pelanggan</span>
+                    </div>
+                    <p className="text-foreground pt-1 italic">{selectedBooking.notes}</p>
+                  </div>
+                )}
+
+                {/* Status Selector */}
+                <div className="space-y-1.5 pt-1">
+                  <span className="text-xs font-medium text-foreground block">
+                    Ubah Status Pemesanan
+                  </span>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                    {(['pending', 'confirmed', 'completed', 'cancelled'] as BookingStatus[]).map((st) => (
+                      <Button
                         key={st}
+                        type="button"
+                        variant={selectedBooking.status === st ? 'default' : 'outline'}
+                        size="sm"
                         onClick={() => handleStatusChange(selectedBooking.id, st)}
-                        disabled={isPending || selectedBooking.status === st}
-                        className={`py-2 px-1 text-center rounded-none text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer border ${
-                          selectedBooking.status === st
-                            ? 'bg-brown text-softyellow border-brown'
-                            : 'bg-softwhite text-brown border-brown/40 hover:bg-softyellow'
-                        }`}
+                        disabled={isPending}
+                        className="h-8 text-xs capitalize"
                       >
                         {st}
-                      </button>
-                    )
-                  )}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* Delete Confirmation Modal */}
+              {/* Drawer Actions */}
+              <DrawerFooter className="px-6 py-4 border-t border-border bg-card/80 backdrop-blur-sm flex flex-row items-center justify-between gap-2.5 shrink-0 mt-0">
+                <a
+                  href={generateWhatsAppLink(selectedBooking)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={buttonVariants({
+                    size: 'sm',
+                    className: 'bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-1.5 font-medium',
+                  })}
+                >
+                  <MessageCircle className="size-4" />
+                  <span>Hubungi via WA</span>
+                </a>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedBooking(null)}
+                >
+                  Tutup
+                </Button>
+              </DrawerFooter>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
+
+      {/* Delete Confirmation Dialog */}
       {bookingToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-none">
-          <div className="w-full max-w-sm rounded-none border-2 border-brown bg-softwhite p-6 text-black shadow-none">
-            <div className="flex items-center gap-3 mb-3 pb-3 border-b-2 border-brown/30">
-              <div className="flex h-9 w-9 items-center justify-center rounded-none bg-brown text-softyellow border border-brown">
-                <AlertTriangle className="h-5 w-5" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-sans">
+          <div className="w-full max-w-md rounded-lg border border-border bg-white dark:bg-zinc-950 bg-card p-6 text-foreground shadow-2xl" role="dialog">
+            <div className="flex items-start gap-4">
+              <div className="size-10 rounded-lg bg-destructive/10 text-destructive flex items-center justify-center shrink-0">
+                <AlertTriangle className="size-5" />
               </div>
-              <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-brown">Hapus Booking</h3>
-                <p className="text-[10px] text-brown/70">Tindakan ini permanen.</p>
+              <div className="flex-1">
+                <h3 className="text-base font-semibold text-foreground">
+                  Hapus Reservasi
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Apakah Anda yakin ingin menghapus data booking customer{' '}
+                  <span className="font-semibold text-foreground">
+                    &ldquo;{bookingToDelete.customer_name}&rdquo;
+                  </span>
+                  ?
+                </p>
               </div>
             </div>
 
-            <p className="text-xs text-black mb-5 leading-relaxed">
-              Yakin ingin menghapus data booking dari <strong className="text-brown">{bookingToDelete.customer_name}</strong>?
-            </p>
-
-            <div className="flex items-center justify-end gap-2.5">
-              <button
-                type="button"
-                onClick={() => setBookingToDelete(null)}
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <Button
+                variant="outline"
+                size="sm"
                 disabled={isDeleting}
-                className="rounded-none border-2 border-brown bg-softwhite px-4 py-2 text-xs font-bold uppercase tracking-wider text-brown hover:bg-softyellow cursor-pointer"
+                onClick={() => setBookingToDelete(null)}
               >
                 Batal
-              </button>
-              <button
-                type="button"
-                onClick={confirmDelete}
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
                 disabled={isDeleting}
-                className="inline-flex items-center gap-2 rounded-none bg-black text-softyellow border-2 border-black hover:bg-brown hover:border-brown px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                onClick={confirmDelete}
               >
-                {isDeleting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                {isDeleting && <Loader2 className="size-3.5 animate-spin mr-1.5" />}
                 <span>{isDeleting ? 'Menghapus...' : 'Hapus Booking'}</span>
-              </button>
+              </Button>
             </div>
           </div>
         </div>

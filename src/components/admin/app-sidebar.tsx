@@ -9,7 +9,6 @@ import {
   Calendar,
   Settings,
   LogOut,
-  ExternalLink,
 } from 'lucide-react';
 import { logoutAdminAction } from '@/lib/actions/admin/auth';
 import {
@@ -78,91 +77,66 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
 
   return (
     <TooltipProvider delay={100}>
-      <Sidebar collapsible="icon" className="border-r-2 border-brown bg-black font-sans" {...props}>
-        {/* Sidebar Header: Brand Doamandeh */}
-        <SidebarHeader className="border-b border-brown/30 p-3">
-          {isCollapsed ? (
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <div className="flex items-center justify-center p-1 cursor-pointer w-full" />
-                }
-              >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-none bg-softyellow text-brown border-2 border-softyellow text-xs font-bold shadow-none">
-                  D.
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={12} className="rounded-none border border-brown bg-softyellow text-black">
-                <p className="font-semibold uppercase tracking-wider text-xs">Doamandeh</p>
-                <p className="text-[10px] text-brown">Editorial CMS</p>
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <div className="flex items-center gap-3 px-1 py-1">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none bg-softyellow text-brown border-2 border-softyellow text-sm font-bold shadow-none">
-                D.
-              </div>
-              <div className="grid flex-1 text-left text-xs leading-tight">
-                <span className="truncate font-bold tracking-widest text-softyellow uppercase">
-                  Doamandeh
-                </span>
-                <span className="truncate text-[10px] tracking-wider text-softyellow/60 uppercase">
-                  Editorial CMS
-                </span>
-              </div>
+      <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar font-sans" {...props}>
+        {/* Sidebar Header: Clean Brand Typography (Without Logo D) */}
+        {!isCollapsed && (
+          <SidebarHeader className="border-b border-sidebar-border px-4 py-3.5">
+            <div className="flex flex-col text-left leading-tight">
+              <span className="truncate font-semibold text-sidebar-foreground text-sm tracking-tight">
+                Doamandeh
+              </span>
+              <span className="truncate text-[11px] text-muted-foreground mt-0.5">
+                Admin Operations
+              </span>
             </div>
-          )}
-        </SidebarHeader>
+          </SidebarHeader>
+        )}
 
         {/* Sidebar Content */}
-        <SidebarContent className="px-2 py-3">
+        <SidebarContent className={isCollapsed ? 'px-0 py-3 overflow-x-hidden' : 'px-2 py-3'}>
           <SidebarGroup>
             {!isCollapsed && (
-              <SidebarGroupLabel className="text-[10px] uppercase tracking-[0.2em] font-bold text-softyellow/50 px-2 mb-1">
-                // Navigasi Utama
+              <SidebarGroupLabel className="text-[11px] uppercase tracking-wider text-muted-foreground px-2 mb-1">
+                Navigasi
               </SidebarGroupLabel>
             )}
             <SidebarGroupContent>
-              <SidebarMenu className="space-y-1">
+              <SidebarMenu className={isCollapsed ? 'items-center' : ''}>
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <SidebarMenuItem key={item.title}>
-                      <Link href={item.url} className="w-full block">
-                        {isCollapsed ? (
-                          <Tooltip>
-                            <TooltipTrigger
-                              render={
+                    <SidebarMenuItem key={item.title} className={isCollapsed ? 'flex justify-center' : ''}>
+                      {isCollapsed ? (
+                        <Tooltip>
+                          <TooltipTrigger
+                            render={
+                              <Link href={item.url} className="flex items-center justify-center">
                                 <SidebarMenuButton
                                   isActive={item.isActive}
-                                  className={`justify-center px-0 h-9 w-9 mx-auto rounded-none transition-colors ${
-                                    item.isActive
-                                      ? 'bg-brown text-softyellow border border-softyellow'
-                                      : 'text-softyellow/70 hover:text-softyellow hover:bg-brown/40'
-                                  }`}
-                                />
-                              }
-                            >
-                              <Icon className="h-4 w-4 shrink-0" />
-                            </TooltipTrigger>
-                            <TooltipContent side="right" sideOffset={12} className="rounded-none border border-brown bg-softyellow text-black">
-                              <span className="uppercase text-xs font-medium tracking-wider">{item.title}</span>
-                            </TooltipContent>
-                          </Tooltip>
-                        ) : (
+                                  className="size-8 justify-center p-0 rounded-md shrink-0"
+                                >
+                                  <Icon className="size-4 shrink-0" />
+                                </SidebarMenuButton>
+                              </Link>
+                            }
+                          >
+                            <span className="sr-only">{item.title}</span>
+                          </TooltipTrigger>
+                          <TooltipContent side="right" sideOffset={22}>
+                            <span className="text-xs font-medium">{item.title}</span>
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        <Link href={item.url} className="w-full">
                           <SidebarMenuButton
                             isActive={item.isActive}
-                            className={`rounded-none px-3 py-2.5 text-xs uppercase tracking-wider font-medium transition-colors ${
-                              item.isActive
-                                ? 'bg-brown text-softyellow border-l-4 border-softyellow'
-                                : 'text-softyellow/70 hover:text-softyellow hover:bg-brown/40'
-                            }`}
+                            className="rounded-md text-xs px-2.5 h-8 gap-2.5"
                           >
-                            <Icon className="h-4 w-4 shrink-0" />
+                            <Icon className="size-4 shrink-0" />
                             <span className="truncate">{item.title}</span>
                           </SidebarMenuButton>
-                        )}
-                      </Link>
+                        </Link>
+                      )}
                     </SidebarMenuItem>
                   );
                 })}
@@ -172,66 +146,43 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
         </SidebarContent>
 
         {/* Sidebar Footer: User info + Logout */}
-        <SidebarFooter className="border-t border-brown/30 p-2.5 space-y-2">
-          <SidebarMenu className="space-y-1">
-            {/* Website Public Link */}
-            <SidebarMenuItem>
-              <Link href="/" target="_blank" className="w-full block">
-                {isCollapsed ? (
-                  <Tooltip>
-                    <TooltipTrigger
-                      render={
-                        <SidebarMenuButton className="justify-center px-0 h-9 w-9 mx-auto rounded-none text-softyellow/70 hover:text-softyellow hover:bg-brown/40" />
-                      }
-                    >
-                      <ExternalLink className="h-4 w-4 shrink-0" />
-                    </TooltipTrigger>
-                    <TooltipContent side="right" sideOffset={12} className="rounded-none border border-brown bg-softyellow text-black">
-                      <span className="text-xs uppercase tracking-wider">Website Publik</span>
-                    </TooltipContent>
-                  </Tooltip>
-                ) : (
-                  <SidebarMenuButton className="rounded-none text-softyellow/70 hover:text-softyellow hover:bg-brown/40 text-xs uppercase tracking-wider">
-                    <ExternalLink className="h-4 w-4 shrink-0" />
-                    <span className="truncate">Website Publik</span>
-                  </SidebarMenuButton>
-                )}
-              </Link>
-            </SidebarMenuItem>
-
+        <SidebarFooter className={isCollapsed ? 'px-0 py-3 space-y-1 overflow-x-hidden border-t border-sidebar-border' : 'p-2.5 space-y-1 border-t border-sidebar-border'}>
+          <SidebarMenu className={isCollapsed ? 'items-center' : ''}>
             {/* User Profile Card */}
-            <SidebarMenuItem>
+            <SidebarMenuItem className={isCollapsed ? 'flex justify-center' : ''}>
               {isCollapsed ? (
                 <Tooltip>
                   <TooltipTrigger
                     render={
-                      <div className="flex items-center justify-center rounded-none border border-brown bg-brown/50 p-1.5 cursor-pointer w-9 h-9 mx-auto" />
+                      <div className="flex items-center justify-center size-8 rounded cursor-pointer mx-auto">
+                        <div className="size-7 rounded-full bg-sidebar-accent text-sidebar-accent-foreground flex items-center justify-center font-semibold text-xs shrink-0">
+                          {(adminName || 'A').charAt(0).toUpperCase()}
+                        </div>
+                      </div>
                     }
                   >
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-none bg-softyellow text-brown text-xs font-bold">
-                      {(adminName || 'A').charAt(0).toUpperCase()}
-                    </div>
+                    <span className="sr-only">{adminName || 'Admin'}</span>
                   </TooltipTrigger>
-                  <TooltipContent side="right" sideOffset={12} className="rounded-none border border-brown bg-softyellow text-black">
-                    <p className="font-semibold uppercase tracking-wider text-xs">{adminName || 'Admin'}</p>
-                    <p className="text-[10px] text-brown/70">{userEmail || 'admin@doamandeh.com'}</p>
+                  <TooltipContent side="right" sideOffset={22}>
+                    <p className="font-semibold text-xs">{adminName || 'Admin'}</p>
+                    <p className="text-[11px] opacity-80 font-mono">{userEmail || 'admin@doamandeh.com'}</p>
                   </TooltipContent>
                 </Tooltip>
               ) : (
-                <div className="flex items-center gap-2.5 rounded-none border border-brown/60 bg-brown/30 p-2">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-none bg-softyellow text-brown text-xs font-bold">
+                <div className="flex items-center gap-2.5 rounded bg-sidebar-accent/50 p-2 text-xs">
+                  <div className="size-7 rounded-full bg-sidebar-accent text-sidebar-accent-foreground flex items-center justify-center font-semibold text-xs shrink-0">
                     {(adminName || 'A').charAt(0).toUpperCase()}
                   </div>
                   <div className="grid flex-1 text-left text-xs leading-tight min-w-0">
-                    <span className="truncate font-semibold uppercase tracking-wider text-softyellow">{adminName || 'Admin'}</span>
-                    <span className="truncate text-[10px] text-softyellow/60 font-mono">{userEmail || 'admin@doamandeh.com'}</span>
+                    <span className="truncate font-medium text-sidebar-foreground">{adminName || 'Admin'}</span>
+                    <span className="truncate text-[11px] text-muted-foreground font-mono">{userEmail || 'admin@doamandeh.com'}</span>
                   </div>
                 </div>
               )}
             </SidebarMenuItem>
 
             {/* Logout Action */}
-            <SidebarMenuItem>
+            <SidebarMenuItem className={isCollapsed ? 'flex justify-center' : ''}>
               {isCollapsed ? (
                 <Tooltip>
                   <TooltipTrigger
@@ -239,24 +190,26 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
                       <SidebarMenuButton
                         onClick={handleLogout}
                         disabled={isLoggingOut}
-                        className="justify-center px-0 h-9 w-9 mx-auto rounded-none text-softyellow/70 hover:text-softyellow hover:bg-black cursor-pointer"
-                      />
+                        className="size-8 justify-center p-0 mx-auto rounded-md shrink-0 text-muted-foreground hover:text-destructive cursor-pointer"
+                      >
+                        <LogOut className="size-4 shrink-0" />
+                      </SidebarMenuButton>
                     }
                   >
-                    <LogOut className="h-4 w-4 shrink-0" />
+                    <span className="sr-only">Keluar</span>
                   </TooltipTrigger>
-                  <TooltipContent side="right" sideOffset={12} className="rounded-none border border-brown bg-softyellow text-black">
-                    <span className="text-xs uppercase tracking-wider">Keluar</span>
+                  <TooltipContent side="right" sideOffset={22}>
+                    <span className="text-xs">Keluar</span>
                   </TooltipContent>
                 </Tooltip>
               ) : (
                 <SidebarMenuButton
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="rounded-none text-softyellow/70 hover:text-softyellow hover:bg-black cursor-pointer text-xs uppercase tracking-wider"
+                  className="rounded text-muted-foreground hover:text-destructive cursor-pointer text-xs"
                 >
-                  <LogOut className="h-4 w-4 shrink-0" />
-                  <span className="truncate">{isLoggingOut ? 'Keluar...' : 'Keluar (Logout)'}</span>
+                  <LogOut className="size-4 shrink-0" />
+                  <span className="truncate">{isLoggingOut ? 'Keluar...' : 'Keluar'}</span>
                 </SidebarMenuButton>
               )}
             </SidebarMenuItem>

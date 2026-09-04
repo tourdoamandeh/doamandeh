@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
 import { Service, ServiceCategory } from '@/types/database';
+import { getServiceImageUrl } from '@/lib/constants';
 import { PublicHeader } from '@/components/public/public-header';
 import { PublicFooter } from '@/components/public/public-footer';
 import Link from 'next/link';
@@ -253,23 +254,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 >
                   {/* Card Image Header */}
                   <div className={`relative h-56 w-full ${currentCategory.bgColor} p-3 overflow-hidden border-none`}>
-                    {service.image_url ? (
-                      <div className="relative w-full h-full rounded-[24px] overflow-hidden">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={service.image_url}
-                          alt={service.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-full h-full rounded-[24px] flex flex-col items-center justify-center bg-tissue/80 text-black gap-2">
-                        <CategoryIcon className="w-10 h-10 text-black" />
-                        <span className="font-sans text-xs italic text-black/70">
-                          {currentCategory.label}
-                        </span>
-                      </div>
-                    )}
+                    <div className="relative w-full h-full rounded-[24px] overflow-hidden bg-black/5">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={getServiceImageUrl(service)}
+                        alt={service.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
 
                     <div className="absolute top-5 left-5">
                       <span className="font-sans text-xs bg-tissue text-black px-3.5 py-1 rounded-full shadow-sm">

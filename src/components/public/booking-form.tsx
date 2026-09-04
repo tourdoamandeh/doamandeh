@@ -680,7 +680,7 @@ export function BookingForm({ service }: BookingFormProps) {
               placeholder="Contoh: Lokasi antar jemput bandara/hotel, jam kedatangan, preferensi khusus..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-2xl border border-gray-200 bg-tissue pl-11 pr-4 py-3 text-xs text-black font-sans placeholder-black/40 focus:border-black focus:outline-none resize-none disabled:opacity-50 transition-colors"
+              className="w-full rounded-2xl border border-gray-200 bg-tissue pl-11 pr-4 py-3 text-xs text-black font-sans placeholder-black/40 focus:border-black focus:outline-none resize-y min-h-[90px] leading-relaxed disabled:opacity-50 transition-colors"
             />
           </div>
         </div>

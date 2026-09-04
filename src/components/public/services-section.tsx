@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { Service } from '@/types/database';
-import { formatRupiah } from '@/lib/constants';
+import { formatRupiah, getServiceImageUrl } from '@/lib/constants';
 import Image from 'next/image';
 import { FadeIn, FadeInStagger } from '@/components/ui/fade-in';
 
@@ -72,9 +72,9 @@ export function ServicesSection({
       category: item.cat,
       line1: item.line1,
       line2: item.line2,
-      description: item.desc,
+      description: (found && found.description) || item.desc,
       price: (found && found.price) || item.price,
-      image_url: item.image,
+      image_url: getServiceImageUrl({ image_url: found?.image_url, category: item.cat }),
     };
   });
 

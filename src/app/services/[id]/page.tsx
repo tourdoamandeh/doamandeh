@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
 import { Service, ServiceCategory } from '@/types/database';
+import { getServiceImageUrl } from '@/lib/constants';
 import { PublicHeader } from '@/components/public/public-header';
 import { PublicFooter } from '@/components/public/public-footer';
 import { BookingForm } from '@/components/public/booking-form';
@@ -186,16 +187,14 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
           {/* Left Column: Service Details */}
           <div className="lg:col-span-7 space-y-8">
             {/* Service Main Image Header */}
-            {service.image_url && (
-              <div className="relative h-72 sm:h-96 w-full rounded-[36px] overflow-hidden shadow-sm border-none">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={service.image_url}
-                  alt={service.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
+            <div className="relative h-72 sm:h-96 w-full rounded-[36px] overflow-hidden shadow-sm border-none bg-black/5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={getServiceImageUrl(service)}
+                alt={service.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
 
             <div>
               {/* Category Badge & Duration */}

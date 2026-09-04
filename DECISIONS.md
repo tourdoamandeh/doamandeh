@@ -109,7 +109,86 @@
        - **CTA Section**: `cta_tagline`, `cta_title`, `cta_subtitle`, `cta_button_text`.
        - **Footer & Operasional**: `footer_brand_desc`, `operating_hours_title`, `operating_hours_time`, `operating_hours_note`, `sosmed_tiktok`.
   3. **Penyelarasan Komponen Publik Klien**:
-     - Menghubungkan seluruh props dinamis ke `HeroSection`, `AboutSection`, `ServicesSection`, `TestimonialsSection`, `FaqSection`, `CtaSection`, `PublicHeader`, `PublicFooter`, `/about`, dan `/contact`.
-     - Menghapus sisa-sisa rounded corners dan bubble styles di halaman publik agar seluruh pengalaman visual Doamandeh (Klien & Admin) menyatu dalam satu bahasa visual yang harmonis dan editorial.
+      - Menghubungkan seluruh props dinamis ke `HeroSection`, `AboutSection`, `ServicesSection`, `TestimonialsSection`, `FaqSection`, `CtaSection`, `PublicHeader`, `PublicFooter`, `/about`, dan `/contact`.
+      - Menghapus sisa-sisa rounded corners dan bubble styles di halaman publik agar seluruh pengalaman visual Doamandeh (Klien & Admin) menyatu dalam satu bahasa visual yang harmonis dan editorial.
 
+## DEC-012: Unified Service Asset & Fallback Synchronization Architecture
+- **Date**: 2026-09-04
+- **Status**: Accepted
+- **Context**:
+  - Terdapat ketidaksinkronan antara katalog layanan di CMS Admin dan tampilan website publik (klien).
+  - Tampilan layanan di seksi homepage publik sebelumnya mengabaikan foto yang diunggah di CMS karena hardcoded ke array statis.
+  - Sebaliknya, di CMS Admin, jika suatu layanan belum memiliki foto custom yang diupload, tabel menampilkan kotak putus-putus kosong dan dialog form menggunakan link preset eksternal Unsplash yang tidak sesuai aset brand resmi.
+  - Folder `public/assets` telah memiliki aset foto berkualitas tinggi (`service-vehicle.jpg`, `service-tattoo.jpg`, `service-villa.jpg`, `service-travel.jpg`, `service-surfing.png`) serta ilustrasi vektor pendukung.
+- **Decision**:
+  1. **Single Source of Truth (`src/lib/constants.ts`)**:
+     - `SERVICE_FALLBACK_IMAGES`: Pemetaan terpusat 5 kategori layanan ke file foto resmi di `public/assets/`.
+     - `SERVICE_PRESET_IMAGES`: Koleksi preset gambar resmi (`/assets/...`) per kategori yang dapat dipilih langsung oleh Admin di CMS.
+     - `getServiceFallbackImage(category)`: Helper fungsi untuk memperoleh URL fallback sesuai kategori layanan.
+     - `getServiceImageUrl(service)`: Helper fungsi terpadu; jika `image_url` terisi (misal hasil upload ke Supabase Storage), gunakan URL tersebut. Jika kosong/null, otomatis fallback ke aset `public/assets/`.
+  2. **Sinkronisasi CMS Admin**:
+     - `service-form-dialog.tsx`: Mengganti preset Unsplash dengan aset lokal resmi, menampilkan banner informatif fallback foto bawaan ketika belum ada foto diunggah, dan memberikan visual highlight pada pilihan preset.
+     - `services-table.tsx`: Menampilkan thumbnail foto menggunakan `getServiceImageUrl(service)` disertai badge indikator `A` (Auto/Asset) jika menggunakan foto bawaan sehingga admin dapat langsung memverifikasi visual tampilan layanan.
+  3. **Sinkronisasi Website Publik**:
+     - `services-section.tsx`: Mengintegrasikan `getServiceImageUrl(service)` dan `found.description` dari CMS sehingga setiap perubahan foto atau deskripsi di CMS langsung tersinkronisasi ke homepage, dengan fallback mulus ke `/assets/`.
+     - `services/[id]/page.tsx` & `category/[slug]/page.tsx`: Menggunakan `getServiceImageUrl(service)` sehingga banner utama dan kartu katalog selalu menampilkan visual berkualitas tinggi tanpa ada celah gambar kosong.
 
+## DEC-013: Multiline Input & Textarea UX Enhancement across Settings & CMS Forms
+- **Date**: 2026-09-04
+- **Status**: Accepted
+- **Context**:
+  - Pada halaman pengaturan CMS (`/admin/settings`), dialog layanan, dan dialog pemesanan, banyak kolom teks panjang yang tampil terpotong (misal kutipan foto 3 baris di seksi Hero hanya memiliki `rows={2}`, narasi deskripsi terpotong di tepi bawah, dan subjudul serta alamat kantor menggunakan input 1 baris yang terpotong secara horizontal).
+- **Decision**:
+  1. **Ekspansi Dimensi Vertikal & Baris (Rows) Memadai**:
+     - `hero_title` ditingkatkan ke `rows={4}` dengan `min-h-[96px]`.
+     - `hero_subtitle` diubah dari single-line `<Input />` menjadi `<textarea rows={3} min-h-[75px] />` agar kalimat panjang terbaca utuh.
+     - Seluruh kutipan (`hero_slide_*_quote`) dan deskripsi banner 5 kategori layanan ditingkatkan dari `rows={2}` ke `rows={4}` dengan `min-h-[92px]`.
+     - `about_title` (`rows={4}` `min-h-[96px]`) & `about_text` (`rows={6}` `min-h-[140px]`).
+     - `services_title` (`rows={3}`), `services_subtitle` (`rows={4}`), `cta_title` (`rows={3}`), `cta_subtitle` (`rows={3}`).
+     - Ulasan testimoni (`rows={3}`), FAQ title/subtitle/answer (`rows={3}` & `rows={4}` `min-h-[96px]`).
+     - `contact_address` diubah dari single-line `<Input />` menjadi `<textarea rows={2} min-h-[64px] />`.
+     - `footer_brand_desc` ditingkatkan ke `rows={4}` `min-h-[96px]`.
+     - Dialog layanan (`service-form-dialog.tsx`) deskripsi: ditingkatkan ke `rows={4}` `min-h-[96px]`.
+     - Dialog booking (`booking-form-dialog.tsx`) catatan: ditingkatkan ke `rows={3}` `min-h-[80px]`.
+  2. **Interaktivitas & Tipografi yang Lega**:
+     - Menerapkan `leading-relaxed` dan padding yang proporsional (`px-3 py-2.5`).
+     - Mengganti `resize-none` dengan `resize-y` pada seluruh textarea agar admin memiliki kebebasan memperlebar textarea vertikal sesuai kenyamanan kerja.
+
+## DEC-014: Integration of shadcn/ui Chart into Admin CMS Overview Dashboard
+- **Date**: 2026-09-05
+- **Status**: Accepted
+- **Context**:
+  - Halaman ringkasan Admin (`/admin`) memerlukan visualisasi metrik operasional yang dense, cepat, dan jelas sesuai pedoman `ADMIN_UI.md`.
+  - Komponen chart diinstal via shadcn registry CLI (`bunx --bun shadcn@latest add chart`).
+- **Decision**:
+  1. **Komponen Primitives & Token Warna**:
+     - Memasang `src/components/ui/chart.tsx` resmi dari registry shadcn (menggunakan `recharts 3.8.0`).
+     - Mendaftarkan `--color-chart-1` hingga `--color-chart-5` di `@theme inline` serta token scoped `--chart-1` s.d. `--chart-5` di `globals.css` (`[data-theme="admin"]` menggunakan deep teal `#0f766e`, sky `#0284c7`, amber `#f59e0b`, emerald `#10b981`, dan indigo `#6366f1`).
+  2. **Arsitektur Komponen Client & Server**:
+     - `src/app/admin/(dashboard)/page.tsx` tetap berperan sebagai Server Component untuk memuat data dari Supabase SSR client.
+     - Membuat `src/components/admin/overview-charts.tsx` sebagai Client Component interaktif (`use client`).
+  3. **Visualisasi Data Operasional**:
+     - **Grafik 1 (AreaChart)**: Tren Aktivitas Reservasi 6 bulan terakhir, memvisualisasikan volume total booking vs status terkonfirmasi dengan tooltip monospaced tabular-nums dan legend status.
+     - **Grafik 2 (BarChart)**: Katalog & Permintaan per Kategori, membandingkan jumlah katalog aktif vs volume reservasi pada 5 kategori layanan (Travel, Villa, Surfing, Kendaraan, Tato).
+  4. **Penyelarasan Layout Main Content**:
+     - Meletakkan seksi chart di bawah 4 kartu KPI utama.
+     - Memperbarui sidebar kanan menjadi panel Status Reservasi (Confirmed, Completed, Pending, Cancelled dengan status badges) dan menu Akses Cepat.
+
+## DEC-015: Sidebar Smooth Animation Architecture & Chart Time-Range Select Filter
+- **Date**: 2026-09-05
+- **Status**: Accepted
+- **Context**:
+  - Saat membuka/menutup sidebar admin (`/admin`), terjadi lag dan stuttering (patah-patah) karena:
+    1. Unmounting/mounting instan elemen React DOM (header, group label, tooltips, dan user card) saat boolean `isCollapsed` berubah di frame 0, mendahului transisi CSS 200ms.
+    2. Recharts `ResponsiveContainer` default `debounce=0` memicu event `ResizeObserver` puluhan kali per detik di setiap frame perubahan lebar sidebar, membebani JavaScript main thread dengan kalkulasi ulang SVG.
+  - Pengguna juga menginginkan filter dropdown shadcn pada grafik Tren Aktivitas Reservasi untuk memilih rentang waktu: seminggu terakhir, sebulan terakhir, dan 6 bulan terakhir.
+- **Decision**:
+  1. **Eliminasi DOM Thrashing pada Sidebar (`app-sidebar.tsx`)**:
+     - Mempertahankan struktur DOM yang stabil tanpa unmount/mount komponen secara instan.
+     - Menggunakan transisi CSS (`transition-all duration-200`, `opacity-0 w-0 overflow-hidden`) untuk menyembunyikan teks label, sub-deskripsi, dan kartu profil secara halus tanpa merusak layout tree.
+     - Membungkus seluruh menu item dengan `<Tooltip open={isCollapsed ? undefined : false}>` sehingga tooltip hanya aktif saat sidebar dalam posisi collapsed tanpa tearing DOM nodes.
+  2. **Chart ResizeObserver Debounce**:
+     - Menambahkan `debounce={150}` pada `ResponsiveContainer` di `src/components/ui/chart.tsx` sehingga Recharts menunda re-render kalkulasi SVG hingga transisi lebar sidebar selesai, mengembalikan performa animasi ke 60 FPS yang mulus.
+  3. **Pemasangan Dropdown Filter Waktu (`select.tsx`)**:
+     - Menginstal komponen primitif resmi `Select` shadcn via CLI (`bunx --bun shadcn@latest add select`).
+     - Mengintegrasikan filter rentang waktu interaktif pada `OverviewCharts` (`7d` Seminggu Terakhir, `30d` Sebulan Terakhir, dan `6m` 6 Bulan Terakhir) dengan kalkulasi agregasi harian/bulanan dinamis dan penyesuaian interval X-Axis otomatis.
