@@ -19,7 +19,7 @@ export function AboutSection({ aboutText }: AboutSectionProps = {}) {
         <FadeIn direction="up">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-12 lg:mb-16">
             <div className="md:col-span-2 pt-1 md:pt-2">
-              <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium text-[#FFF6C6]/70 flex items-center gap-2">
+              <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-semibold text-[#FFF6C6]/70 flex items-center gap-2">
                 <span>//</span> TENTANG DOAMANDEH
               </p>
             </div>
@@ -34,7 +34,7 @@ export function AboutSection({ aboutText }: AboutSectionProps = {}) {
         {/* Bagian Bawah: Statistik + Tombol Selengkapnya, Gambar Asimetris & Teks */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
 
-          {/* Kolom Kiri: Statistik + Link (Di atas foto) & Foto Alam & Kendaraan */}
+          {/* Kolom Kiri: Statistik + Link (Di atas foto) & Foto Alam Rumah Pohon */}
           <FadeIn direction="up" delay={0.15} className="md:col-span-5 md:col-start-2 mt-0 md:mt-6 space-y-6">
             {/* Statistik & Tombol Link Selengkapnya di Atas Foto */}
             <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#FFFFFF]/20">
@@ -58,24 +58,25 @@ export function AboutSection({ aboutText }: AboutSectionProps = {}) {
               </Link>
             </div>
 
-            {/* Foto Alam & Kendaraan - BENTUK ELIPS */}
+            {/* Foto 1: Rumah Pohon & Alam Bali (Offline SVG) */}
             <div className="space-y-4 pt-2">
-              <div className="relative aspect-[3/2] w-full bg-gray-200 overflow-hidden border-2 border-[#fff6c6] shadow-sm">
+              <div className="relative aspect-[3/4] sm:aspect-[3/2] w-full bg-gray-200 overflow-hidden border-2 border-[#fff6c6] shadow-sm">
                 <Image
-                  src="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80"
-                  alt="Doamandeh Services"
+                  src="/assets/about-photo-1.svg"
+                  alt="Rumah Pohon & Alam Bali - Doamandeh"
                   fill
+                  sizes="(max-width: 768px) 100vw, 500px"
                   className="object-cover transition-transform duration-700 hover:scale-105"
                 />
               </div>
               <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-[#FFF6C6]/70 px-4">
-                <span>[01] ALAM &amp; KENDARAAN</span>
+                <span>[01] RUMAH POHON &amp; ALAM BALI</span>
                 <span>@2026</span>
               </div>
             </div>
           </FadeIn>
 
-          {/* Kolom Kanan: Teks Paragraf dan Foto Villa & Relaksasi */}
+          {/* Kolom Kanan: Teks Paragraf dan Foto Tebing & Laut Bali */}
           <FadeIn direction="up" delay={0.3} className="md:col-span-4 md:col-start-8 flex flex-col gap-10 mt-6 md:mt-0">
             <div className="text-base md:text-lg leading-relaxed text-[#FFF6C6]/90 font-light pr-0 md:pr-4 pt-1">
               {aboutText || 'Doamandeh hadir untuk jadi teman perjalananmu selama di pulau dewata. Apa pun gaya liburan yang kamu inginkan—mulai dari sewa kendaraan untuk keliling bebas, bersantai tenang di villa, menantang ombak lewat kelas surfing, ikut paket tour seru, sampai membuat tato sebagai kenang-kenangan—semuanya sudah kami siapkan dengan aman dan nyaman untukmu.'}
@@ -83,18 +84,19 @@ export function AboutSection({ aboutText }: AboutSectionProps = {}) {
               <span className="tracking-[0.5em] text-lg text-[#FFF6C6]">✦ ✦ ✦</span>
             </div>
 
-            {/* Foto Kanan (Villa & Relaksasi) - BENTUK ELIPS */}
+            {/* Foto 2: Tebing & Tepi Laut Bali (Offline SVG) */}
             <div className="space-y-4">
-              <div className="relative aspect-[4/3] w-full sm:w-4/5 bg-gray-200 overflow-hidden border-2 border-[#fff6c6] shadow-sm">
+              <div className="relative aspect-[3/4] sm:aspect-[4/3] w-full sm:w-4/5 bg-gray-200 overflow-hidden border-2 border-[#fff6c6] shadow-sm">
                 <Image
-                  src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80"
-                  alt="Doamandeh Experiences"
+                  src="/assets/about-photo-2.svg"
+                  alt="Tebing & Laut Bali - Doamandeh"
                   fill
+                  sizes="(max-width: 768px) 100vw, 400px"
                   className="object-cover transition-transform duration-700 hover:scale-105"
                 />
               </div>
               <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-[#FFF6C6]/70 sm:w-4/5 px-4">
-                <span>[02] VILLA &amp; RELAKSASI</span>
+                <span>[02] TEBING &amp; TEPI LAUT BALI</span>
                 <span>@2026</span>
               </div>
             </div>
