@@ -74,3 +74,28 @@ VALUES
   ('travel', 'Paket Tour 1 Hari', 'Paket perjalanan wisata 1 hari.', 450000, 'per orang', true),
   ('surfing-lesson', 'Surfing Lesson Beginner', 'Kelas surfing untuk pemula.', 300000, 'per sesi', true)
 ON CONFLICT DO NOTHING;
+
+-- 5. Site Settings Table (Key-Value Format for Dynamic CMS)
+CREATE TABLE IF NOT EXISTS public.site_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT,
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Enable RLS
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+
+-- Allow public read access to site_settings
+CREATE POLICY "Allow public read site_settings"
+  ON public.site_settings
+  FOR SELECT
+  USING (true);
+
+-- Allow authenticated users (admin) to manage site_settings
+CREATE POLICY "Allow authenticated manage site_settings"
+  ON public.site_settings
+  FOR ALL
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+

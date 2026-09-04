@@ -92,25 +92,45 @@ export async function updateSiteSettingsAction(
     }
 
     // Try saving in key-value structure first (recommended standard)
+    // We send { key, value } so it works whether the table has `updated_at` or not
     const entries = Object.entries(parsed.data).map(([key, value]) => ({
       key,
       value: value ?? '',
-      updated_at: new Date().toISOString(),
     }));
 
-    const { error: kvError } = await supabase
+    let { error: kvError } = await supabase
       .from('site_settings')
       .upsert(entries, { onConflict: 'key' });
 
+    // If an error occurs, check if it's because updated_at is NOT NULL without default
+    if (kvError && kvError.message.includes('updated_at')) {
+      const entriesWithTime = entries.map((e) => ({
+        ...e,
+        updated_at: new Date().toISOString(),
+      }));
+      const retryResult = await supabase
+        .from('site_settings')
+        .upsert(entriesWithTime, { onConflict: 'key' });
+      kvError = retryResult.error;
+    }
+
     if (kvError) {
       // Fallback: try column-based upsert if single-row table is used
-      const { error: rowError } = await supabase
+      const rowData: Record<string, unknown> = {
+        id: 'default',
+        ...parsed.data,
+      };
+
+      let { error: rowError } = await supabase
         .from('site_settings')
-        .upsert({
-          id: 'default',
-          ...parsed.data,
-          updated_at: new Date().toISOString(),
-        });
+        .upsert(rowData);
+
+      if (rowError && rowError.message.includes('updated_at')) {
+        const retryRow = await supabase
+          .from('site_settings')
+          .upsert({ ...rowData, updated_at: new Date().toISOString() });
+        rowError = retryRow.error;
+      }
 
       if (rowError) {
         return {
