@@ -1,47 +1,25 @@
-# ISSUES.md
+# ISSUES & NEXT TO-DO LIST
 
-## ISSUE-001
+> Daftar item tugas dan evaluasi untuk sesi berikutnya.
 
-Status: Done
-Priority: High
-Title: [Bug] Admin login redirect tidak stabil
+## Outstanding To-Do Items
 
-Description:
-Setelah login, kadang masih kembali redirect ke /admin/login karena cookie auth tidak tersalin saat pembuatan redirect response di middleware dan layout.
+- [ ] **1. Perbaiki foto relate**
+  - Perbarui aset foto pada seluruh seksi publik (Hero, About, Services, Testimonials, FAQ, CTA) dengan gambar destinasi, aktivitas wisata, dan lifestyle Bali yang lebih kontekstual, menarik, dan berkualitas tinggi sesuai 5 kategori layanan (Sewa Kendaraan, Tato, Villa, Surfing, Travel Tour).
 
-Steps:
-1. Buka /admin/login
-2. Login sebagai admin
-3. Cek redirect ke /admin
-
-Expected:
-Pengguna langsung masuk ke dashboard /admin dengan sesi login yang valid dan persisten.
-
-Actual:
-Sebelumnya kadang kembali terpental ke /admin/login.
-
-Error Log:
-N/A (Redirect loop pada middleware / session cookie loss)
-
-Suspected Files:
-- src/lib/supabase/middleware.ts
-- src/lib/actions/admin/auth.ts
-- src/app/admin/login/page.tsx
-- src/app/admin/(dashboard)/layout.tsx
-
-Suggested Fix:
-1. Salin seluruh cookies dari `supabaseResponse` ke `redirectResponse` saat rute admin dialihkan di `src/lib/supabase/middleware.ts`.
-2. Pisahkan rute `/admin/login` dari protected layout route group `src/app/admin/(dashboard)/layout.tsx`.
-3. Verifikasi role admin dari tabel `public.profiles` di server action `loginAdminAction`.
-
-Blocker:
-No
+- [ ] **2. Perbaiki DESIGN.md**
+  - Audit dan perbarui dokumen `DESIGN.md` agar mencerminkan standar terbaru proyek: penggunaan font **New York** / **Playfair Display**, palet warna Krem **`#FFF6C6`**, sistem animasi scroll `framer-motion`, serta aturan border **`border-2 border-[#fff6c6]`**.
 
 ---
 
-## Catatan / Todo Lanjutan
+## Completed Items
 
-1. **Storage Bucket Foto Layanan**:
-   - Integrasi upload gambar langsung via Supabase Storage bucket jika user ingin mengunggah file foto dari admin CMS.
-2. **WhatsApp Webhook / Notification (Opsional)**:
-   - Integrasi notifikasi otomatis ke nomor WhatsApp admin saat ada booking baru masuk.
+- [x] **Perbaiki warna krem `#FFF6C6` global**
+  - Mengganti seluruh penggunaan `#FFFFFF` / `bg-white` pada teks, icon, badge logo `D.`, dan box jam operasional menjadi warna krem `#FFF6C6`.
+- [x] **Add motion (Scroll animations & Stagger reveal)**
+  - Memasang `framer-motion` dan menerapkan komponen `FadeIn` / `FadeInStagger` di seluruh seksi landing page.
+- [x] **Perbaikan layout foto FAQ**
+  - Memperbaiki layout foto kanan FAQ dengan `items-stretch` dan `object-cover object-top` agar foto mengisi 100% tinggi tanpa melompat atau meninggalkan celah kosong.
+- [x] **Standardisasi border foto**
+  - Menyeragamkan bingkai foto carousel hero, tentang kami, ulasan pelanggan, dan CTA section menjadi `border-2 border-[#fff6c6]`.
+

@@ -1,7 +1,10 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Service, ServiceCategory } from '@/types/database';
+import { createClient } from '@/lib/supabase/client';
+import { toast } from 'sonner';
 import {
   toggleServiceActiveAction,
   deleteServiceAction,
@@ -12,26 +15,24 @@ import {
   Plus,
   Edit2,
   Trash2,
-  CheckCircle2,
-  XCircle,
   Loader2,
-  Car,
-  Palette,
-  Home,
-  Compass,
-  Waves,
+  AlertTriangle,
+  ArrowUpDown,
+  X,
+  ImageIcon,
+  Package,
 } from 'lucide-react';
 
 interface ServicesTableProps {
   initialServices: Service[];
 }
 
-const CATEGORY_MAP: Record<ServiceCategory, { label: string; icon: React.ComponentType<{ className?: string }> }> = {
-  'vehicle-rental': { label: 'Sewa Kendaraan', icon: Car },
-  'tattoo': { label: 'Tato Studio', icon: Palette },
-  'villa': { label: 'Villa & Stay', icon: Home },
-  'travel': { label: 'Paket Travel', icon: Compass },
-  'surfing-lesson': { label: 'Surfing Lesson', icon: Waves },
+const CATEGORY_MAP: Record<ServiceCategory, string> = {
+  'vehicle-rental': 'Sewa Kendaraan',
+  'tattoo': 'Tato Studio',
+  'villa': 'Villa & Stay',
+  'travel': 'Paket Travel',
+  'surfing-lesson': 'Surfing Lesson',
 };
 
 function formatRupiah(amount: number): string {
@@ -43,28 +44,59 @@ function formatRupiah(amount: number): string {
 }
 
 export function ServicesTable({ initialServices }: ServicesTableProps) {
+  const router = useRouter();
+  const [services, setServices] = useState<Service[]>(initialServices);
+
+  useEffect(() => {
+    setServices(initialServices);
+  }, [initialServices]);
+
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'newest' | 'title' | 'price-asc' | 'price-desc'>('newest');
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
 
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  // Delete Confirmation Modal
+  const [serviceToDelete, setServiceToDelete] = useState<Service | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+
   const [isPending, startTransition] = useTransition();
 
-  const filteredServices = initialServices.filter((s) => {
-    const matchesSearch =
-      s.title.toLowerCase().includes(search.toLowerCase()) ||
-      (s.description && s.description.toLowerCase().includes(search.toLowerCase()));
-    const matchesCategory = categoryFilter === 'all' || s.category === categoryFilter;
-    const matchesStatus =
-      statusFilter === 'all' ||
-      (statusFilter === 'active' && s.is_active) ||
-      (statusFilter === 'inactive' && !s.is_active);
+  // Filter & Sort
+  const filteredServices = services
+    .filter((s) => {
+      const query = search.toLowerCase().trim();
+      const matchesSearch =
+        !query ||
+        s.title.toLowerCase().includes(query) ||
+        (s.description && s.description.toLowerCase().includes(query)) ||
+        (s.unit && s.unit.toLowerCase().includes(query)) ||
+        (s.duration && s.duration.toLowerCase().includes(query));
 
-    return matchesSearch && matchesCategory && matchesStatus;
-  });
+      const matchesCategory = categoryFilter === 'all' || s.category === categoryFilter;
+      const matchesStatus =
+        statusFilter === 'all' ||
+        (statusFilter === 'active' && s.is_active) ||
+        (statusFilter === 'inactive' && !s.is_active);
+
+      return matchesSearch && matchesCategory && matchesStatus;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'title') {
+        return a.title.localeCompare(b.title);
+      }
+      if (sortBy === 'price-asc') {
+        return a.price - b.price;
+      }
+      if (sortBy === 'price-desc') {
+        return b.price - a.price;
+      }
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
 
   function handleOpenCreate() {
     setEditingService(null);
@@ -76,50 +108,106 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
     setDialogOpen(true);
   }
 
+  async function handleFormSuccess() {
+    try {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('services')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (data) {
+        setServices(data as Service[]);
+      }
+    } catch {
+      // fallback
+    }
+    router.refresh();
+  }
+
   function handleToggleStatus(id: string, currentStatus: boolean) {
+    setTogglingId(id);
+    setServices((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, is_active: !currentStatus } : s))
+    );
+
     startTransition(async () => {
-      await toggleServiceActiveAction(id, currentStatus);
+      const res = await toggleServiceActiveAction(id, currentStatus);
+      if (!res.success) {
+        setServices(initialServices);
+        toast.error(res.error || 'Gagal mengubah status layanan');
+      } else {
+        toast.success(`Status layanan diubah menjadi ${!currentStatus ? 'Aktif' : 'Nonaktif'}`);
+      }
+      setTogglingId(null);
+      router.refresh();
     });
   }
 
-  function handleDelete(id: string, title: string) {
-    if (confirm(`Apakah Anda yakin ingin menghapus layanan "${title}"?`)) {
-      setDeletingId(id);
-      startTransition(async () => {
-        await deleteServiceAction(id);
-        setDeletingId(null);
-      });
-    }
+  function confirmDelete() {
+    if (!serviceToDelete) return;
+    setIsDeleting(true);
+    const targetId = serviceToDelete.id;
+    const targetTitle = serviceToDelete.title;
+
+    setServices((prev) => prev.filter((s) => s.id !== targetId));
+
+    startTransition(async () => {
+      const res = await deleteServiceAction(targetId);
+      if (!res.success) {
+        setServices(initialServices);
+        toast.error(res.error || 'Gagal menghapus layanan');
+      } else {
+        toast.success(`Layanan "${targetTitle}" berhasil dihapus`);
+      }
+      setIsDeleting(false);
+      setServiceToDelete(null);
+      router.refresh();
+    });
+  }
+
+  function resetFilters() {
+    setSearch('');
+    setCategoryFilter('all');
+    setStatusFilter('all');
+    setSortBy('newest');
   }
 
   return (
-    <div>
-      {/* Action Bar / Filters */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6">
-        <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          {/* Search */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+    <div className="space-y-4">
+      {/* Dense Toolbar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex flex-1 flex-wrap items-center gap-2.5">
+          {/* Live Search */}
+          <div className="relative flex-1 min-w-[200px] max-w-sm">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
             <input
               type="text"
-              placeholder="Cari nama atau deskripsi layanan..."
+              placeholder="Cari nama layanan, deskripsi..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-zinc-800 bg-zinc-900/90 pl-9 pr-4 py-2 text-xs text-white placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
+              className="w-full rounded-lg border border-stone-200 bg-white pl-8 pr-7 py-1.5 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
             />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-stone-400 hover:text-stone-600"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            )}
           </div>
 
           {/* Category Filter */}
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-xl border border-zinc-800 bg-zinc-900/90 px-3 py-2 text-xs text-zinc-300 focus:border-amber-500 focus:outline-none"
+            className="rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-xs text-stone-700 focus:border-teal-700 focus:outline-none"
           >
             <option value="all">Semua Kategori</option>
             <option value="vehicle-rental">Sewa Kendaraan</option>
-            <option value="tattoo">Tato</option>
-            <option value="villa">Villa</option>
-            <option value="travel">Travel</option>
+            <option value="tattoo">Tato Studio</option>
+            <option value="villa">Villa & Stay</option>
+            <option value="travel">Paket Travel</option>
             <option value="surfing-lesson">Surfing Lesson</option>
           </select>
 
@@ -127,134 +215,184 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-xl border border-zinc-800 bg-zinc-900/90 px-3 py-2 text-xs text-zinc-300 focus:border-amber-500 focus:outline-none"
+            className="rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-xs text-stone-700 focus:border-teal-700 focus:outline-none"
           >
             <option value="all">Semua Status</option>
-            <option value="active">Hanya Aktif</option>
+            <option value="active">Aktif Saja</option>
             <option value="inactive">Nonaktif</option>
           </select>
+
+          {/* Sort By */}
+          <div className="flex items-center gap-1 rounded-lg border border-stone-200 bg-white px-2 py-1 text-xs text-stone-600">
+            <ArrowUpDown className="h-3 w-3 text-stone-400" />
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              className="bg-transparent text-xs text-stone-700 focus:outline-none cursor-pointer"
+            >
+              <option value="newest">Terbaru</option>
+              <option value="title">Nama (A-Z)</option>
+              <option value="price-asc">Harga Terendah</option>
+              <option value="price-desc">Harga Tertinggi</option>
+            </select>
+          </div>
         </div>
 
-        {/* Add Service Button */}
+        {/* Primary Action Button */}
         <button
           onClick={handleOpenCreate}
-          className="flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2 text-xs font-bold text-black hover:bg-amber-400 transition-colors shadow-lg shadow-amber-500/20"
+          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#0F766E] px-3.5 py-1.5 text-xs font-medium text-white hover:bg-[#115E59] transition-colors"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3.5 w-3.5" />
           <span>Tambah Layanan</span>
         </button>
       </div>
 
-      {/* Services Table */}
-      <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 shadow-xl">
+      {/* Compact Table */}
+      <div className="rounded-lg border border-stone-200 bg-white overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-zinc-300">
-            <thead className="border-b border-zinc-800 bg-zinc-900/80 text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
+          <table className="w-full text-left text-xs text-stone-700">
+            <thead className="bg-stone-50 text-[11px] font-semibold text-stone-500 uppercase tracking-wider border-b border-stone-200">
               <tr>
-                <th className="px-6 py-4">Layanan</th>
-                <th className="px-6 py-4">Kategori</th>
-                <th className="px-6 py-4">Harga / Satuan</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Aksi</th>
+                <th className="px-4 py-2.5">Foto & Layanan</th>
+                <th className="px-4 py-2.5">Kategori</th>
+                <th className="px-4 py-2.5">Harga / Satuan</th>
+                <th className="px-4 py-2.5">Status</th>
+                <th className="px-4 py-2.5 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/60">
+            <tbody className="divide-y divide-stone-100">
               {filteredServices.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-zinc-500">
-                    Tidak ada layanan yang sesuai dengan kriteria pencarian.
+                  <td colSpan={5} className="py-12 text-center">
+                    <Package className="h-6 w-6 text-stone-400 mx-auto mb-2" />
+                    <p className="text-xs font-medium text-stone-700 mb-1">
+                      Tidak ada data layanan ditemukan.
+                    </p>
+                    <p className="text-[11px] text-stone-500 mb-3">
+                      {search || categoryFilter !== 'all' || statusFilter !== 'all'
+                        ? 'Coba ubah kata kunci atau reset filter pencarian.'
+                        : 'Belum ada katalog layanan yang terdaftar.'}
+                    </p>
+                    {search || categoryFilter !== 'all' || statusFilter !== 'all' ? (
+                      <button
+                        onClick={resetFilters}
+                        className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50"
+                      >
+                        Reset Filter
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleOpenCreate}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F766E] px-3.5 py-1.5 text-xs font-medium text-white hover:bg-[#115E59]"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        <span>Tambah Layanan Sekarang</span>
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : (
                 filteredServices.map((service) => {
-                  const cat = CATEGORY_MAP[service.category] || {
-                    label: service.category,
-                    icon: Compass,
-                  };
-                  const CatIcon = cat.icon;
-                  const isBeingDeleted = deletingId === service.id;
+                  const isTogglingThis = togglingId === service.id;
+                  const catLabel = CATEGORY_MAP[service.category] || service.category;
 
                   return (
                     <tr
                       key={service.id}
-                      className="hover:bg-zinc-800/30 transition-colors group"
+                      className="h-12 hover:bg-stone-50/70 transition-colors"
                     >
-                      {/* Title & Description */}
-                      <td className="px-6 py-4 max-w-xs">
-                        <p className="font-semibold text-white group-hover:text-amber-400 transition-colors">
-                          {service.title}
-                        </p>
-                        <p className="text-[11px] text-zinc-400 line-clamp-1 mt-0.5">
-                          {service.description || '-'}
-                        </p>
+                      {/* Photo + Title */}
+                      <td className="px-4 py-2 max-w-sm">
+                        <div className="flex items-center gap-3">
+                          {service.image_url ? (
+                            <img
+                              src={service.image_url}
+                              alt={service.title}
+                              className="h-8 w-11 rounded border border-stone-200 object-cover bg-stone-100 shrink-0"
+                              onError={(e) => {
+                                (e.target as HTMLElement).style.display = 'none';
+                              }}
+                            />
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEdit(service)}
+                              title="Tambah foto layanan"
+                              className="flex h-8 w-11 flex-col items-center justify-center rounded border border-dashed border-stone-300 bg-stone-50 text-stone-400 hover:border-stone-400 hover:text-stone-600 transition-colors shrink-0"
+                            >
+                              <ImageIcon className="h-3.5 w-3.5" />
+                            </button>
+                          )}
+
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-stone-900 truncate">
+                              {service.title}
+                            </p>
+                            <p className="text-[11px] text-stone-500 line-clamp-1">
+                              {service.description || 'Tanpa deskripsi'}
+                            </p>
+                          </div>
+                        </div>
                       </td>
 
                       {/* Category */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-zinc-800 text-zinc-300 border border-zinc-700/60">
-                          <CatIcon className="h-3 w-3 text-amber-400" />
-                          {cat.label}
+                      <td className="px-4 py-2 whitespace-nowrap">
+                        <span className="inline-block px-2 py-0.5 rounded text-[11px] font-medium bg-stone-100 border border-stone-200 text-stone-700">
+                          {catLabel}
                         </span>
                       </td>
 
                       {/* Price */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <p className="font-bold text-white">
+                      <td className="px-4 py-2 whitespace-nowrap">
+                        <span className="font-mono text-xs font-semibold text-stone-900 tabular-nums">
                           {formatRupiah(service.price)}
-                        </p>
-                        <p className="text-[10px] text-zinc-400">
-                          {service.unit ? `/${service.unit.replace(/^per\s+/i, '')}` : '-'}
-                          {service.duration ? ` • ${service.duration}` : ''}
-                        </p>
+                        </span>
+                        <span className="text-[11px] text-stone-500 ml-1">
+                          {service.unit ? `/${service.unit.replace(/^per\s+/i, '')}` : ''}
+                        </span>
                       </td>
 
-                      {/* Status */}
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      {/* Status: Dot + Text */}
+                      <td className="px-4 py-2 whitespace-nowrap">
                         <button
                           onClick={() => handleToggleStatus(service.id, service.is_active)}
-                          disabled={isPending}
-                          title="Klik untuk ubah status"
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${
-                            service.is_active
-                              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20'
-                              : 'bg-zinc-800 text-zinc-400 border border-zinc-700 hover:bg-zinc-700'
-                          }`}
+                          disabled={isPending || isTogglingThis}
+                          title="Klik untuk mengubah status aktif"
+                          className="inline-flex items-center gap-1.5 text-xs font-medium hover:opacity-80 transition-opacity"
                         >
-                          {service.is_active ? (
-                            <>
-                              <CheckCircle2 className="h-3 w-3" />
+                          {isTogglingThis ? (
+                            <Loader2 className="h-3 w-3 animate-spin text-stone-400" />
+                          ) : service.is_active ? (
+                            <span className="inline-flex items-center gap-1.5 text-emerald-700">
+                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
                               Aktif
-                            </>
+                            </span>
                           ) : (
-                            <>
-                              <XCircle className="h-3 w-3" />
+                            <span className="inline-flex items-center gap-1.5 text-stone-500">
+                              <span className="h-1.5 w-1.5 rounded-full bg-stone-400" />
                               Nonaktif
-                            </>
+                            </span>
                           )}
                         </button>
                       </td>
 
                       {/* Actions */}
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
-                        <div className="flex items-center justify-end gap-2">
+                      <td className="px-4 py-2 whitespace-nowrap text-right">
+                        <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => handleOpenEdit(service)}
-                            className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-amber-400 transition-colors"
+                            className="p-1 rounded text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
                             title="Edit Layanan"
                           >
-                            <Edit2 className="h-4 w-4" />
+                            <Edit2 className="h-3.5 w-3.5" />
                           </button>
                           <button
-                            onClick={() => handleDelete(service.id, service.title)}
-                            disabled={isPending || isBeingDeleted}
-                            className="rounded-lg p-1.5 text-zinc-400 hover:bg-red-950/40 hover:text-red-400 transition-colors disabled:opacity-50"
+                            onClick={() => setServiceToDelete(service)}
+                            className="p-1 rounded text-stone-500 hover:bg-rose-50 hover:text-rose-600 transition-colors"
                             title="Hapus Layanan"
                           >
-                            {isBeingDeleted ? (
-                              <Loader2 className="h-4 w-4 animate-spin text-red-400" />
-                            ) : (
-                              <Trash2 className="h-4 w-4" />
-                            )}
+                            <Trash2 className="h-3.5 w-3.5" />
                           </button>
                         </div>
                       </td>
@@ -267,12 +405,54 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
         </div>
       </div>
 
-      {/* Service Modal Dialog */}
+      {/* Service Form Modal (Create / Edit) */}
       <ServiceFormDialog
         isOpen={dialogOpen}
         service={editingService}
         onClose={() => setDialogOpen(false)}
+        onSuccess={handleFormSuccess}
       />
+
+      {/* Delete Confirmation Modal */}
+      {serviceToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="w-full max-w-sm rounded-lg border border-stone-200 bg-white p-5 text-stone-900 shadow-xl">
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-rose-50 text-rose-600 border border-rose-200">
+                <AlertTriangle className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="text-xs font-bold text-stone-900">Hapus Layanan</h3>
+                <p className="text-[11px] text-stone-500">Tindakan ini permanen.</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-stone-600 mb-5 leading-relaxed">
+              Yakin ingin menghapus <strong className="text-stone-900">{serviceToDelete.title}</strong>? Data ini akan dihapus dari katalog.
+            </p>
+
+            <div className="flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setServiceToDelete(null)}
+                disabled={isDeleting}
+                className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={confirmDelete}
+                disabled={isDeleting}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-[#DC2626] px-3.5 py-1.5 text-xs font-medium text-white hover:bg-rose-700 transition-colors"
+              >
+                {isDeleting && <Loader2 className="h-3 w-3 animate-spin" />}
+                <span>{isDeleting ? 'Menghapus...' : 'Hapus'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
