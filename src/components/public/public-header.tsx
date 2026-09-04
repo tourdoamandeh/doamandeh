@@ -39,16 +39,13 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
   )}`;
 
   return (
-    <header className="sticky top-0 z-40 bg-softyellow/95 backdrop-blur-md border-b-2 border-brown font-sans">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 bg-transparent text-softyellow backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="h-10 w-10 bg-brown text-softyellow flex items-center justify-center font-light text-2xl rounded-none border-2 border-brown shadow-none">
-              D.
-            </div>
+          <Link href="/" className="flex items-center gap-3 group text-softyellow">
             <div>
-              <span className="text-xl font-bold uppercase tracking-widest text-black block leading-none">
+              <span className="text-xl sm:text-2xl text-softyellow block leading-none font-medium tracking-wide">
                 Doamandeh
               </span>
               <span className="text-[9px] uppercase tracking-[0.25em] text-brown/70 block mt-1">
@@ -61,11 +58,10 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
           <nav className="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold">
             <Link
               href="/"
-              className={`transition-colors py-1 ${
-                pathname === '/'
-                  ? 'text-brown border-b-2 border-brown'
-                  : 'text-black/70 hover:text-brown'
-              }`}
+              className={`font-sans text-sm font-medium transition-all ${pathname === '/'
+                ? 'text-softyellow underline underline-offset-8 decoration-2 decoration-softyellow'
+                : 'text-softyellow opacity-80 hover:opacity-100'
+                }`}
             >
               Beranda
             </Link>
@@ -78,36 +74,35 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
             >
               <button
                 type="button"
-                className={`flex items-center gap-1.5 transition-colors py-1 ${
-                  pathname.startsWith('/category')
-                    ? 'text-brown border-b-2 border-brown'
-                    : 'text-black/70 hover:text-brown'
-                }`}
+                className={`flex items-center gap-1.5 font-sans text-sm font-medium transition-all ${pathname.startsWith('/category')
+                  ? 'text-softyellow underline underline-offset-8 decoration-2 decoration-softyellow'
+                  : 'text-softyellow opacity-80 hover:opacity-100'
+                  }`}
               >
                 <span>Layanan Wisata</span>
-                <ChevronDown className="h-3.5 w-3.5 text-brown" />
+                <ChevronDown className="h-4 w-4 text-softyellow opacity-70" />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-64 rounded-none bg-softwhite p-2 border-2 border-brown shadow-none animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="absolute top-full left-0 mt-2 w-64 rounded-none bg-brown p-2 shadow-xl border border-softyellow/30 backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-150">
                   {CATEGORIES.map((cat) => {
                     const Icon = cat.icon;
+                    const isActive = pathname === `/category/${cat.slug}`;
                     return (
                       <Link
                         key={cat.slug}
                         href={`/category/${cat.slug}`}
                         onClick={() => setDropdownOpen(false)}
-                        className={`flex items-center justify-between px-4 py-3 rounded-none transition-colors ${
-                          pathname === `/category/${cat.slug}`
-                            ? 'bg-brown text-softyellow font-bold'
-                            : 'text-black hover:bg-softyellow'
-                        }`}
+                        className={`flex items-center justify-between rounded-none px-4 py-3 font-sans text-xs font-medium tracking-wide transition-colors ${isActive
+                          ? 'bg-softyellow text-brown'
+                          : 'text-softyellow hover:bg-softyellow/20'
+                          }`}
                       >
                         <div className="flex items-center gap-3">
-                          <Icon className="h-4 w-4" />
-                          <span className="text-xs uppercase tracking-wider">{cat.label}</span>
+                          <Icon className={`h-4 w-4 ${isActive ? 'text-brown' : 'text-softyellow'}`} />
+                          <span>{cat.label}</span>
                         </div>
-                        <span className="text-[10px] uppercase opacity-60">{cat.num}</span>
+                        <span className="text-[10px] font-sans opacity-70">{cat.num}</span>
                       </Link>
                     );
                   })}
@@ -117,22 +112,20 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
 
             <Link
               href="/about"
-              className={`transition-colors py-1 ${
-                pathname === '/about'
-                  ? 'text-brown border-b-2 border-brown'
-                  : 'text-black/70 hover:text-brown'
-              }`}
+              className={`font-sans text-sm font-medium transition-all ${pathname === '/about'
+                ? 'text-softyellow underline underline-offset-8 decoration-2 decoration-softyellow'
+                : 'text-softyellow opacity-80 hover:opacity-100'
+                }`}
             >
               Tentang Kami
             </Link>
 
             <Link
               href="/contact"
-              className={`transition-colors py-1 ${
-                pathname === '/contact'
-                  ? 'text-brown border-b-2 border-brown'
-                  : 'text-black/70 hover:text-brown'
-              }`}
+              className={`font-sans text-sm font-medium transition-all ${pathname === '/contact'
+                ? 'text-softyellow underline underline-offset-8 decoration-2 decoration-softyellow'
+                : 'text-softyellow opacity-80 hover:opacity-100'
+                }`}
             >
               Kontak
             </Link>
@@ -144,10 +137,10 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-none bg-brown text-softyellow px-6 py-2.5 text-xs uppercase tracking-widest font-bold hover:bg-black transition-all border-2 border-brown shadow-none"
+              className="flex items-center gap-2 rounded-none bg-softyellow px-6 py-2.5 font-sans text-xs font-bold text-brown hover:bg-white hover:text-brown transition-all border border-softyellow shadow-none"
             >
-              <Phone className="h-3.5 w-3.5 text-softyellow" />
-              <span>WhatsApp</span>
+              <Phone className="h-4 w-4 text-brown" />
+              <span className="text-brown font-bold">WhatsApp</span>
             </a>
           </div>
 
@@ -156,10 +149,10 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-none bg-brown text-softyellow hover:bg-black transition-colors border-2 border-brown shadow-none"
+              className="p-2.5 rounded-none bg-softyellow text-brown hover:bg-white transition-colors"
               aria-label="Toggle Navigation Menu"
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileMenuOpen ? <X className="h-5 w-5 text-brown" /> : <Menu className="h-5 w-5 text-brown" />}
             </button>
           </div>
         </div>
@@ -167,82 +160,79 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t-2 border-brown bg-softyellow px-6 pt-4 pb-8 space-y-4 animate-in slide-in-from-top-2 duration-150">
-          <div className="space-y-2 text-xs uppercase tracking-widest font-bold">
+        <div className="md:hidden border-b border-softyellow/30 bg-brown text-softyellow px-6 pt-4 pb-8 space-y-4 animate-in slide-in-from-top-2 duration-150 shadow-lg rounded-none">
+          <div className="space-y-2">
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
-              className={`block rounded-none px-4 py-3 border-2 border-brown ${
-                pathname === '/' ? 'bg-brown text-softyellow' : 'bg-softwhite text-black hover:bg-white'
-              }`}
+              className={`block rounded-none px-4 py-3 font-sans text-sm font-medium ${pathname === '/' ? 'bg-softyellow text-brown' : 'text-softyellow hover:bg-softyellow/20'
+                }`}
             >
               Beranda
             </Link>
             <Link
               href="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className={`block rounded-none px-4 py-3 border-2 border-brown ${
-                pathname === '/about' ? 'bg-brown text-softyellow' : 'bg-softwhite text-black hover:bg-white'
-              }`}
+              className={`block rounded-none px-4 py-3 font-sans text-sm font-medium ${pathname === '/about' ? 'bg-softyellow text-brown' : 'text-softyellow hover:bg-softyellow/20'
+                }`}
             >
               Tentang Kami
             </Link>
             <Link
               href="/contact"
               onClick={() => setMobileMenuOpen(false)}
-              className={`block rounded-none px-4 py-3 border-2 border-brown ${
-                pathname === '/contact' ? 'bg-brown text-softyellow' : 'bg-softwhite text-black hover:bg-white'
-              }`}
+              className={`block rounded-none px-4 py-3 font-sans text-sm font-medium ${pathname === '/contact' ? 'bg-softyellow text-brown' : 'text-softyellow hover:bg-softyellow/20'
+                }`}
             >
               Hubungi Kami
             </Link>
           </div>
 
-          <div className="pt-3 border-t-2 border-brown">
-            <p className="px-1 text-[10px] uppercase tracking-[0.2em] font-bold text-brown/70 mb-3">
+          <div className="pt-3 border-t border-softyellow/30">
+            <p className="px-4 text-[11px] font-sans font-medium text-softyellow opacity-70 mb-3">
               Kategori Layanan
             </p>
-            <div className="space-y-1 text-xs uppercase tracking-widest font-bold">
+            <div className="space-y-1">
               {CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
+                const isActive = pathname === `/category/${cat.slug}`;
                 return (
                   <Link
                     key={cat.slug}
                     href={`/category/${cat.slug}`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center justify-between rounded-none px-4 py-2.5 border-2 border-brown ${
-                      pathname === `/category/${cat.slug}`
-                        ? 'bg-brown text-softyellow'
-                        : 'bg-softwhite text-black hover:bg-white'
-                    }`}
+                    className={`flex items-center justify-between rounded-none px-4 py-2.5 font-sans text-xs font-medium ${isActive
+                      ? 'bg-softyellow text-brown'
+                      : 'text-softyellow hover:bg-softyellow/20'
+                      }`}
                   >
                     <div className="flex items-center gap-3">
-                      <Icon className="h-4 w-4" />
+                      <Icon className={`h-4 w-4 ${isActive ? 'text-brown' : 'text-softyellow'}`} />
                       <span>{cat.label}</span>
                     </div>
-                    <span className="text-[10px] opacity-60">{cat.num}</span>
+                    <span className="text-[10px] font-sans opacity-70">{cat.num}</span>
                   </Link>
                 );
               })}
             </div>
           </div>
 
-          <div className="pt-4 border-t-2 border-brown space-y-2 text-xs uppercase tracking-widest font-bold">
+          <div className="pt-4 border-t border-softyellow/30 space-y-2">
             <a
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 rounded-none bg-brown text-softyellow px-6 py-3 border-2 border-brown hover:bg-black transition-colors"
+              className="flex w-full items-center justify-center gap-2 rounded-none bg-softyellow px-6 py-3 font-sans text-xs font-bold text-brown hover:bg-white transition-colors"
             >
-              <Phone className="h-4 w-4 text-softyellow" />
-              <span>WhatsApp Kami</span>
+              <Phone className="h-4 w-4 text-brown" />
+              <span className="text-brown font-bold">WhatsApp Kami</span>
             </a>
             <Link
               href="/admin/login"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex w-full items-center justify-center gap-2 rounded-none bg-softwhite text-brown border-2 border-brown px-6 py-3 hover:bg-white transition-colors"
+              className="flex w-full items-center justify-center gap-2 rounded-none bg-softyellow/20 border border-softyellow/30 px-6 py-3 font-sans text-xs font-medium text-softyellow hover:bg-softyellow hover:text-brown transition-colors"
             >
-              <Shield className="h-4 w-4 text-brown" />
+              <Shield className="h-4 w-4 text-softyellow" />
               <span>Portal Administrator</span>
             </Link>
           </div>

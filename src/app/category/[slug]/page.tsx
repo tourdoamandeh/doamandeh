@@ -151,7 +151,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
         {/* Editorial Category Navigation Pills */}
-        <div className="flex items-center gap-3 overflow-x-auto pb-4 mb-8 scrollbar-none font-serif">
+        <div className="flex items-center gap-3 overflow-x-auto pb-4 mb-8 scrollbar-none font-sans">
           {(Object.keys(CATEGORIES) as ServiceCategory[]).map((key) => {
             const cat = CATEGORIES[key];
             const Icon = cat.icon;
@@ -167,7 +167,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               >
                 <Icon className={`h-4 w-4 ${isActive ? 'text-tissue' : 'text-black'}`} />
                 <span>{cat.label}</span>
-                <span className="text-xs opacity-60 italic font-serif">({cat.num})</span>
+                <span className="text-xs opacity-60 italic font-sans">({cat.num})</span>
               </Link>
             );
           })}
@@ -176,7 +176,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         {/* Category Editorial Banner Card */}
         <section className={`relative overflow-hidden rounded-[36px] border-none ${currentCategory.bgColor} p-8 sm:p-14 mb-12 shadow-sm`}>
           <div className="relative z-10 max-w-3xl">
-            <div className="flex items-center justify-between gap-4 mb-4 font-serif">
+            <div className="flex items-center justify-between gap-4 mb-4 font-sans">
               <span className="text-sm bg-tissue text-black px-4 py-1.5 rounded-full inline-flex items-center gap-2 shadow-sm">
                 <CategoryIcon className="h-4 w-4 text-black" />
                 <span>Kategori {currentCategory.num}</span>
@@ -186,7 +186,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               </span>
             </div>
 
-            <h1 className="font-serif text-4xl sm:text-6xl text-black leading-tight mb-4">
+            <h1 className="font-sans text-4xl sm:text-6xl text-black leading-tight mb-4">
               {currentCategory.title}
             </h1>
             <p className="text-sm sm:text-base text-black/80 leading-relaxed font-sans font-normal mb-8">
@@ -210,7 +210,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           <div className="mb-8 p-5 rounded-[24px] bg-yellow border-none text-black flex items-start gap-3 shadow-sm">
             <AlertCircle className="w-5 h-5 text-black shrink-0 mt-0.5" />
             <div>
-              <h3 className="text-base font-serif text-black">Gagal Mengambil Data Layanan</h3>
+              <h3 className="text-base font-sans text-black">Gagal Mengambil Data Layanan</h3>
               <p className="text-xs text-black/80 mt-0.5 font-sans">{errorMessage}</p>
             </div>
           </div>
@@ -220,10 +220,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         <section>
           <div className="flex items-center justify-between mb-8 border-b border-gray-100 pb-4">
             <div>
-              <h2 className="font-serif text-3xl sm:text-4xl text-black">Pilihan Paket & Layanan</h2>
+              <h2 className="font-sans text-3xl sm:text-4xl text-black">Pilihan Paket & Layanan</h2>
               <p className="text-xs text-black/70 mt-1 font-sans">Pilih layanan untuk melihat detail dan melakukan reservasi</p>
             </div>
-            <span className="font-serif text-base text-black bg-yellow px-4 py-1.5 rounded-full shadow-sm">
+            <span className="font-sans text-base text-black bg-yellow px-4 py-1.5 rounded-full shadow-sm">
               {services.length} Paket Tersedia
             </span>
           </div>
@@ -231,7 +231,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           {services.length === 0 && !errorMessage ? (
             <div className="text-center py-20 px-6 rounded-[32px] border-none bg-[#F9F9FB] shadow-sm">
               <CategoryIcon className="h-12 w-12 text-black mx-auto mb-4 opacity-50" />
-              <h3 className="font-serif text-2xl text-black mb-2">Belum Ada Layanan Tersedia</h3>
+              <h3 className="font-sans text-2xl text-black mb-2">Belum Ada Layanan Tersedia</h3>
               <p className="text-xs text-black/70 max-w-sm mx-auto mb-6 font-sans">
                 Saat ini belum ada paket layanan aktif pada kategori ini. Silakan hubungi kami via WhatsApp untuk permintaan khusus.
               </p>
@@ -239,7 +239,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 href="https://wa.me/6281234567890"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 font-serif text-lg text-tissue hover:bg-black/90 transition-colors shadow-sm"
+                className="inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 font-sans text-lg text-tissue hover:bg-black/90 transition-colors shadow-sm"
               >
                 <span>Tanya Ketersediaan via WhatsApp</span>
               </a>
@@ -265,21 +265,21 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                     ) : (
                       <div className="w-full h-full rounded-[24px] flex flex-col items-center justify-center bg-tissue/80 text-black gap-2">
                         <CategoryIcon className="w-10 h-10 text-black" />
-                        <span className="font-serif text-xs italic text-black/70">
+                        <span className="font-sans text-xs italic text-black/70">
                           {currentCategory.label}
                         </span>
                       </div>
                     )}
 
                     <div className="absolute top-5 left-5">
-                      <span className="font-serif text-xs bg-tissue text-black px-3.5 py-1 rounded-full shadow-sm">
+                      <span className="font-sans text-xs bg-tissue text-black px-3.5 py-1 rounded-full shadow-sm">
                         Tersedia
                       </span>
                     </div>
 
                     {service.duration && (
                       <div className="absolute top-5 right-5">
-                        <span className="font-serif text-xs text-black bg-tissue px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                        <span className="font-sans text-xs text-black bg-tissue px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
                           <Clock className="h-3 w-3 text-black" />
                           {service.duration}
                         </span>
@@ -290,7 +290,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                   {/* Card Content */}
                   <div className="p-8 flex-1 flex flex-col justify-between space-y-6">
                     <div>
-                      <h3 className="font-serif text-2xl text-black group-hover:underline mb-2">
+                      <h3 className="font-sans text-2xl text-black group-hover:underline mb-2">
                         <Link href={`/services/${service.id}`}>{service.title}</Link>
                       </h3>
                       <p className="text-xs text-black/75 leading-relaxed font-sans line-clamp-3">
@@ -299,13 +299,13 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                     </div>
 
                     {/* Pricing & CTA */}
-                    <div className="pt-5 border-t border-gray-100 space-y-4 font-serif">
+                    <div className="pt-5 border-t border-gray-100 space-y-4 font-sans">
                       <div className="flex items-baseline justify-between">
                         <div>
                           <span className="text-xs italic text-black/60 block mb-0.5">
                             Harga
                           </span>
-                          <span className="font-serif text-3xl font-normal text-black">
+                          <span className="font-sans text-3xl font-normal text-black">
                             {formatRupiah(service.price)}
                           </span>
                         </div>

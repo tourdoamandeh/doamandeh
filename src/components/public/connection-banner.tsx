@@ -18,7 +18,7 @@ export function ConnectionBanner({
       <div className="p-6 rounded-[28px] bg-yellow border-none text-black flex items-start gap-4 shadow-sm">
         <Info className="w-6 h-6 text-black shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <h3 className="text-base font-serif text-black">
+          <h3 className="text-base font-sans font-bold text-black">
             Koneksi Supabase Belum Dikonfigurasi
           </h3>
           <p className="text-xs text-black/80 leading-relaxed font-sans">
