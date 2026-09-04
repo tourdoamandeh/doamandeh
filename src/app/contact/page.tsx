@@ -61,11 +61,11 @@ export default async function ContactPage() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
         {/* Header Title */}
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <span className="font-serif italic text-sm text-black/60 bg-peach px-5 py-2 rounded-full inline-block mb-4 shadow-sm">
+          <span className="font-sans italic text-sm text-black/60 bg-peach px-5 py-2 rounded-full inline-block mb-4 shadow-sm">
             Layanan Pelanggan & Reservasi
           </span>
 
-          <h1 className="font-serif text-4xl sm:text-6xl text-black leading-tight mb-4">
+          <h1 className="font-sans text-4xl sm:text-6xl text-black leading-tight mb-4">
             Hubungi <span className="italic font-normal underline decoration-lightblue">Doamandeh</span> Tours & Travel
           </h1>
 
@@ -84,10 +84,10 @@ export default async function ContactPage() {
                   <MapPin className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif italic text-xs text-black/60">
+                  <h3 className="font-sans italic text-xs text-black/60">
                     Alamat Utama
                   </h3>
-                  <p className="font-serif text-2xl text-black">
+                  <p className="font-sans text-2xl text-black">
                     Canggu - Badung, Bali
                   </p>
                 </div>
@@ -104,16 +104,16 @@ export default async function ContactPage() {
                   <Phone className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif italic text-xs text-black/60">
+                  <h3 className="font-sans italic text-xs text-black/60">
                     Telepon & WhatsApp
                   </h3>
-                  <p className="font-serif text-2xl text-black">
+                  <p className="font-sans text-2xl text-black">
                     Respon Cepat 24/7
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-2 text-xs pl-14 font-serif">
+              <div className="space-y-2 text-xs pl-14 font-sans">
                 <a
                   href={waUrl}
                   target="_blank"
@@ -146,12 +146,12 @@ export default async function ContactPage() {
                     <Mail className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-serif italic text-xs text-black/60">
+                    <h3 className="font-sans italic text-xs text-black/60">
                       Email Resmi
                     </h3>
                     <a
                       href={`mailto:${siteSettings.contact_email}`}
-                      className="font-serif text-2xl text-black underline hover:opacity-75"
+                      className="font-sans text-2xl text-black underline hover:opacity-75"
                     >
                       {siteSettings.contact_email}
                     </a>
@@ -167,16 +167,16 @@ export default async function ContactPage() {
                   <Clock className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif italic text-xs text-black/60">
+                  <h3 className="font-sans italic text-xs text-black/60">
                     Jam Operasional Kantor
                   </h3>
-                  <p className="font-serif text-xl text-black">
+                  <p className="font-sans text-xl text-black">
                     Senin - Minggu: 08:00 - 22:00 WITA
                   </p>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-black/15 flex items-center gap-3 font-serif">
+              <div className="pt-3 border-t border-black/15 flex items-center gap-3 font-sans">
                 <span className="text-sm text-black">Sosmed:</span>
                 {siteSettings.sosmed_instagram && (
                   <a
@@ -209,11 +209,11 @@ export default async function ContactPage() {
             {/* Interactive Map Embed */}
             <div className="rounded-[32px] border-none bg-tissue p-5 space-y-3 overflow-hidden shadow-md">
               <div className="flex items-center justify-between px-2 pt-1">
-                <h3 className="font-serif text-2xl text-black flex items-center gap-2">
+                <h3 className="font-sans text-2xl text-black flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-black" />
                   <span>Peta Lokasi Canggu - Bali</span>
                 </h3>
-                <span className="font-serif text-sm bg-lightblue px-4 py-1 rounded-full shadow-sm">
+                <span className="font-sans text-sm bg-lightblue px-4 py-1 rounded-full shadow-sm">
                   Bali, ID
                 </span>
               </div>
@@ -238,7 +238,7 @@ export default async function ContactPage() {
                 <div className="h-10 w-10 rounded-full bg-black text-tissue flex items-center justify-center shadow-sm">
                   <MessageSquare className="h-5 w-5" />
                 </div>
-                <h3 className="font-serif text-3xl text-black">
+                <h3 className="font-sans text-3xl text-black">
                   Konsultasi Langsung via WhatsApp
                 </h3>
               </div>
@@ -251,7 +251,7 @@ export default async function ContactPage() {
                 href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-3 rounded-full bg-black text-tissue py-4 px-6 font-serif text-xl hover:bg-black/90 transition-all shadow-sm"
+                className="w-full flex items-center justify-center gap-3 rounded-full bg-black text-tissue py-4 px-6 font-sans text-xl hover:bg-black/90 transition-all shadow-sm"
               >
                 <Phone className="h-5 w-5" />
                 <span>Kirim Pesan WhatsApp Sekarang</span>

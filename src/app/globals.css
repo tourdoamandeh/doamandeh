@@ -48,44 +48,65 @@
 /* Explicit Utility Classes for Color Tokens */
 .bg-softyellow,
 .bg-yellow {
-  background-color: #FFF6C6;
+  background-color: #FFF6C6 !important;
 }
 
 .text-softyellow,
 .text-yellow {
-  color: #FFF6C6;
+  color: #FFF6C6 !important;
+}
+
+.border-softyellow,
+.border-yellow {
+  border-color: #FFF6C6 !important;
 }
 
 .bg-softblue {
-  background-color: #5F7A8E;
+  background-color: #5F7A8E !important;
 }
 
 .text-softblue {
-  color: #5F7A8E;
+  color: #5F7A8E !important;
+}
+
+.border-softblue {
+  border-color: #5F7A8E !important;
 }
 
 .bg-brown {
-  background-color: #504139;
+  background-color: #504139 !important;
 }
 
 .text-brown {
-  color: #504139;
+  color: #504139 !important;
+}
+
+.border-brown {
+  border-color: #504139 !important;
 }
 
 .bg-softwhite {
-  background-color: #E7E8DF;
+  background-color: #E7E8DF !important;
 }
 
 .text-softwhite {
-  color: #E7E8DF;
+  color: #E7E8DF !important;
+}
+
+.border-softwhite {
+  border-color: #E7E8DF !important;
 }
 
 .bg-black {
-  background-color: #2C2E31;
+  background-color: #2C2E31 !important;
 }
 
 .text-black {
-  color: #2C2E31;
+  color: #2C2E31 !important;
+}
+
+.border-black {
+  border-color: #2C2E31 !important;
 }
 
 /* Backward compatibility classes */
@@ -113,8 +134,15 @@
   color: #504139;
 }
 
+*,
+*::before,
+*::after,
 body,
-html {
-  font-family: "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif !important;
+html,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-futura), "Futura", "Futura PT", "Futura-PT", "League Spartan", "Century Gothic", sans-serif !important;
   scroll-behavior: smooth;
 }

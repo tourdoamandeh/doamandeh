@@ -129,7 +129,7 @@ export function BookingForm({ service }: BookingFormProps) {
           <CheckCircle2 className="h-8 w-8" />
         </div>
 
-        <h3 className="font-serif text-3xl sm:text-4xl text-black mb-2">
+        <h3 className="font-sans text-3xl sm:text-4xl text-black mb-2">
           Pemesanan Berhasil Dikirim!
         </h3>
         <p className="text-xs sm:text-sm text-black/80 leading-relaxed max-w-md mx-auto mb-6 font-sans">
@@ -156,14 +156,14 @@ export function BookingForm({ service }: BookingFormProps) {
           </div>
           <div className="flex justify-between items-center border-t border-gray-100 pt-3">
             <span className="font-medium text-black">Estimasi Total Biaya</span>
-            <span className="font-serif text-2xl font-normal text-black">
+            <span className="font-sans text-2xl font-normal text-black">
               {completedBooking.totalPrice ? formatRupiah(completedBooking.totalPrice) : '-'}
             </span>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="space-y-3 font-serif">
+        <div className="space-y-3 font-sans">
           <a
             href={waUrl}
             target="_blank"
@@ -191,12 +191,12 @@ export function BookingForm({ service }: BookingFormProps) {
     <div className="rounded-[36px] bg-yellow p-8 sm:p-10 shadow-sm border-none">
       <div className="flex items-center justify-between border-b border-black/15 pb-4 mb-6">
         <div>
-          <h3 className="font-serif text-3xl text-black">Form Reservasi</h3>
+          <h3 className="font-sans text-3xl text-black">Form Reservasi</h3>
           <p className="text-xs text-black/70 mt-0.5 font-sans">Isi data di bawah untuk memesan layanan ini</p>
         </div>
         <div className="text-right">
-          <span className="text-[10px] text-black/60 font-serif italic block">Harga</span>
-          <span className="font-serif text-2xl sm:text-3xl font-normal text-black">
+          <span className="text-[10px] text-black/60 font-sans italic block">Harga</span>
+          <span className="font-sans text-2xl sm:text-3xl font-normal text-black">
             {formatRupiah(service.price)}
           </span>
         </div>
@@ -207,7 +207,7 @@ export function BookingForm({ service }: BookingFormProps) {
         <div className="mb-6 flex items-start gap-3 rounded-2xl bg-red-100 border border-red-200 p-4 text-xs text-red-900 animate-in fade-in">
           <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
           <div>
-            <p className="font-serif text-base text-red-950">Gagal Mengirim Form</p>
+            <p className="font-sans text-base text-red-950">Gagal Mengirim Form</p>
             <p className="text-red-800 mt-0.5 font-sans">{errorMessage}</p>
           </div>
         </div>
@@ -217,7 +217,7 @@ export function BookingForm({ service }: BookingFormProps) {
       <form onSubmit={handleSubmit} className="space-y-4 text-xs">
         {/* Customer Name */}
         <div>
-          <label className="block font-serif text-lg text-black mb-1.5">
+          <label className="block font-sans text-lg text-black mb-1.5">
             Nama Lengkap Anda <span className="text-red-500">*</span>
           </label>
           <div className="relative">
@@ -248,7 +248,7 @@ export function BookingForm({ service }: BookingFormProps) {
         {/* Email & Phone Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block font-serif text-lg text-black mb-1.5">
+            <label className="block font-sans text-lg text-black mb-1.5">
               Alamat Email <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -277,7 +277,7 @@ export function BookingForm({ service }: BookingFormProps) {
           </div>
 
           <div>
-            <label className="block font-serif text-lg text-black mb-1.5">
+            <label className="block font-sans text-lg text-black mb-1.5">
               No. WhatsApp / HP <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -308,7 +308,7 @@ export function BookingForm({ service }: BookingFormProps) {
 
         {/* Booking Date */}
         <div>
-          <label className="block font-serif text-lg text-black mb-1.5">
+          <label className="block font-sans text-lg text-black mb-1.5">
             Tanggal Reservasi <span className="text-red-500">*</span>
           </label>
           <div className="relative">
@@ -338,8 +338,8 @@ export function BookingForm({ service }: BookingFormProps) {
 
         {/* Notes */}
         <div>
-          <label className="block font-serif text-lg text-black mb-1.5">
-            Catatan Tambahan <span className="text-black/50 text-sm italic font-serif">(Opsional)</span>
+          <label className="block font-sans text-lg text-black mb-1.5">
+            Catatan Tambahan <span className="text-black/50 text-sm italic font-sans">(Opsional)</span>
           </label>
           <div className="relative">
             <FileText className="absolute left-4 top-4 h-4 w-4 text-black/40" />
@@ -364,7 +364,7 @@ export function BookingForm({ service }: BookingFormProps) {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full flex items-center justify-center gap-2 rounded-full bg-black text-tissue font-serif text-xl py-4 px-8 hover:bg-black/90 transition-all border-none shadow-sm disabled:opacity-50 mt-4 cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 rounded-full bg-black text-tissue font-sans text-xl py-4 px-8 hover:bg-black/90 transition-all border-none shadow-sm disabled:opacity-50 mt-4 cursor-pointer"
         >
           {isPending ? (
             <>

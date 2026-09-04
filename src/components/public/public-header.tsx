@@ -39,13 +39,13 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
   )}`;
 
   return (
-    <header className="sticky top-0 z-40 bg-tissue/90 backdrop-blur-md border-b border-gray-100">
+    <header className="sticky top-0 z-40 bg-transparent text-softyellow backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-3 group text-softyellow">
             <div>
-              <span className="font-serif text-2xl sm:text-3xl text-black block leading-none font-semibold">
+              <span className="text-xl sm:text-2xl text-softyellow block leading-none font-medium tracking-wide">
                 Doamandeh
               </span>
             </div>
@@ -55,9 +55,9 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
           <nav className="hidden md:flex items-center gap-7">
             <Link
               href="/"
-              className={`font-serif text-lg font-normal transition-colors ${pathname === '/'
-                ? 'text-black underline underline-offset-8 decoration-2 decoration-peach'
-                : 'text-black/70 hover:text-black'
+              className={`font-sans text-sm font-medium transition-all ${pathname === '/'
+                ? 'text-softyellow underline underline-offset-8 decoration-2 decoration-softyellow'
+                : 'text-softyellow opacity-80 hover:opacity-100'
                 }`}
             >
               Beranda
@@ -71,34 +71,35 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
             >
               <button
                 type="button"
-                className={`flex items-center gap-1.5 font-serif text-lg font-normal transition-colors ${pathname.startsWith('/category')
-                  ? 'text-black underline underline-offset-8 decoration-2 decoration-peach'
-                  : 'text-black/70 hover:text-black'
+                className={`flex items-center gap-1.5 font-sans text-sm font-medium transition-all ${pathname.startsWith('/category')
+                  ? 'text-softyellow underline underline-offset-8 decoration-2 decoration-softyellow'
+                  : 'text-softyellow opacity-80 hover:opacity-100'
                   }`}
               >
                 <span>Layanan Wisata</span>
-                <ChevronDown className="h-4 w-4 text-black/60" />
+                <ChevronDown className="h-4 w-4 text-softyellow opacity-70" />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-64 rounded-3xl bg-tissue p-3 shadow-xl border border-gray-100 backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="absolute top-full left-0 mt-2 w-64 rounded-none bg-brown p-2 shadow-xl border border-softyellow/30 backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-150">
                   {CATEGORIES.map((cat) => {
                     const Icon = cat.icon;
+                    const isActive = pathname === `/category/${cat.slug}`;
                     return (
                       <Link
                         key={cat.slug}
                         href={`/category/${cat.slug}`}
                         onClick={() => setDropdownOpen(false)}
-                        className={`flex items-center justify-between rounded-2xl px-4 py-3 font-serif text-lg transition-colors ${pathname === `/category/${cat.slug}`
-                          ? 'bg-peach text-black'
-                          : 'text-black hover:bg-lightblue/50'
+                        className={`flex items-center justify-between rounded-none px-4 py-3 font-sans text-xs font-medium tracking-wide transition-colors ${isActive
+                          ? 'bg-softyellow text-brown'
+                          : 'text-softyellow hover:bg-softyellow/20'
                           }`}
                       >
                         <div className="flex items-center gap-3">
-                          <Icon className="h-4 w-4 text-black" />
+                          <Icon className={`h-4 w-4 ${isActive ? 'text-brown' : 'text-softyellow'}`} />
                           <span>{cat.label}</span>
                         </div>
-                        <span className="text-xs font-serif italic opacity-60">{cat.num}</span>
+                        <span className="text-[10px] font-sans opacity-70">{cat.num}</span>
                       </Link>
                     );
                   })}
@@ -108,9 +109,9 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
 
             <Link
               href="/about"
-              className={`font-serif text-lg font-normal transition-colors ${pathname === '/about'
-                ? 'text-black underline underline-offset-8 decoration-2 decoration-peach'
-                : 'text-black/70 hover:text-black'
+              className={`font-sans text-sm font-medium transition-all ${pathname === '/about'
+                ? 'text-softyellow underline underline-offset-8 decoration-2 decoration-softyellow'
+                : 'text-softyellow opacity-80 hover:opacity-100'
                 }`}
             >
               Tentang Kami
@@ -118,9 +119,9 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
 
             <Link
               href="/contact"
-              className={`font-serif text-lg font-normal transition-colors ${pathname === '/contact'
-                ? 'text-black underline underline-offset-8 decoration-2 decoration-peach'
-                : 'text-black/70 hover:text-black'
+              className={`font-sans text-sm font-medium transition-all ${pathname === '/contact'
+                ? 'text-softyellow underline underline-offset-8 decoration-2 decoration-softyellow'
+                : 'text-softyellow opacity-80 hover:opacity-100'
                 }`}
             >
               Kontak
@@ -133,10 +134,10 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-full bg-black px-6 py-2.5 font-serif text-lg text-tissue hover:bg-black/90 transition-all border-none shadow-sm"
+              className="flex items-center gap-2 rounded-none bg-softyellow px-6 py-2.5 font-sans text-xs font-bold text-brown hover:bg-white hover:text-brown transition-all border border-softyellow shadow-none"
             >
-              <Phone className="h-4 w-4 text-tissue" />
-              <span>WhatsApp</span>
+              <Phone className="h-4 w-4 text-brown" />
+              <span className="text-brown font-bold">WhatsApp</span>
             </a>
           </div>
 
@@ -145,10 +146,10 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-full bg-black text-tissue hover:bg-black/80 transition-colors"
+              className="p-2.5 rounded-none bg-softyellow text-brown hover:bg-white transition-colors"
               aria-label="Toggle Navigation Menu"
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileMenuOpen ? <X className="h-5 w-5 text-brown" /> : <Menu className="h-5 w-5 text-brown" />}
             </button>
           </div>
         </div>
@@ -156,12 +157,12 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-gray-100 bg-tissue px-6 pt-4 pb-8 space-y-4 animate-in slide-in-from-top-2 duration-150 shadow-lg">
+        <div className="md:hidden border-b border-softyellow/30 bg-brown text-softyellow px-6 pt-4 pb-8 space-y-4 animate-in slide-in-from-top-2 duration-150 shadow-lg rounded-none">
           <div className="space-y-2">
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
-              className={`block rounded-2xl px-4 py-3 font-serif text-lg ${pathname === '/' ? 'bg-peach text-black' : 'text-black hover:bg-lightblue/40'
+              className={`block rounded-none px-4 py-3 font-sans text-sm font-medium ${pathname === '/' ? 'bg-softyellow text-brown' : 'text-softyellow hover:bg-softyellow/20'
                 }`}
             >
               Beranda
@@ -169,7 +170,7 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
             <Link
               href="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className={`block rounded-2xl px-4 py-3 font-serif text-lg ${pathname === '/about' ? 'bg-peach text-black' : 'text-black hover:bg-lightblue/40'
+              className={`block rounded-none px-4 py-3 font-sans text-sm font-medium ${pathname === '/about' ? 'bg-softyellow text-brown' : 'text-softyellow hover:bg-softyellow/20'
                 }`}
             >
               Tentang Kami
@@ -177,57 +178,58 @@ export function PublicHeader({ whatsappNumber = '+62 812-3456-7890' }: PublicHea
             <Link
               href="/contact"
               onClick={() => setMobileMenuOpen(false)}
-              className={`block rounded-2xl px-4 py-3 font-serif text-lg ${pathname === '/contact' ? 'bg-peach text-black' : 'text-black hover:bg-lightblue/40'
+              className={`block rounded-none px-4 py-3 font-sans text-sm font-medium ${pathname === '/contact' ? 'bg-softyellow text-brown' : 'text-softyellow hover:bg-softyellow/20'
                 }`}
             >
               Hubungi Kami
             </Link>
           </div>
 
-          <div className="pt-3 border-t border-gray-100">
-            <p className="px-4 text-xs font-serif italic text-black/50 mb-3">
+          <div className="pt-3 border-t border-softyellow/30">
+            <p className="px-4 text-[11px] font-sans font-medium text-softyellow opacity-70 mb-3">
               Kategori Layanan
             </p>
             <div className="space-y-1">
               {CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
+                const isActive = pathname === `/category/${cat.slug}`;
                 return (
                   <Link
                     key={cat.slug}
                     href={`/category/${cat.slug}`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center justify-between rounded-2xl px-4 py-2.5 font-serif text-lg ${pathname === `/category/${cat.slug}`
-                      ? 'bg-peach text-black'
-                      : 'text-black hover:bg-lightblue/40'
+                    className={`flex items-center justify-between rounded-none px-4 py-2.5 font-sans text-xs font-medium ${isActive
+                      ? 'bg-softyellow text-brown'
+                      : 'text-softyellow hover:bg-softyellow/20'
                       }`}
                   >
                     <div className="flex items-center gap-3">
-                      <Icon className="h-4 w-4 text-black" />
+                      <Icon className={`h-4 w-4 ${isActive ? 'text-brown' : 'text-softyellow'}`} />
                       <span>{cat.label}</span>
                     </div>
-                    <span className="text-xs font-serif italic opacity-50">{cat.num}</span>
+                    <span className="text-[10px] font-sans opacity-70">{cat.num}</span>
                   </Link>
                 );
               })}
             </div>
           </div>
 
-          <div className="pt-4 border-t border-gray-100 space-y-2">
+          <div className="pt-4 border-t border-softyellow/30 space-y-2">
             <a
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-3 font-serif text-lg text-tissue"
+              className="flex w-full items-center justify-center gap-2 rounded-none bg-softyellow px-6 py-3 font-sans text-xs font-bold text-brown hover:bg-white transition-colors"
             >
-              <Phone className="h-4 w-4 text-tissue" />
-              <span>WhatsApp Kami</span>
+              <Phone className="h-4 w-4 text-brown" />
+              <span className="text-brown font-bold">WhatsApp Kami</span>
             </a>
             <Link
               href="/admin/login"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-3 font-serif text-lg text-tissue"
+              className="flex w-full items-center justify-center gap-2 rounded-none bg-softyellow/20 border border-softyellow/30 px-6 py-3 font-sans text-xs font-medium text-softyellow hover:bg-softyellow hover:text-brown transition-colors"
             >
-              <Shield className="h-4 w-4 text-tissue" />
+              <Shield className="h-4 w-4 text-softyellow" />
               <span>Portal Administrator</span>
             </Link>
           </div>

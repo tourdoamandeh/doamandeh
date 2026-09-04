@@ -143,7 +143,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Breadcrumb & Back */}
-        <div className="flex items-center gap-2 text-base font-serif text-black/70 mb-8">
+        <div className="flex items-center gap-2 text-base font-sans text-black/70 mb-8">
           <Link
             href="/"
             className="flex items-center gap-1 hover:text-black hover:underline"
@@ -159,7 +159,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
             {categoryInfo.label}
           </Link>
           <span>/</span>
-          <span className="text-black font-serif truncate max-w-xs">{service.title}</span>
+          <span className="text-black font-sans truncate max-w-xs">{service.title}</span>
         </div>
 
         {/* Inactive Notice Banner */}
@@ -167,7 +167,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
           <div className="mb-8 p-5 rounded-[24px] bg-yellow border-none text-black flex items-start gap-3 shadow-sm">
             <AlertCircle className="w-5 h-5 text-black shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-serif text-lg">Layanan Sedang Tidak Aktif</h3>
+              <h3 className="font-sans text-lg">Layanan Sedang Tidak Aktif</h3>
               <p className="text-xs text-black/80 mt-0.5 font-sans">
                 Layanan ini sedang dalam pembaruan ketersediaan. Anda tetap dapat bertanya ketersediaan via WhatsApp kami.
               </p>
@@ -193,7 +193,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
 
             <div>
               {/* Category Badge & Duration */}
-              <div className="flex flex-wrap items-center gap-2 mb-4 font-serif">
+              <div className="flex flex-wrap items-center gap-2 mb-4 font-sans">
                 <Link
                   href={`/category/${service.category}`}
                   className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm bg-lightblue text-black shadow-sm"
@@ -218,18 +218,18 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
               </div>
 
               {/* Title */}
-              <h1 className="font-serif text-4xl sm:text-6xl text-black leading-tight mb-4">
+              <h1 className="font-sans text-4xl sm:text-6xl text-black leading-tight mb-4">
                 {service.title}
               </h1>
 
               {/* Price Banner */}
               <div className="inline-flex items-baseline gap-3 p-5 rounded-[24px] bg-yellow shadow-sm mb-6 border-none">
-                <span className="font-serif italic text-xs text-black/70">Harga Layanan:</span>
-                <span className="font-serif text-3xl sm:text-4xl font-normal text-black">
+                <span className="font-sans italic text-xs text-black/70">Harga Layanan:</span>
+                <span className="font-sans text-3xl sm:text-4xl font-normal text-black">
                   {formatRupiah(service.price)}
                 </span>
                 {service.unit && (
-                  <span className="font-serif text-sm text-black">
+                  <span className="font-sans text-sm text-black">
                     /{service.unit.replace(/^per\s+/i, '')}
                   </span>
                 )}
@@ -238,7 +238,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
 
             {/* Description Section */}
             <div className="rounded-[32px] border-none bg-[#FBFBFB] p-8 sm:p-10 space-y-5 shadow-sm">
-              <h2 className="font-serif text-2xl text-black flex items-center gap-2 border-b border-gray-100 pb-3">
+              <h2 className="font-sans text-2xl text-black flex items-center gap-2 border-b border-gray-100 pb-3">
                 <Sparkles className="h-5 w-5 text-black" />
                 Deskripsi & Ketentuan Layanan
               </h2>
@@ -271,7 +271,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
             {/* WhatsApp Direct Help Banner */}
             <div className="rounded-[32px] border-none bg-peach p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
               <div>
-                <h3 className="font-serif text-2xl text-black flex items-center gap-2">
+                <h3 className="font-sans text-2xl text-black flex items-center gap-2">
                   <Phone className="h-5 w-5 text-black" />
                   Ada Pertanyaan Khusus?
                 </h3>
@@ -285,7 +285,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 rounded-full bg-black text-tissue px-6 py-3 font-serif text-lg hover:bg-black/90 transition-colors shadow-sm"
+                className="shrink-0 rounded-full bg-black text-tissue px-6 py-3 font-sans text-lg hover:bg-black/90 transition-colors shadow-sm"
               >
                 Chat WhatsApp
               </a>
@@ -294,7 +294,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
             {/* Related Services in Category */}
             {relatedServices.length > 0 && (
               <div className="space-y-4 pt-4">
-                <h2 className="font-serif text-2xl text-black">
+                <h2 className="font-sans text-2xl text-black">
                   Layanan Lainnya di Kategori {categoryInfo.label}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -304,10 +304,10 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                       href={`/services/${rel.id}`}
                       className="group rounded-[24px] border-none bg-tissue p-6 shadow-sm hover:bg-lightblue transition-all"
                     >
-                      <h4 className="font-serif text-xl text-black group-hover:underline line-clamp-1 mb-1">
+                      <h4 className="font-sans text-xl text-black group-hover:underline line-clamp-1 mb-1">
                         {rel.title}
                       </h4>
-                      <p className="font-serif text-lg text-black">
+                      <p className="font-sans text-lg text-black">
                         {formatRupiah(rel.price)}
                       </p>
                     </Link>
