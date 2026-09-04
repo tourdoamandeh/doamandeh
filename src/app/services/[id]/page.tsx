@@ -4,6 +4,7 @@ import { Service, ServiceCategory } from '@/types/database';
 import { PublicHeader } from '@/components/public/public-header';
 import { PublicFooter } from '@/components/public/public-footer';
 import { BookingForm } from '@/components/public/booking-form';
+import { ToastProvider } from '@/components/public/toast';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
@@ -95,7 +96,7 @@ export async function generateMetadata({ params }: ServiceDetailPageProps): Prom
         description: service.description || undefined,
       },
     };
-  } catch (err) {
+  } catch {
     return {
       title: 'Detail Layanan Wisata',
     };
@@ -142,30 +143,35 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
       <PublicHeader />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        {/* Breadcrumb & Back */}
-        <div className="flex items-center gap-2 text-base font-sans text-black/70 mb-8">
+        {/* Accessible Breadcrumb & Back */}
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-base font-sans text-black/70 mb-8 flex-wrap">
           <Link
             href="/"
-            className="flex items-center gap-1 hover:text-black hover:underline"
+            className="flex items-center gap-1 hover:text-black hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black rounded-md"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             <span>Beranda</span>
           </Link>
-          <span>/</span>
+          <span aria-hidden="true">/</span>
           <Link
             href={`/category/${service.category}`}
-            className="hover:text-black hover:underline"
+            className="hover:text-black hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black rounded-md"
           >
             {categoryInfo.label}
           </Link>
-          <span>/</span>
-          <span className="text-black font-sans truncate max-w-xs">{service.title}</span>
-        </div>
+          <span aria-hidden="true">/</span>
+          <span className="text-black font-sans truncate max-w-xs" aria-current="page">
+            {service.title}
+          </span>
+        </nav>
 
         {/* Inactive Notice Banner */}
         {!service.is_active && (
-          <div className="mb-8 p-5 rounded-[24px] bg-yellow border-none text-black flex items-start gap-3 shadow-sm">
-            <AlertCircle className="w-5 h-5 text-black shrink-0 mt-0.5" />
+          <div
+            role="alert"
+            className="mb-8 p-5 rounded-[24px] bg-yellow border-none text-black flex items-start gap-3 shadow-sm"
+          >
+            <AlertCircle className="w-5 h-5 text-black shrink-0 mt-0.5" aria-hidden="true" />
             <div>
               <h3 className="font-sans text-lg">Layanan Sedang Tidak Aktif</h3>
               <p className="text-xs text-black/80 mt-0.5 font-sans">
@@ -196,22 +202,22 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
               <div className="flex flex-wrap items-center gap-2 mb-4 font-sans">
                 <Link
                   href={`/category/${service.category}`}
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm bg-lightblue text-black shadow-sm"
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm bg-lightblue text-black shadow-sm hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
                 >
-                  <CategoryIcon className="h-4 w-4" />
+                  <CategoryIcon className="h-4 w-4" aria-hidden="true" />
                   <span>{categoryInfo.label}</span>
                 </Link>
 
                 {service.duration && (
                   <span className="inline-flex items-center gap-1 px-4 py-1.5 rounded-full text-sm bg-yellow text-black shadow-sm">
-                    <Clock className="h-3.5 w-3.5 text-black" />
+                    <Clock className="h-3.5 w-3.5 text-black" aria-hidden="true" />
                     <span>{service.duration}</span>
                   </span>
                 )}
 
                 {service.is_active && (
                   <span className="inline-flex items-center gap-1 px-4 py-1.5 rounded-full text-sm bg-softpink text-black shadow-sm">
-                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
                     Siap Dipesan
                   </span>
                 )}
@@ -239,7 +245,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
             {/* Description Section */}
             <div className="rounded-[32px] border-none bg-[#FBFBFB] p-8 sm:p-10 space-y-5 shadow-sm">
               <h2 className="font-sans text-2xl text-black flex items-center gap-2 border-b border-gray-100 pb-3">
-                <Sparkles className="h-5 w-5 text-black" />
+                <Sparkles className="h-5 w-5 text-black" aria-hidden="true" />
                 Deskripsi & Ketentuan Layanan
               </h2>
               <p className="text-sm text-black/90 leading-relaxed whitespace-pre-line font-sans font-normal">
@@ -250,19 +256,19 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
               {/* Value Inclusions */}
               <div className="pt-6 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-sans">
                 <div className="flex items-center gap-2 text-black">
-                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" aria-hidden="true" />
                   <span>Pelayanan ramah & profesional</span>
                 </div>
                 <div className="flex items-center gap-2 text-black">
-                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" aria-hidden="true" />
                   <span>Jaminan kualitas & kenyamanan</span>
                 </div>
                 <div className="flex items-center gap-2 text-black">
-                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" aria-hidden="true" />
                   <span>Konfirmasi pemesanan cepat via WA</span>
                 </div>
                 <div className="flex items-center gap-2 text-black">
-                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" aria-hidden="true" />
                   <span>Harga transparan tanpa hidden fee</span>
                 </div>
               </div>
@@ -272,7 +278,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
             <div className="rounded-[32px] border-none bg-peach p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
               <div>
                 <h3 className="font-sans text-2xl text-black flex items-center gap-2">
-                  <Phone className="h-5 w-5 text-black" />
+                  <Phone className="h-5 w-5 text-black" aria-hidden="true" />
                   Ada Pertanyaan Khusus?
                 </h3>
                 <p className="text-xs text-black/80 mt-1 font-sans">
@@ -285,7 +291,8 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 rounded-full bg-black text-tissue px-6 py-3 font-sans text-lg hover:bg-black/90 transition-colors shadow-sm"
+                aria-label={`Chat WhatsApp seputar layanan ${service.title}`}
+                className="shrink-0 rounded-full bg-black text-tissue px-6 py-3 font-sans text-lg hover:bg-black/90 transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
               >
                 Chat WhatsApp
               </a>
@@ -302,7 +309,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                     <Link
                       key={rel.id}
                       href={`/services/${rel.id}`}
-                      className="group rounded-[24px] border-none bg-tissue p-6 shadow-sm hover:bg-lightblue transition-all"
+                      className="group rounded-[24px] border-none bg-tissue p-6 shadow-sm hover:bg-lightblue transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
                     >
                       <h4 className="font-sans text-xl text-black group-hover:underline line-clamp-1 mb-1">
                         {rel.title}
@@ -317,9 +324,11 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
             )}
           </div>
 
-          {/* Right Column: Sticky Booking Form */}
+          {/* Right Column: Sticky Booking Form with Toast Context */}
           <div className="lg:col-span-5 lg:sticky lg:top-24">
-            <BookingForm service={service} />
+            <ToastProvider>
+              <BookingForm service={service} />
+            </ToastProvider>
           </div>
         </div>
       </main>

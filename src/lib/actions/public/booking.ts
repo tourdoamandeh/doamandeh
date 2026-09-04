@@ -12,6 +12,9 @@ export interface BookingResponseData {
   customerEmail: string;
   customerPhone: string;
   bookingDate: string;
+  startDate: string;
+  endDate?: string | null;
+  durationDays: number;
   totalPrice: number | null;
   notes?: string | null;
   status: string;
@@ -28,8 +31,14 @@ export interface PublicBookingResult {
 export async function createPublicBookingAction(
   input: PublicBookingInput
 ): Promise<PublicBookingResult> {
+  // Normalize input if bookingDate was supplied instead of startDate
+  const normalizedInput = {
+    ...input,
+    startDate: input.startDate || input.bookingDate || '',
+  };
+
   // 1. Zod Validation
-  const parsed = publicBookingSchema.safeParse(input);
+  const parsed = publicBookingSchema.safeParse(normalizedInput);
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};
     parsed.error.issues.forEach((issue) => {
@@ -46,16 +55,23 @@ export async function createPublicBookingAction(
     };
   }
 
-  const { serviceId, customerName, customerEmail, customerPhone, bookingDate, notes } =
-    parsed.data;
+  const {
+    serviceId,
+    customerName,
+    customerEmail,
+    customerPhone,
+    startDate,
+    endDate,
+    notes,
+  } = parsed.data;
 
   try {
     const supabase = await createClient();
 
-    // 2. Fetch service details for total_price and title confirmation
+    // 2. Fetch service details
     const { data: service, error: serviceError } = await supabase
       .from('services')
-      .select('id, title, price, is_active')
+      .select('id, title, price, unit, is_active')
       .eq('id', serviceId)
       .single();
 
@@ -73,7 +89,27 @@ export async function createPublicBookingAction(
       };
     }
 
-    // 3. Insert booking into database
+    // 3. Calculate duration and total price
+    let durationDays = 1;
+    if (endDate && endDate !== startDate) {
+      const startMs = new Date(startDate).getTime();
+      const endMs = new Date(endDate).getTime();
+      const diff = Math.round((endMs - startMs) / (1000 * 60 * 60 * 24));
+      durationDays = Math.max(1, diff + 1);
+    }
+
+    const totalPrice = Number(service.price) * durationDays;
+
+    // Compose notes with date range info if multi-day
+    let formattedNotes = notes?.trim() || '';
+    if (endDate && endDate !== startDate) {
+      const periodLabel = `[Periode: ${startDate} s/d ${endDate} (${durationDays} hari)]`;
+      formattedNotes = formattedNotes
+        ? `${periodLabel} ${formattedNotes}`
+        : periodLabel;
+    }
+
+    // 4. Insert booking into database
     const { data: booking, error: insertError } = await supabase
       .from('bookings')
       .insert({
@@ -81,10 +117,10 @@ export async function createPublicBookingAction(
         customer_name: customerName,
         customer_email: customerEmail,
         customer_phone: customerPhone,
-        booking_date: bookingDate,
-        notes: notes || null,
+        booking_date: startDate,
+        notes: formattedNotes || null,
         status: 'pending',
-        total_price: service.price,
+        total_price: totalPrice,
       })
       .select('*')
       .single();
@@ -98,7 +134,28 @@ export async function createPublicBookingAction(
       };
     }
 
-    // 4. Revalidate pages
+    // 5. Optional email confirmation via Edge Function (graceful attempt)
+    try {
+      if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.ENABLE_EMAIL_NOTIFICATION === 'true') {
+        await supabase.functions.invoke('send-booking-email', {
+          body: {
+            bookingId: booking.id,
+            serviceTitle: service.title,
+            customerName,
+            customerEmail,
+            customerPhone,
+            startDate,
+            endDate: endDate || startDate,
+            durationDays,
+            totalPrice,
+          },
+        });
+      }
+    } catch {
+      // Email delivery failure is non-blocking to preserve UX
+    }
+
+    // 6. Revalidate relevant paths
     revalidatePath(`/services/${serviceId}`);
     revalidatePath('/admin/bookings');
     revalidatePath('/admin');
@@ -113,6 +170,9 @@ export async function createPublicBookingAction(
         customerEmail: booking.customer_email,
         customerPhone: booking.customer_phone,
         bookingDate: booking.booking_date,
+        startDate,
+        endDate: endDate || null,
+        durationDays,
         totalPrice: booking.total_price,
         notes: booking.notes,
         status: booking.status,
