@@ -124,6 +124,8 @@ export async function updateSiteSettingsAction(
     revalidatePath('/admin/settings');
     revalidatePath('/admin');
     revalidatePath('/');
+    revalidatePath('/about');
+    revalidatePath('/contact');
 
     return {
       success: true,

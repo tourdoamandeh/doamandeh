@@ -86,3 +86,30 @@
   - **Fix Motion & Layout FAQ**: Mengunci foto kanan FAQ dengan `items-stretch` dan `object-cover object-top` agar foto mengisi 100% tinggi tanpa bergeser/melompat saat accordion diklik.
   - **Standardisasi Border Foto**: Menyeragamkan bingkai foto pada seksi Hero Carousel, About, Testimonials, dan CTA menjadi `border-2 border-[#fff6c6]`.
 
+## DEC-011: Admin UI Editorial Geometric Minimalist Standardization & Full Dynamic CMS Content Architecture
+- **Date**: 2026-09-04
+- **Status**: Accepted
+- **Context**:
+  - UI Admin/CMS sebelumnya masih menggunakan gaya rounded Linear/Stripe yang bertolak belakang dengan pedoman desain publik di `DESIGN.md` (Editorial Geometric Minimalist, flat aesthetic, border 2px solid, sudut siku 0px `rounded-none`, tanpa box shadow `shadow-none`, tipografi Futura / uppercase tracking-widest, palet `#FFF6C6`, `#504139`, `#E7E8DF`, `#2C2E31`).
+  - Masih terdapat teks hardcode di komponen website klien (Hero quotes & descriptions per category, About statistics & mission, Services titles, Testimonials list, FAQ items, CTA copy, Footer brand description, dan Operating hours) yang tidak bisa dikonfigurasi melalui CMS.
+- **Decision**:
+  1. **Standardisasi Penuh UI Admin Mengacu ke `DESIGN.md`**:
+     - Mengubah seluruh antarmuka Admin (`/admin/login`, `/admin/(dashboard)`, `/admin/services`, `/admin/bookings`, `/admin/settings`) menjadi 100% konsisten dengan `DESIGN.md`:
+       - `rounded-none` absolut di seluruh kartu, tombol, badge, input text, select dropdown, modal dialog, avatar, dan table container.
+       - Garis pemisah tegas `border-2 border-brown` atau `border-brown`.
+       - Eliminasi seluruh bayangan artifisial (`shadow-none`).
+       - Sidebar terintegrasi dengan palet brand (`bg-softyellow`, `border-r-2 border-brown`, logo `D.` dengan bingkai tegas, menu tab aktif `bg-brown text-softyellow border-l-4 border-softyellow`).
+  2. **Arsitektur Konten CMS Dinamis (Zero Hardcode)**:
+     - Memperluas skema pengaturan situs `siteSettingsSchema` dan `DEFAULT_SITE_SETTINGS` di `src/lib/validations/admin.ts` dengan field dinamis:
+       - **Hero Section**: `hero_vehicle_desc`, `hero_vehicle_quote`, `hero_tattoo_desc`, `hero_tattoo_quote`, `hero_villa_desc`, `hero_villa_quote`, `hero_travel_desc`, `hero_travel_quote`, `hero_surfing_desc`, `hero_surfing_quote`.
+       - **About Section**: `about_tagline`, `about_title`, `about_stat1_value`, `about_stat1_label`, `about_stat2_value`, `about_stat2_label`.
+       - **Services Section**: `services_title`, `services_subtitle`.
+       - **Testimonials**: `testimonials_title`, `testimonials_json` (array ulasan pelanggan dengan pengelola dinamis: tambah, ubah, hapus).
+       - **FAQ Section**: `faq_title`, `faq_subtitle`, `faq_json` (array tanya jawab dengan pengelola dinamis: tambah, ubah, hapus).
+       - **CTA Section**: `cta_tagline`, `cta_title`, `cta_subtitle`, `cta_button_text`.
+       - **Footer & Operasional**: `footer_brand_desc`, `operating_hours_title`, `operating_hours_time`, `operating_hours_note`, `sosmed_tiktok`.
+  3. **Penyelarasan Komponen Publik Klien**:
+     - Menghubungkan seluruh props dinamis ke `HeroSection`, `AboutSection`, `ServicesSection`, `TestimonialsSection`, `FaqSection`, `CtaSection`, `PublicHeader`, `PublicFooter`, `/about`, dan `/contact`.
+     - Menghapus sisa-sisa rounded corners dan bubble styles di halaman publik agar seluruh pengalaman visual Doamandeh (Klien & Admin) menyatu dalam satu bahasa visual yang harmonis dan editorial.
+
+

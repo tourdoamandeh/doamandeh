@@ -17,7 +17,7 @@ interface Testimonial {
   image: string;
 }
 
-const TESTIMONIALS: Testimonial[] = [
+const DEFAULT_TESTIMONIALS: Testimonial[] = [
   {
     id: '1',
     name: 'Rizky & Amelia',
@@ -80,15 +80,35 @@ const TESTIMONIALS: Testimonial[] = [
   },
 ];
 
-export function TestimonialsSection() {
+interface TestimonialsSectionProps {
+  testimonialsTitle?: string;
+  testimonialsJson?: string;
+}
+
+export function TestimonialsSection({
+  testimonialsTitle = 'Kisah & pengalaman liburan impian.',
+  testimonialsJson,
+}: TestimonialsSectionProps = {}) {
+  let list: Testimonial[] = DEFAULT_TESTIMONIALS;
+  if (testimonialsJson) {
+    try {
+      const parsed = JSON.parse(testimonialsJson);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        list = parsed;
+      }
+    } catch {
+      // fallback to DEFAULT_TESTIMONIALS
+    }
+  }
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev === 0 ? TESTIMONIALS.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? list.length - 1 : prev - 1));
   };
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev === TESTIMONIALS.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === list.length - 1 ? 0 : prev + 1));
   };
 
   return (
@@ -101,24 +121,24 @@ export function TestimonialsSection() {
             <div className="lg:col-span-3 flex flex-col justify-end lg:pb-6">
 
               <h2 className="text-4xl md:text-5xl font-medium leading-[1.1] tracking-tight mb-12 text-softyellow">
-                Kisah &amp; pengalaman liburan impian.
+                {testimonialsTitle}
               </h2>
 
               <div className="flex flex-wrap items-center justify-between gap-6">
                 <Link
                   href="/reviews"
-                  className="text-[10px] uppercase tracking-widest font-bold border-b border-white/40 pb-1 text-softyellow hover:text-white hover:border-white transition-colors"
+                  className="text-[10px] uppercase tracking-widest font-bold border-b-2 border-softyellow pb-1 text-softyellow hover:text-white hover:border-white transition-colors"
                 >
                   Lihat Semua Ulasan
                 </Link>
 
-                {/* Tombol Panah Navigasi Minimalis */}
+                {/* Tombol Panah Navigasi Minimalis (Sudut Tajam 90°) */}
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
                     onClick={prevSlide}
                     aria-label="Ulasan sebelumnya"
-                    className="p-3 rounded-full border border-softyellow/30 text-softyellow hover:bg-softyellow hover:text-softblue transition-all cursor-pointer shadow-sm"
+                    className="p-3 rounded-none border-2 border-softyellow/50 text-softyellow hover:bg-softyellow hover:text-softblue transition-all cursor-pointer shadow-none"
                   >
                     <ArrowLeft className="w-5 h-5 stroke-[1.5]" />
                   </button>
@@ -126,7 +146,7 @@ export function TestimonialsSection() {
                     type="button"
                     onClick={nextSlide}
                     aria-label="Ulasan selanjutnya"
-                    className="p-3 rounded-full border border-softyellow/30 text-softyellow hover:bg-softyellow hover:text-softblue transition-all cursor-pointer shadow-sm"
+                    className="p-3 rounded-none border-2 border-softyellow/50 text-softyellow hover:bg-softyellow hover:text-softblue transition-all cursor-pointer shadow-none"
                   >
                     <ArrowRight className="w-5 h-5 stroke-[1.5]" />
                   </button>
@@ -142,15 +162,15 @@ export function TestimonialsSection() {
                   transform: `translateX(calc(-${currentIndex} * (100% / 1.1)))`,
                 }}
               >
-                {TESTIMONIALS.map((item) => (
+                {list.map((item) => (
                   <article
                     key={item.id}
                     className="w-[85vw] sm:w-[50vw] lg:w-[33.333%] shrink-0 px-3 lg:px-4 flex flex-col group cursor-grab active:cursor-grabbing"
                   >
-                    {/* Foto Persegi Warna Asli (Aspect Square) */}
-                    <div className="relative aspect-square w-full mb-5 bg-softblue rounded-none overflow-hidden border-2 border-softyellow shadow-sm">
+                    {/* Foto Persegi Warna Asli (Border 2px DESIGN.md) */}
+                    <div className="relative aspect-square w-full mb-5 bg-softblue rounded-none overflow-hidden border-2 border-softyellow shadow-none">
                       <Image
-                        src={item.image}
+                        src={item.image || '/assets/testimonial-tour.svg'}
                         alt={`Testimonial dari ${item.name}`}
                         fill
                         sizes="(max-width: 768px) 85vw, (max-width: 1024px) 50vw, 33vw"
@@ -163,7 +183,7 @@ export function TestimonialsSection() {
                       <h3 className="text-sm font-medium uppercase tracking-widest text-softyellow mb-1">
                         {item.name}
                       </h3>
-                      <p className="text-[11px] font-medium uppercase tracking-widest text-softyellow">
+                      <p className="text-[11px] font-medium uppercase tracking-widest text-softyellow/80">
                         {item.location}, {item.serviceCategory}
                       </p>
                     </div>
@@ -175,9 +195,12 @@ export function TestimonialsSection() {
 
                     {/* Bintang & Tanggal */}
                     <div className="flex items-center gap-1 mt-auto pt-2">
-                      {Array.from({ length: item.rating }).map((_, i) => (
-                        <Star key={i} className="h-3 w-3 fill-white text-softyellow" />
+                      {Array.from({ length: item.rating || 5 }).map((_, i) => (
+                        <Star key={i} className="h-3 w-3 fill-softyellow text-softyellow" />
                       ))}
+                      <span className="text-[10px] text-softyellow/60 uppercase tracking-wider ml-2 font-mono">
+                        {item.date}
+                      </span>
                     </div>
                   </article>
                 ))}

@@ -35,23 +35,26 @@ export default async function AdminBookingsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Operations Header */}
-      <div>
-        <h1 className="text-xl font-bold tracking-tight text-stone-900">
-          Daftar Pemesanan Layanan
+    <div className="space-y-6 font-sans">
+      {/* Editorial Header */}
+      <div className="pb-2 border-b-2 border-brown/20">
+        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-brown/70">
+          // DAFTAR RESERVASI &amp; JADWAL
+        </p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight uppercase text-brown mt-0.5">
+          Manajemen Reservasi Booking
         </h1>
-        <p className="text-xs text-stone-500 mt-0.5">
-          Manajemen status pesanan, konfirmasi jadwal, dan detail kontak pelanggan.
+        <p className="text-xs text-brown/80 mt-1 font-light">
+          Pantau status pesanan pelanggan, jadwal pemakaian layanan, dan kirim pesan konfirmasi via WhatsApp.
         </p>
       </div>
 
       {errorMessage && (
-        <div className="p-3.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 flex items-start gap-2.5 text-xs">
-          <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+        <div className="p-4 rounded-none bg-softyellow border-2 border-brown text-brown flex items-start gap-3 text-xs">
+          <AlertCircle className="w-5 h-5 text-brown shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold text-rose-900">Gagal Mengambil Data Booking</p>
-            <p className="text-rose-700 mt-0.5">{errorMessage}</p>
+            <p className="font-bold uppercase tracking-wider">Gagal Mengambil Data Booking</p>
+            <p className="mt-0.5">{errorMessage}</p>
           </div>
         </div>
       )}

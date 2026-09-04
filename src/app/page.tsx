@@ -63,24 +63,51 @@ export default async function HomePage() {
 
       <main className="flex-1">
         <HeroSection
+          heroTitle={siteSettings.hero_title}
           heroSubtitle={siteSettings.hero_subtitle}
           whatsappNumber={siteSettings.contact_whatsapp}
+          settings={siteSettings}
         />
 
         <ConnectionBanner
           errorMessage={errorMessage}
           isPlaceholderUrl={isPlaceholderUrl}
         />
-        <AboutSection aboutText={siteSettings.about_text} />
-        <ServicesSection services={services} />
 
+        <AboutSection
+          aboutTagline={siteSettings.about_tagline}
+          aboutTitle={siteSettings.about_title}
+          aboutText={siteSettings.about_text}
+          stat1Val={siteSettings.about_stat_1_val}
+          stat1Label={siteSettings.about_stat_1_label}
+          stat2Val={siteSettings.about_stat_2_val}
+          stat2Label={siteSettings.about_stat_2_label}
+        />
 
+        <ServicesSection
+          services={services}
+          servicesTitle={siteSettings.services_title}
+          servicesSubtitle={siteSettings.services_subtitle}
+        />
 
-        <TestimonialsSection />
+        <TestimonialsSection
+          testimonialsTitle={siteSettings.testimonials_title}
+          testimonialsJson={siteSettings.testimonials_data}
+        />
 
-        <FaqSection />
+        <FaqSection
+          faqTitle={siteSettings.faq_title}
+          faqSubtitle={siteSettings.faq_subtitle}
+          faqJson={siteSettings.faq_data}
+        />
 
-        <CtaSection whatsappNumber={siteSettings.contact_whatsapp} />
+        <CtaSection
+          whatsappNumber={siteSettings.contact_whatsapp}
+          ctaTagline={siteSettings.cta_tagline}
+          ctaTitle={siteSettings.cta_title}
+          ctaSubtitle={siteSettings.cta_subtitle}
+          ctaButtonText={siteSettings.cta_button_text}
+        />
       </main>
 
       <PublicFooter settings={siteSettings} />

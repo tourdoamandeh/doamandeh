@@ -63,7 +63,7 @@ export function PublicFooter({ settings }: PublicFooterProps) {
                 </div>
               </div>
               <p className="text-sm leading-relaxed text-softyellow/80 font-light pr-4">
-                Partner liburan dan lifestyle eksklusif di Bali. Menyediakan sewa motor, mobil, studio tato higienis, villa estetik, paket tour seru, dan kelas selancar.
+                {currentSettings.footer_brand_desc || 'Partner liburan dan lifestyle eksklusif di Bali. Menyediakan sewa motor, mobil, studio tato higienis, villa estetik, paket tour seru, dan kelas selancar.'}
               </p>
             </div>
 
@@ -74,7 +74,7 @@ export function PublicFooter({ settings }: PublicFooterProps) {
                   href={currentSettings.sosmed_instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-11 w-11 border border-softyellow/30 text-softyellow flex items-center justify-center hover:bg-softyellow hover:text-brown transition-colors"
+                  className="h-11 w-11 border border-softyellow/30 text-softyellow flex items-center justify-center hover:bg-softyellow hover:text-brown transition-colors rounded-none"
                   aria-label="Instagram Doamandeh"
                 >
                   <InstagramIcon className="h-5 w-5" />
@@ -85,10 +85,21 @@ export function PublicFooter({ settings }: PublicFooterProps) {
                   href={currentSettings.sosmed_facebook}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-11 w-11 border border-softyellow/30 text-softyellow flex items-center justify-center hover:bg-softyellow hover:text-brown transition-colors"
+                  className="h-11 w-11 border border-softyellow/30 text-softyellow flex items-center justify-center hover:bg-softyellow hover:text-brown transition-colors rounded-none"
                   aria-label="Facebook Doamandeh"
                 >
                   <FacebookIcon className="h-5 w-5" />
+                </a>
+              )}
+              {currentSettings.sosmed_tiktok && (
+                <a
+                  href={currentSettings.sosmed_tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-11 w-11 border border-softyellow/30 text-softyellow flex items-center justify-center hover:bg-softyellow hover:text-brown transition-colors rounded-none text-xs font-bold"
+                  aria-label="TikTok Doamandeh"
+                >
+                  TT
                 </a>
               )}
             </div>
@@ -182,15 +193,15 @@ export function PublicFooter({ settings }: PublicFooterProps) {
               </h4>
 
               {/* Box Flat Krem Kontras Terang */}
-              <div className="bg-softyellow text-brown p-6 space-y-2 shadow-sm">
+              <div className="bg-softyellow text-brown p-6 space-y-2 shadow-none rounded-none border border-softyellow/20">
                 <p className="text-lg font-bold tracking-tight uppercase text-brown">
-                  Buka Setiap Hari
+                  {currentSettings.operating_hours_title || 'Buka Setiap Hari'}
                 </p>
-                <p className="text-sm text-brown/80 font-light">08:00 - 22:00 WITA</p>
+                <p className="text-sm text-brown/80 font-light">{currentSettings.operating_hours_time || '08:00 - 22:00 WITA'}</p>
                 <div className="w-full h-[1px] bg-brown/20 my-3"></div>
                 <p className="text-[10px] uppercase tracking-widest font-bold text-brown flex items-center gap-2">
                   <span className="w-1.5 h-1.5 bg-brown block"></span>
-                  Reservasi Server 24/7
+                  {currentSettings.operating_hours_note || 'Reservasi Server 24/7'}
                 </p>
               </div>
             </div>
@@ -198,7 +209,7 @@ export function PublicFooter({ settings }: PublicFooterProps) {
             <div className="mt-8 lg:mt-0">
               <Link
                 href="/admin/login"
-                className="inline-flex items-center justify-between w-full border border-softyellow/30 bg-transparent text-softyellow px-6 py-4 hover:bg-softyellow hover:text-brown transition-colors uppercase text-[10px] tracking-widest font-bold group"
+                className="inline-flex items-center justify-between w-full border border-softyellow/30 bg-transparent text-softyellow px-6 py-4 hover:bg-softyellow hover:text-brown transition-colors uppercase text-[10px] tracking-widest font-bold rounded-none group"
               >
                 <span>Portal Administrator</span>
                 <ArrowUpRight className="h-4 w-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

@@ -4,10 +4,24 @@ import { ArrowRight } from 'lucide-react';
 import { FadeIn } from '@/components/ui/fade-in';
 
 interface AboutSectionProps {
+  aboutTagline?: string;
+  aboutTitle?: string;
   aboutText?: string;
+  stat1Val?: string;
+  stat1Label?: string;
+  stat2Val?: string;
+  stat2Label?: string;
 }
 
-export function AboutSection({ aboutText }: AboutSectionProps = {}) {
+export function AboutSection({
+  aboutTagline = '// TENTANG DOAMANDEH',
+  aboutTitle = 'Bersama Doamandeh, liburan di Bali tak seharusnya terasa melelahkan. Kami mengurus setiap detail perjalanannya, agar kamu bisa benar-benar rileks, menikmati momen, dan menemukan ketenangan.',
+  aboutText,
+  stat1Val = '100%',
+  stat1Label = 'Sepenuh Hati',
+  stat2Val = '24/7',
+  stat2Label = 'Teman Perjalanan',
+}: AboutSectionProps = {}) {
   return (
     <section
       id="about"
@@ -20,12 +34,12 @@ export function AboutSection({ aboutText }: AboutSectionProps = {}) {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-12 lg:mb-16">
             <div className="md:col-span-2 pt-1 md:pt-2">
               <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-semibold text-softyellow/70 flex items-center gap-2">
-                <span>//</span> TENTANG DOAMANDEH
+                <span>{aboutTagline}</span>
               </p>
             </div>
             <div className="md:col-span-10">
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-medium leading-[1.15] tracking-tight text-softyellow">
-                Bersama Doamandeh, liburan di Bali tak seharusnya terasa melelahkan. Kami mengurus setiap detail perjalanannya, agar kamu bisa benar-benar rileks, menikmati momen, dan menemukan ketenangan.
+                {aboutTitle}
               </h2>
             </div>
           </div>
@@ -40,18 +54,26 @@ export function AboutSection({ aboutText }: AboutSectionProps = {}) {
             <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-white/20">
               <div className="flex items-center gap-6 sm:gap-8">
                 <div>
-                  <p className="text-3xl lg:text-4xl font-medium tracking-tighter mb-0.5 text-softyellow">100<span className="text-xl">%</span></p>
-                  <p className="text-[10px] uppercase tracking-widest text-softyellow/70 font-medium">Sepenuh Hati</p>
+                  <p className="text-3xl lg:text-4xl font-medium tracking-tighter mb-0.5 text-softyellow">
+                    {stat1Val}
+                  </p>
+                  <p className="text-[10px] uppercase tracking-widest text-softyellow/70 font-medium">
+                    {stat1Label}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-3xl lg:text-4xl font-medium tracking-tighter mb-0.5 text-softyellow">24<span className="text-xl">/7</span></p>
-                  <p className="text-[10px] uppercase tracking-widest text-softyellow/70 font-medium">Teman Perjalanan</p>
+                  <p className="text-3xl lg:text-4xl font-medium tracking-tighter mb-0.5 text-softyellow">
+                    {stat2Val}
+                  </p>
+                  <p className="text-[10px] uppercase tracking-widest text-softyellow/70 font-medium">
+                    {stat2Label}
+                  </p>
                 </div>
               </div>
 
               <Link
                 href="/about"
-                className="inline-flex items-center gap-2 text-xs md:text-sm font-semibold bg-softyellow text-softblue px-4 py-2.5 hover:bg-softyellow/90 hover:text-brown transition-all group cursor-pointer shadow-sm rounded-none"
+                className="inline-flex items-center gap-2 text-xs md:text-sm font-semibold bg-softyellow text-softblue px-4 py-2.5 hover:bg-softyellow/90 hover:text-brown transition-all group cursor-pointer shadow-none rounded-none border border-softyellow"
               >
                 <span>Kenal kami lebih dekat</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1 stroke-[2]" />
@@ -60,7 +82,7 @@ export function AboutSection({ aboutText }: AboutSectionProps = {}) {
 
             {/* Foto 1: Rumah Pohon & Alam Bali (Offline SVG) */}
             <div className="space-y-4 pt-2">
-              <div className="relative aspect-[3/4] sm:aspect-[3/2] w-full bg-gray-200 overflow-hidden border-2 border-softyellow shadow-sm">
+              <div className="relative aspect-[3/4] sm:aspect-[3/2] w-full bg-softblue overflow-hidden border-2 border-softyellow shadow-none rounded-none">
                 <Image
                   src="/assets/about-photo-1.svg"
                   alt="Rumah Pohon & Alam Bali - Doamandeh"
@@ -86,7 +108,7 @@ export function AboutSection({ aboutText }: AboutSectionProps = {}) {
 
             {/* Foto 2: Tebing & Tepi Laut Bali (Offline SVG) */}
             <div className="space-y-4">
-              <div className="relative aspect-[3/4] sm:aspect-[4/3] w-full sm:w-4/5 bg-gray-200 overflow-hidden border-2 border-softyellow shadow-sm">
+              <div className="relative aspect-[3/4] sm:aspect-[4/3] w-full sm:w-4/5 bg-softblue overflow-hidden border-2 border-softyellow shadow-none rounded-none">
                 <Image
                   src="/assets/about-photo-2.svg"
                   alt="Tebing & Laut Bali - Doamandeh"

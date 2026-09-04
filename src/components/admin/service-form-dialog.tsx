@@ -10,10 +10,8 @@ import {
   Loader2,
   AlertCircle,
   UploadCloud,
-  ImageIcon,
   Trash2,
   Link as LinkIcon,
-  CheckCircle2,
 } from 'lucide-react';
 
 interface ServiceFormDialogProps {
@@ -131,7 +129,6 @@ export function ServiceFormDialog({
 
   // Image mode & state
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadMode, setUploadMode] = useState<'upload' | 'preset' | 'url'>('upload');
   const [isDragOver, setIsDragOver] = useState(false);
 
@@ -149,7 +146,6 @@ export function ServiceFormDialog({
       setIsActive(service?.is_active ?? true);
       setErrorMessage(null);
       setIsUploading(false);
-      setUploadSuccess(!!service?.image_url);
       setUploadMode('upload');
     }
   }, [isOpen, service]);
@@ -158,7 +154,6 @@ export function ServiceFormDialog({
 
   async function handleFileUpload(file: File) {
     setErrorMessage(null);
-    setUploadSuccess(false);
 
     const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg'];
     if (!validTypes.includes(file.type)) {
@@ -183,19 +178,16 @@ export function ServiceFormDialog({
       if (res.success && res.data?.publicUrl) {
         setImageUrl(res.data.publicUrl);
         setPreviewUrl(res.data.publicUrl);
-        setUploadSuccess(true);
       } else {
         const dataUrl = await compressImageToDataUrl(file);
         setImageUrl(dataUrl);
         setPreviewUrl(dataUrl);
-        setUploadSuccess(true);
       }
     } catch {
       try {
         const dataUrl = await compressImageToDataUrl(file);
         setImageUrl(dataUrl);
         setPreviewUrl(dataUrl);
-        setUploadSuccess(true);
       } catch {
         setErrorMessage('Gagal memproses file gambar. Silakan gunakan opsi URL atau preset gambar.');
       }
@@ -223,7 +215,6 @@ export function ServiceFormDialog({
   function handleRemoveImage() {
     setImageUrl('');
     setPreviewUrl(null);
-    setUploadSuccess(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -232,7 +223,6 @@ export function ServiceFormDialog({
   function handleSelectPreset(presetUrl: string) {
     setImageUrl(presetUrl);
     setPreviewUrl(presetUrl);
-    setUploadSuccess(true);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -296,47 +286,47 @@ export function ServiceFormDialog({
   const currentPresets = PRESET_IMAGES[category] || [];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-none overflow-y-auto font-sans">
       <div
-        className="relative w-full max-w-lg my-6 rounded-lg border border-stone-200 bg-white p-5 sm:p-6 text-stone-900 shadow-xl max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-lg my-6 rounded-none border-2 border-brown bg-softwhite p-6 text-black shadow-none max-h-[90vh] overflow-y-auto"
         role="dialog"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-stone-200 mb-4">
+        <div className="flex items-center justify-between pb-3 border-b-2 border-brown mb-5">
           <div>
-            <h2 className="text-sm font-bold text-stone-900">
+            <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-brown/70">
+              // KATALOG CMS
+            </p>
+            <h2 className="text-base font-bold uppercase tracking-wider text-brown mt-0.5">
               {isEditing ? 'Edit Layanan' : 'Tambah Layanan Baru'}
             </h2>
-            <p className="text-[11px] text-stone-500">
-              {isEditing ? 'Perbarui informasi dan harga katalog.' : 'Lengkapi data katalog layanan wisata.'}
-            </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded text-stone-400 hover:text-stone-700 transition-colors"
+            className="p-1 rounded-none border border-brown text-brown hover:bg-brown hover:text-softyellow transition-colors cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {errorMessage && (
-          <div className="mb-4 flex items-start gap-2 rounded-lg bg-rose-50 border border-rose-200 p-2.5 text-xs text-rose-800">
-            <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
-            <span>{errorMessage}</span>
+          <div className="mb-4 flex items-start gap-2.5 rounded-none bg-softyellow border-2 border-brown p-3 text-xs text-brown">
+            <AlertCircle className="h-4 w-4 text-brown shrink-0 mt-0.5" />
+            <span className="font-medium">{errorMessage}</span>
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {/* Category */}
           <div>
-            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
               Kategori Layanan *
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as ServiceCategory)}
-              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 focus:border-teal-700 focus:outline-none"
+              className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black focus:border-black focus:bg-white focus:outline-none cursor-pointer"
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat.value} value={cat.value}>
@@ -348,7 +338,7 @@ export function ServiceFormDialog({
 
           {/* Title */}
           <div>
-            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
               Nama / Judul Layanan *
             </label>
             <input
@@ -357,14 +347,14 @@ export function ServiceFormDialog({
               placeholder="Contoh: Sewa Motor Honda PCX 160"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
+              className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black placeholder:text-brown/40 focus:border-black focus:bg-white focus:outline-none"
             />
           </div>
 
           {/* Price & Unit */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
                 Harga (IDR) *
               </label>
               <input
@@ -375,11 +365,11 @@ export function ServiceFormDialog({
                 placeholder="150000"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 font-mono focus:border-teal-700 focus:outline-none"
+                className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs font-bold text-black focus:border-black focus:bg-white focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
                 Satuan Harga *
               </label>
               <input
@@ -388,14 +378,14 @@ export function ServiceFormDialog({
                 placeholder="per hari, per sesi"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 focus:border-teal-700 focus:outline-none"
+                className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black focus:border-black focus:bg-white focus:outline-none"
               />
             </div>
           </div>
 
           {/* Duration */}
           <div>
-            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
               Durasi Operasional (Opsional)
             </label>
             <input
@@ -403,88 +393,86 @@ export function ServiceFormDialog({
               placeholder="Contoh: 2 jam, 1 hari, 8 jam tour"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
-              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
+              className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black placeholder:text-brown/40 focus:border-black focus:bg-white focus:outline-none"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
-              Deskripsi & Fasilitas
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
+              Deskripsi &amp; Fasilitas
             </label>
             <textarea
               rows={2}
               placeholder="Jelaskan spesifikasi, fasilitas include, ketentuan..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none resize-none"
+              className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black placeholder:text-brown/40 focus:border-black focus:bg-white focus:outline-none resize-none"
             />
           </div>
 
           {/* Photo Section */}
-          <div className="rounded-lg border border-stone-200 bg-stone-50/70 p-3.5 space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-[11px] font-semibold text-stone-700 uppercase tracking-wider">
-                Foto Layanan
+          <div className="rounded-none border-2 border-brown bg-softyellow/30 p-4 space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-brown/20">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-brown">
+                Bingkai Foto Layanan (Border 2px)
               </label>
 
-              <div className="flex items-center gap-1 bg-stone-200/70 rounded p-0.5 text-[11px]">
+              <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => setUploadMode('upload')}
-                  className={`px-2 py-0.5 rounded font-medium transition-colors ${
-                    uploadMode === 'upload' ? 'bg-white text-stone-900 shadow-xs' : 'text-stone-600 hover:text-stone-900'
+                  className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-none border transition-colors cursor-pointer ${
+                    uploadMode === 'upload' ? 'bg-brown text-softyellow border-brown' : 'bg-softwhite text-brown border-brown hover:bg-softyellow'
                   }`}
                 >
-                  Upload File
+                  Upload
                 </button>
                 <button
                   type="button"
                   onClick={() => setUploadMode('preset')}
-                  className={`px-2 py-0.5 rounded font-medium transition-colors ${
-                    uploadMode === 'preset' ? 'bg-white text-stone-900 shadow-xs' : 'text-stone-600 hover:text-stone-900'
+                  className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-none border transition-colors cursor-pointer ${
+                    uploadMode === 'preset' ? 'bg-brown text-softyellow border-brown' : 'bg-softwhite text-brown border-brown hover:bg-softyellow'
                   }`}
                 >
-                  Galeri Foto
+                  Preset
                 </button>
                 <button
                   type="button"
                   onClick={() => setUploadMode('url')}
-                  className={`px-2 py-0.5 rounded font-medium transition-colors ${
-                    uploadMode === 'url' ? 'bg-white text-stone-900 shadow-xs' : 'text-stone-600 hover:text-stone-900'
+                  className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-none border transition-colors cursor-pointer ${
+                    uploadMode === 'url' ? 'bg-brown text-softyellow border-brown' : 'bg-softwhite text-brown border-brown hover:bg-softyellow'
                   }`}
                 >
-                  Input URL
+                  URL
                 </button>
               </div>
             </div>
 
             {/* Active Preview */}
             {activeDisplayImage ? (
-              <div className="space-y-2">
-                <div className="relative rounded-lg border border-stone-200 bg-white overflow-hidden">
-                  <img
-                    src={activeDisplayImage}
-                    alt="Preview"
-                    className="h-32 w-full object-cover"
-                  />
-                  <div className="absolute top-2 right-2 flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={isUploading}
-                      className="px-2 py-1 rounded bg-white/95 border border-stone-200 text-[11px] font-medium text-stone-800 shadow-xs hover:bg-white"
-                    >
-                      Ganti
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleRemoveImage}
-                      className="p-1 rounded bg-rose-600 text-white shadow-xs hover:bg-rose-700"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
+              <div className="relative rounded-none border-2 border-brown bg-softwhite overflow-hidden">
+                <img
+                  src={activeDisplayImage}
+                  alt="Preview"
+                  className="h-32 w-full object-cover"
+                />
+                <div className="absolute top-2 right-2 flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="px-2.5 py-1 rounded-none bg-softwhite border border-brown text-[10px] font-bold uppercase tracking-wider text-brown hover:bg-softyellow cursor-pointer"
+                  >
+                    Ganti
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="p-1.5 rounded-none bg-black text-softyellow hover:bg-brown cursor-pointer"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
                 </div>
               </div>
             ) : null}
@@ -507,22 +495,22 @@ export function ServiceFormDialog({
                   onDragLeave={() => setIsDragOver(false)}
                   onDrop={handleDrop}
                   onClick={() => !isUploading && fileInputRef.current?.click()}
-                  className={`cursor-pointer flex flex-col items-center justify-center p-4 border border-dashed rounded-lg bg-white transition-colors ${
-                    isDragOver ? 'border-teal-700 bg-teal-50/20' : 'border-stone-300 hover:border-stone-400'
+                  className={`cursor-pointer flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-none transition-colors ${
+                    isDragOver ? 'border-black bg-softyellow' : 'border-brown bg-softwhite hover:bg-softyellow/50'
                   }`}
                 >
                   {isUploading ? (
-                    <div className="flex items-center gap-2 py-2 text-xs text-stone-600">
-                      <Loader2 className="h-4 w-4 animate-spin text-teal-700" />
-                      <span>Memproses gambar...</span>
+                    <div className="flex items-center gap-2 py-2 text-xs font-bold uppercase tracking-wider text-brown">
+                      <Loader2 className="h-4 w-4 animate-spin text-brown" />
+                      <span>Memproses Gambar...</span>
                     </div>
                   ) : (
                     <>
-                      <UploadCloud className="h-5 w-5 text-stone-400 mb-1" />
-                      <p className="text-xs font-medium text-stone-800">
-                        Klik untuk upload atau seret file ke sini
+                      <UploadCloud className="h-6 w-6 text-brown mb-1.5" />
+                      <p className="text-xs font-bold uppercase tracking-wider text-brown">
+                        Upload Gambar Layanan
                       </p>
-                      <p className="text-[10px] text-stone-400 mt-0.5">JPG, PNG, WEBP (Maks. 5MB)</p>
+                      <p className="text-[10px] text-brown/60 mt-0.5">JPG, PNG, WEBP (Maksimal 5MB)</p>
                     </>
                   )}
                 </div>
@@ -537,10 +525,10 @@ export function ServiceFormDialog({
                     key={preset.label}
                     type="button"
                     onClick={() => handleSelectPreset(preset.url)}
-                    className="group rounded border border-stone-200 bg-white overflow-hidden text-left hover:border-teal-700 transition-colors"
+                    className="group rounded-none border-2 border-brown bg-softwhite overflow-hidden text-left hover:border-black transition-colors cursor-pointer"
                   >
                     <img src={preset.url} alt={preset.label} className="h-14 w-full object-cover" />
-                    <p className="p-1 text-[9px] font-medium text-stone-700 truncate">{preset.label}</p>
+                    <p className="p-1 text-[9px] font-bold text-brown truncate">{preset.label}</p>
                   </button>
                 ))}
               </div>
@@ -549,7 +537,7 @@ export function ServiceFormDialog({
             {/* Mode: URL */}
             {uploadMode === 'url' && (
               <div className="relative">
-                <LinkIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
+                <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-brown/60" />
                 <input
                   type="url"
                   placeholder="https://images.unsplash.com/..."
@@ -558,40 +546,40 @@ export function ServiceFormDialog({
                     setImageUrl(e.target.value);
                     setPreviewUrl(e.target.value);
                   }}
-                  className="w-full rounded-lg border border-stone-200 bg-white pl-8 pr-3 py-1.5 text-xs text-stone-900 focus:border-teal-700 focus:outline-none"
+                  className="w-full rounded-none border-2 border-brown bg-softwhite pl-9 pr-3 py-2 text-xs text-black focus:border-black focus:outline-none"
                 />
               </div>
             )}
           </div>
 
           {/* Active Checkbox */}
-          <div className="flex items-center gap-2 pt-1">
+          <div className="flex items-center gap-2.5 pt-1">
             <input
               type="checkbox"
               id="is_active"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
-              className="h-3.5 w-3.5 rounded border-stone-300 text-teal-700 focus:ring-teal-700"
+              className="h-4 w-4 rounded-none border-2 border-brown text-brown focus:ring-0 cursor-pointer"
             />
-            <label htmlFor="is_active" className="text-xs text-stone-700 cursor-pointer">
-              Aktifkan layanan (tampilkan di website public)
+            <label htmlFor="is_active" className="text-xs font-medium text-black cursor-pointer">
+              Aktifkan katalog ini (tampilkan di website publik)
             </label>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-stone-200 mt-4">
+          <div className="flex items-center justify-end gap-2.5 pt-4 border-t-2 border-brown mt-5">
             <button
               type="button"
               onClick={onClose}
               disabled={isPending || isUploading}
-              className="rounded-lg border border-stone-200 bg-white px-3.5 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 disabled:opacity-50"
+              className="rounded-none border-2 border-brown bg-softwhite px-4 py-2 text-xs font-bold uppercase tracking-wider text-brown hover:bg-softyellow cursor-pointer disabled:opacity-50"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={isPending || isUploading}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F766E] px-4 py-1.5 text-xs font-medium text-white hover:bg-[#115E59] transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-none bg-brown text-softyellow hover:bg-black border-2 border-brown hover:border-black px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer shadow-none"
             >
               {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               <span>{isEditing ? 'Simpan Perubahan' : 'Tambah Layanan'}</span>

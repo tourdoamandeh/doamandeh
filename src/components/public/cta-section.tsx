@@ -6,6 +6,10 @@ import { ArrowRight } from 'lucide-react';
 import { FadeIn } from '@/components/ui/fade-in';
 
 interface CtaSectionProps {
+  ctaTagline?: string;
+  ctaTitle?: string;
+  ctaSubtitle?: string;
+  ctaButtonText?: string;
   whatsappNumber?: string;
 }
 
@@ -79,8 +83,12 @@ const SERVICES_DATA: ServiceCard[] = [
 ];
 
 export function CtaSection({
+  ctaTagline = '// LAYANAN UNGGULAN DOAMANDEH',
+  ctaTitle = 'Solusi lengkap \nliburanmu di Bali.',
+  ctaSubtitle = 'Pilih layanan favoritmu dari Doamandeh untuk pengalaman wisata, akomodasi, serta lifestyle terbaik di Pulau Dewata.',
+  ctaButtonText = 'Pesan Layanan Sekarang',
   whatsappNumber = '+62 812-3456-7890',
-}: CtaSectionProps) {
+}: CtaSectionProps = {}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -142,33 +150,33 @@ export function CtaSection({
           <FadeIn direction="up" className="md:col-span-6 lg:col-span-5 flex flex-col justify-center">
             <div>
               <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium text-brown/80 flex items-center gap-2 mb-3">
-                <span>//</span> LAYANAN UNGGULAN DOAMANDEH
+                <span>{ctaTagline}</span>
               </p>
 
-              <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight text-brown mb-4">
-                Solusi lengkap <br /> liburanmu di Bali.
+              <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight text-brown mb-4 whitespace-pre-line">
+                {ctaTitle}
               </h2>
 
               <p className="text-sm md:text-base text-brown/80 leading-relaxed font-light mb-8 max-w-md">
-                Pilih layanan favoritmu dari Doamandeh untuk pengalaman wisata, akomodasi, serta lifestyle terbaik di Pulau Dewata.
+                {ctaSubtitle}
               </p>
 
               <a
                 href={mainWaUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 bg-brown text-softyellow px-6 py-3.5 text-xs md:text-sm font-medium tracking-wider uppercase hover:bg-brown/90 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-3 bg-brown text-softyellow px-6 py-3.5 text-xs md:text-sm font-medium tracking-wider uppercase hover:bg-black rounded-none border-2 border-brown hover:border-black transition-colors cursor-pointer shadow-none"
               >
-                <span>Pesan Layanan Sekarang</span>
+                <span>{ctaButtonText}</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
           </FadeIn>
 
-          {/* Kolom Kanan: Tumpukan Kartu Foto + Indikator Geser Minimalis */}
+          {/* Kolom Kanan: Tumpukan Kartu Foto (Sudut Tajam 0px DESIGN.md) */}
           <FadeIn direction="up" delay={0.15} className="md:col-span-6 lg:col-span-7 flex flex-col items-center justify-center py-4">
 
-            {/* Tumpukan Kartu (Side-Peeking Stacked Deck) */}
+            {/* Tumpukan Kartu Sharp 90° Border-2 */}
             <div className="relative w-full max-w-[300px] sm:max-w-[330px] md:max-w-[350px] h-[440px] sm:h-[470px] mx-auto select-none touch-none flex items-center justify-center">
               {SERVICES_DATA.map((service, index) => {
                 const len = SERVICES_DATA.length;
@@ -176,7 +184,6 @@ export function CtaSection({
                 const isNext = index === (currentIndex + 1) % len;
                 const isPrev = index === (currentIndex - 1 + len) % len;
 
-                // Hanya tampilkan kartu aktif dan 2 kartu samping/belakang yang mengintip
                 if (!isCurrent && !isNext && !isPrev) return null;
 
                 let zIndex = 10;
@@ -225,8 +232,9 @@ export function CtaSection({
                       opacity: opacity,
                       transition: isDragging && isCurrent ? 'none' : 'all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1)',
                     }}
-                    className={`absolute inset-0 w-full h-full rounded-3xl overflow-hidden border border-brown/20 shadow-xl flex flex-col justify-between p-6 bg-brown ${isCurrent ? 'cursor-grab active:cursor-grabbing' : 'pointer-events-none'
-                      }`}
+                    className={`absolute inset-0 w-full h-full rounded-none overflow-hidden border-2 border-softyellow shadow-none flex flex-col justify-between p-6 bg-brown ${
+                      isCurrent ? 'cursor-grab active:cursor-grabbing' : 'pointer-events-none'
+                    }`}
                   >
                     {/* Background Image */}
                     <Image
@@ -243,26 +251,26 @@ export function CtaSection({
 
                     {/* Card Top: Category Badge & Title Overlay */}
                     <div className="relative z-10 flex flex-col items-center gap-2 text-center pt-2">
-                      <span className="px-3.5 py-1 text-[11px] font-medium uppercase tracking-wider bg-white/20 backdrop-blur-md text-white border border-white/30 rounded-full">
+                      <span className="px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-brown/80 text-softyellow border-2 border-softyellow rounded-none">
                         {service.category}
                       </span>
-                      <h3 className="text-2xl sm:text-3xl font-medium text-white tracking-tight leading-tight mt-1">
+                      <h3 className="text-2xl sm:text-3xl font-medium text-softyellow tracking-tight leading-tight mt-1">
                         {service.title}
                       </h3>
                     </div>
 
-                    {/* Card Bottom: Description, Price & White Pill Explore/Pesan Button */}
+                    {/* Card Bottom: Description, Price & Button */}
                     <div className="relative z-10 flex flex-col gap-3">
-                      <p className="text-xs text-white/80 leading-relaxed font-light line-clamp-2 text-left">
+                      <p className="text-xs text-softyellow/85 leading-relaxed font-light line-clamp-2 text-left">
                         {service.description}
                       </p>
 
-                      <div className="flex items-end justify-between gap-3 pt-3 border-t border-white/20">
+                      <div className="flex items-end justify-between gap-3 pt-3 border-t border-softyellow/25">
                         <div className="flex flex-col text-left">
-                          <span className="text-[10px] text-white/70 font-light uppercase tracking-wider">
+                          <span className="text-[10px] text-softyellow/70 font-light uppercase tracking-wider">
                             Mulai Dari
                           </span>
-                          <span className="text-base sm:text-lg font-medium text-white">
+                          <span className="text-base sm:text-lg font-bold text-softyellow">
                             {service.badgeText}
                           </span>
                         </div>
@@ -271,7 +279,7 @@ export function CtaSection({
                           href={activeWaUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-5 py-2.5 bg-white text-black font-medium text-xs rounded-full hover:bg-white/90 transition-all shadow-md shrink-0"
+                          className="px-5 py-2 bg-softyellow text-brown font-bold text-xs uppercase tracking-wider rounded-none hover:bg-white hover:text-black transition-all shadow-none shrink-0 border border-softyellow"
                         >
                           Pesan
                         </a>
@@ -282,7 +290,7 @@ export function CtaSection({
               })}
             </div>
 
-            {/* Indikator Geser Minimalis Natural & Dots Navigasi */}
+            {/* Indikator Geser Minimalis Natural & Bar Navigasi Sharp */}
             <div className="flex flex-col items-center justify-center gap-2.5 mt-6 z-30">
               <div className="flex items-center gap-2 text-[11px] font-light tracking-[0.2em] uppercase text-brown/70">
                 <span className="text-brown/40 font-normal">‹</span>
@@ -290,7 +298,7 @@ export function CtaSection({
                 <span className="text-brown/40 font-normal">›</span>
               </div>
 
-              {/* Dots Indicator Minimalis */}
+              {/* Bar Indicator Minimalis Sharp */}
               <div className="flex items-center gap-1.5">
                 {SERVICES_DATA.map((_, idx) => (
                   <button
@@ -298,10 +306,11 @@ export function CtaSection({
                     type="button"
                     onClick={() => setCurrentIndex(idx)}
                     aria-label={`Go to slide ${idx + 1}`}
-                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${idx === currentIndex
-                      ? 'w-6 bg-brown'
-                      : 'w-1.5 bg-brown/25 hover:bg-brown/40'
-                      }`}
+                    className={`h-1.5 rounded-none transition-all duration-300 cursor-pointer ${
+                      idx === currentIndex
+                        ? 'w-6 bg-brown'
+                        : 'w-1.5 bg-brown/25 hover:bg-brown/40'
+                    }`}
                   />
                 ))}
               </div>

@@ -21,14 +21,14 @@ export default async function AdminDashboardLayout({
       {/* Toast Notifications */}
       <Toaster richColors position="top-right" />
 
-      {/* Official shadcn Collapsible App Sidebar */}
+      {/* App Sidebar Styled in Editorial Geometric Minimalist */}
       <AppSidebar
         userEmail={user.email}
         adminName={profile?.full_name || 'Administrator'}
       />
 
-      {/* Main Content Area in SidebarInset */}
-      <SidebarInset>
+      {/* Main Content Area in SidebarInset with Soft Yellow Palette */}
+      <SidebarInset className="bg-softyellow min-h-screen text-black font-sans selection:bg-brown selection:text-softyellow">
         {/* Top Operations Header with SidebarTrigger & Breadcrumb */}
         <AdminHeader />
 

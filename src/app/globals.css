@@ -34,15 +34,15 @@
   --input: #E7E8DF;
   --ring: #2C2E31;
 
-  /* Sidebar Theme Variables */
-  --sidebar: #101010;
-  --sidebar-foreground: #F5F5F4;
-  --sidebar-primary: #0F766E;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #1C1C1C;
-  --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #262626;
-  --sidebar-ring: #0F766E;
+  /* Sidebar Theme Variables (DESIGN.md) */
+  --sidebar: #2C2E31;
+  --sidebar-foreground: #FFF6C6;
+  --sidebar-primary: #504139;
+  --sidebar-primary-foreground: #FFF6C6;
+  --sidebar-accent: #504139;
+  --sidebar-accent-foreground: #FFF6C6;
+  --sidebar-border: #504139;
+  --sidebar-ring: #FFF6C6;
 }
 
 /* Explicit Utility Classes for Color Tokens */

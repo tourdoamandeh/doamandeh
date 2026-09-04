@@ -93,44 +93,48 @@ export function BookingFormDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-none overflow-y-auto font-sans">
       <div
-        className="relative w-full max-w-lg my-6 rounded-lg border border-stone-200 bg-white p-5 sm:p-6 text-stone-900 shadow-xl max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-lg my-6 rounded-none border-2 border-brown bg-softwhite p-6 text-black shadow-none max-h-[90vh] overflow-y-auto"
         role="dialog"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-stone-200 mb-4">
+        <div className="flex items-center justify-between pb-3 border-b-2 border-brown mb-5">
           <div>
-            <h3 className="text-sm font-bold text-stone-900">Input Booking Manual</h3>
-            <p className="text-[11px] text-stone-500">Pencatatan reservasi offline atau langsung dari admin.</p>
+            <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-brown/70">
+              // INPUT RESERVASI
+            </p>
+            <h3 className="text-base font-bold uppercase tracking-wider text-brown mt-0.5">
+              Input Booking Manual
+            </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded text-stone-400 hover:text-stone-700 transition-colors"
+            className="p-1 rounded-none border border-brown text-brown hover:bg-brown hover:text-softyellow transition-colors cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {errorMessage && (
-          <div className="mb-4 flex items-start gap-2 rounded-lg bg-rose-50 border border-rose-200 p-2.5 text-xs text-rose-800">
-            <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
-            <span>{errorMessage}</span>
+          <div className="mb-4 flex items-start gap-2.5 rounded-none bg-softyellow border-2 border-brown p-3 text-xs text-brown">
+            <AlertCircle className="h-4 w-4 text-brown shrink-0 mt-0.5" />
+            <span className="font-medium">{errorMessage}</span>
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {/* Service Selection */}
           <div>
-            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
               Pilih Layanan *
             </label>
             <select
               value={serviceId}
               onChange={(e) => handleServiceChange(e.target.value)}
               required
-              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 focus:border-teal-700 focus:outline-none"
+              className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black focus:border-black focus:bg-white focus:outline-none cursor-pointer"
             >
               <option value="" disabled>Pilih layanan...</option>
               {services.map((s) => (
@@ -143,7 +147,7 @@ export function BookingFormDialog({
 
           {/* Customer Name */}
           <div>
-            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
               Nama Pelanggan *
             </label>
             <input
@@ -152,15 +156,15 @@ export function BookingFormDialog({
               placeholder="Contoh: Budi Santoso"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
+              className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black placeholder:text-brown/40 focus:border-black focus:bg-white focus:outline-none"
             />
           </div>
 
           {/* Email & Phone Grid */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
-                Email *
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
+                Alamat Email *
               </label>
               <input
                 type="email"
@@ -168,11 +172,11 @@ export function BookingFormDialog({
                 placeholder="customer@email.com"
                 value={customerEmail}
                 onChange={(e) => setCustomerEmail(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
+                className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black placeholder:text-brown/40 focus:border-black focus:bg-white focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
                 No. Telepon / WhatsApp *
               </label>
               <input
@@ -181,7 +185,7 @@ export function BookingFormDialog({
                 placeholder="08123456789"
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 font-mono placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
+                className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black font-mono placeholder:text-brown/40 focus:border-black focus:bg-white focus:outline-none"
               />
             </div>
           </div>
@@ -189,19 +193,19 @@ export function BookingFormDialog({
           {/* Date & Price Grid */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
-                Tanggal Pemakaian *
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
+                Tanggal Booking *
               </label>
               <input
                 type="date"
                 required
                 value={bookingDate}
                 onChange={(e) => setBookingDate(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 focus:border-teal-700 focus:outline-none font-mono"
+                className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black focus:border-black focus:bg-white focus:outline-none font-mono"
               />
             </div>
             <div>
-              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
                 Total Biaya (IDR)
               </label>
               <input
@@ -210,20 +214,20 @@ export function BookingFormDialog({
                 placeholder="350000"
                 value={totalPrice}
                 onChange={(e) => setTotalPrice(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 font-mono focus:border-teal-700 focus:outline-none"
+                className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs font-bold text-black focus:border-black focus:bg-white focus:outline-none"
               />
             </div>
           </div>
 
           {/* Status Selection */}
           <div>
-            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
               Status Awal
             </label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as BookingStatus)}
-              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 focus:border-teal-700 focus:outline-none"
+              className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black focus:border-black focus:bg-white focus:outline-none cursor-pointer"
             >
               <option value="pending">Pending (Menunggu)</option>
               <option value="confirmed">Confirmed (Dikonfirmasi)</option>
@@ -234,7 +238,7 @@ export function BookingFormDialog({
 
           {/* Notes */}
           <div>
-            <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
               Catatan Khusus
             </label>
             <textarea
@@ -242,24 +246,24 @@ export function BookingFormDialog({
               placeholder="Permintaan penjemputan, spesifikasi kustom..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none resize-none"
+              className="w-full rounded-none border-2 border-brown bg-softyellow/40 px-3 py-2 text-xs text-black placeholder:text-brown/40 focus:border-black focus:bg-white focus:outline-none resize-none"
             />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-stone-200 mt-4">
+          <div className="flex items-center justify-end gap-2.5 pt-4 border-t-2 border-brown mt-5">
             <button
               type="button"
               onClick={onClose}
               disabled={isPending}
-              className="rounded-lg border border-stone-200 bg-white px-3.5 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 disabled:opacity-50"
+              className="rounded-none border-2 border-brown bg-softwhite px-4 py-2 text-xs font-bold uppercase tracking-wider text-brown hover:bg-softyellow cursor-pointer disabled:opacity-50"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={isPending}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F766E] px-4 py-1.5 text-xs font-medium text-white hover:bg-[#115E59] transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-none bg-brown text-softyellow hover:bg-black border-2 border-brown hover:border-black px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer shadow-none"
             >
               {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               <span>Simpan Booking</span>

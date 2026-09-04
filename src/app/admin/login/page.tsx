@@ -3,7 +3,8 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginAdminAction } from '@/lib/actions/admin/auth';
-import { Lock, Mail, Loader2, AlertCircle } from 'lucide-react';
+import { Lock, Mail, Loader2, AlertCircle, Shield } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -31,72 +32,77 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FAFAF9] px-4 py-12 text-[#171717] font-sans antialiased selection:bg-teal-700 selection:text-white">
-      <div className="w-full max-w-sm space-y-4">
-        {/* Brand Header */}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-softyellow px-4 py-12 text-black font-sans selection:bg-brown selection:text-softyellow">
+      <div className="w-full max-w-sm space-y-5">
+        {/* Brand Monogram Header */}
         <div className="text-center">
-          <div className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-[#101010] text-white font-mono text-sm font-bold mb-2">
-            D
-          </div>
-          <h1 className="font-mono text-sm font-bold tracking-wider text-stone-900 uppercase">
-            DOAMANDEH OPERATIONS
+          <Link href="/" className="inline-block group mb-3">
+            <div className="h-14 w-14 bg-brown text-softyellow flex items-center justify-center text-3xl font-light tracking-tighter border-2 border-brown rounded-none mx-auto group-hover:bg-black transition-colors">
+              D.
+            </div>
+          </Link>
+          <h1 className="text-lg font-bold tracking-widest uppercase text-brown">
+            DOAMANDEH CMS
           </h1>
-          <p className="text-[11px] text-stone-500 mt-0.5">
-            Panel Administrasi & Pengelolaan Layanan
+          <p className="text-[11px] font-medium tracking-wider uppercase text-brown/70 mt-0.5">
+            Portal Administrasi &amp; Operasional
           </p>
         </div>
 
-        {/* Card */}
-        <div className="rounded-lg border border-stone-200 bg-white p-6 shadow-xs">
-          <div className="mb-4 pb-3 border-b border-stone-100">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-stone-900">
-              Autentikasi Admin
-            </h2>
-            <p className="text-[11px] text-stone-500 mt-0.5">
-              Masukkan email dan password terdaftar.
-            </p>
+        {/* Editorial Geometric Card */}
+        <div className="rounded-none border-2 border-brown bg-softwhite p-6 sm:p-8 shadow-none">
+          <div className="mb-5 pb-3 border-b-2 border-brown/30 flex items-center justify-between">
+            <div>
+              <h2 className="text-xs font-bold uppercase tracking-widest text-brown">
+                Autentikasi Staf
+              </h2>
+              <p className="text-[10px] text-brown/70 mt-0.5">
+                Masukkan kredensial administrator resmi.
+              </p>
+            </div>
+            <Shield className="h-4 w-4 text-brown/70" />
           </div>
 
           {/* Feedback Messages */}
           {errorMessage && (
-            <div className="mb-4 flex items-start gap-2 rounded-lg bg-rose-50 border border-rose-200 p-2.5 text-xs text-rose-800">
-              <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
-              <span>{errorMessage}</span>
+            <div className="mb-5 flex items-start gap-2.5 rounded-none bg-softyellow border-2 border-brown p-3 text-xs text-brown">
+              <AlertCircle className="h-4 w-4 text-brown shrink-0 mt-0.5" />
+              <span className="font-medium">{errorMessage}</span>
             </div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+          <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             <div>
-              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
-                Email
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
+                Alamat Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-brown/60" />
                 <input
                   type="email"
                   required
                   placeholder="admin@doamandeh.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-lg border border-stone-200 bg-white pl-8 pr-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
+                  className="w-full rounded-none border-2 border-brown bg-softyellow/50 pl-9 pr-3 py-2.5 text-xs text-black placeholder:text-brown/40 focus:border-black focus:bg-white focus:outline-none transition-colors"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">
-                Password
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-brown mb-1.5">
+                Kata Sandi
               </label>
               <div className="relative">
-                <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-brown/60" />
                 <input
                   type="password"
                   required
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-lg border border-stone-200 bg-white pl-8 pr-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
+                  className="w-full rounded-none border-2 border-brown bg-softyellow/50 pl-9 pr-3 py-2.5 text-xs text-black placeholder:text-brown/40 focus:border-black focus:bg-white focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -104,7 +110,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full flex items-center justify-center gap-1.5 rounded-lg bg-[#0F766E] py-2 text-xs font-medium text-white hover:bg-[#115E59] transition-colors disabled:opacity-50 mt-4"
+              className="w-full flex items-center justify-center gap-2 rounded-none bg-brown py-3 text-xs font-bold uppercase tracking-widest text-softyellow hover:bg-black hover:border-black border-2 border-brown transition-colors disabled:opacity-50 mt-5 cursor-pointer shadow-none"
             >
               {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               <span>Masuk ke Dashboard</span>
@@ -113,9 +119,17 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Footer Note */}
-        <p className="text-center text-[11px] text-stone-400">
-          Akses terbatas hanya untuk administrator Doamandeh.
-        </p>
+        <div className="text-center space-y-1">
+          <p className="text-[10px] uppercase tracking-widest font-medium text-brown/60">
+            Akses Terbatas © {new Date().getFullYear()} DOAMANDEH.
+          </p>
+          <Link
+            href="/"
+            className="inline-block text-[10px] uppercase tracking-widest text-brown underline hover:text-black font-semibold"
+          >
+            ← Kembali ke Website Publik
+          </Link>
+        </div>
       </div>
     </div>
   );

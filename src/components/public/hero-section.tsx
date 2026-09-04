@@ -77,14 +77,20 @@ const services: ServiceSlide[] = [
 
 const LEFT_BACKGROUND_IMAGE = '/assets/hero-bali.svg';
 
+import { SiteSettingsInput } from '@/lib/validations/admin';
+
 interface HeroSectionProps {
+  heroTitle?: string;
   heroSubtitle?: string;
   whatsappNumber?: string;
+  settings?: Partial<SiteSettingsInput>;
 }
 
 export function HeroSection({
+  heroTitle,
   heroSubtitle,
   whatsappNumber = '+62 812-3456-7890',
+  settings,
 }: HeroSectionProps = {}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -132,6 +138,23 @@ export function HeroSection({
   };
 
   const currentService = services[currentIndex];
+
+  const currentQuote =
+    currentService.category === 'travel' && settings?.hero_slide_travel_quote ? settings.hero_slide_travel_quote :
+    currentService.category === 'villa' && settings?.hero_slide_villa_quote ? settings.hero_slide_villa_quote :
+    currentService.category === 'surfing-lesson' && settings?.hero_slide_surfing_quote ? settings.hero_slide_surfing_quote :
+    currentService.category === 'vehicle-rental' && settings?.hero_slide_vehicle_quote ? settings.hero_slide_vehicle_quote :
+    currentService.category === 'tattoo' && settings?.hero_slide_tattoo_quote ? settings.hero_slide_tattoo_quote :
+    currentService.quote;
+
+  const currentDescription =
+    currentService.category === 'travel' && settings?.hero_slide_travel_desc ? settings.hero_slide_travel_desc :
+    currentService.category === 'villa' && settings?.hero_slide_villa_desc ? settings.hero_slide_villa_desc :
+    currentService.category === 'surfing-lesson' && settings?.hero_slide_surfing_desc ? settings.hero_slide_surfing_desc :
+    currentService.category === 'vehicle-rental' && settings?.hero_slide_vehicle_desc ? settings.hero_slide_vehicle_desc :
+    currentService.category === 'tattoo' && settings?.hero_slide_tattoo_desc ? settings.hero_slide_tattoo_desc :
+    currentService.description;
+
   const cleanWa = whatsappNumber.replace(/[^0-9]/g, '');
   const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(
     'Halo Doamandeh, saya butuh teman ngobrol untuk merencanakan liburan.'
@@ -159,7 +182,7 @@ export function HeroSection({
         </a>
         <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 md:bottom-10 md:left-10 max-w-sm z-10">
           <p className="text-softyellow text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight drop-shadow-lg whitespace-pre-line">
-            {currentService.quote}
+            {currentQuote}
           </p>
         </div>
       </div>
@@ -169,15 +192,15 @@ export function HeroSection({
 
         {/* Dropdown Mobile */}
         {menuOpen && (
-          <div className="absolute top-16 right-5 z-30 bg-white border border-gray-200 rounded-none shadow-xl p-5 w-60 space-y-3 animate-fadeIn">
-            <p className="text-[10px] uppercase tracking-widest text-black/50 font-semibold mb-2">
+          <div className="absolute top-16 right-5 z-30 bg-softwhite border-2 border-softyellow rounded-none shadow-none p-5 w-60 space-y-3 animate-fadeIn">
+            <p className="text-[10px] uppercase tracking-widest text-brown font-bold mb-2">
               Menu Navigasi
             </p>
-            <Link href="/" onClick={() => setMenuOpen(false)} className="block text-sm font-medium hover:text-peach transition-colors">Beranda</Link>
-            <Link href="#services" onClick={() => setMenuOpen(false)} className="block text-sm font-medium hover:text-peach transition-colors">Layanan</Link>
-            <Link href="#about" onClick={() => setMenuOpen(false)} className="block text-sm font-medium hover:text-peach transition-colors">Tentang Kami</Link>
-            <Link href="#contact" onClick={() => setMenuOpen(false)} className="block text-sm font-medium hover:text-peach transition-colors">Hubungi Kami</Link>
-            <a href={waUrl} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 text-xs font-medium text-emerald-700 pt-2 border-t border-gray-100">
+            <Link href="/" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-black hover:text-brown transition-colors">Beranda</Link>
+            <Link href="#services" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-black hover:text-brown transition-colors">Layanan</Link>
+            <Link href="#about" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-black hover:text-brown transition-colors">Tentang Kami</Link>
+            <Link href="#contact" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-black hover:text-brown transition-colors">Hubungi Kami</Link>
+            <a href={waUrl} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brown pt-2 border-t border-brown/20">
               <Phone className="w-3.5 h-3.5" />
               <span>WhatsApp Admin</span>
             </a>
@@ -187,16 +210,14 @@ export function HeroSection({
         {/* 1. Bagian Atas: Title & Navigasi */}
         <div className="shrink-0 pt-1 md:pt-0">
           <div className="flex items-start justify-between gap-3">
-            <h1 className="text-4xl sm:text-5xl md:text-3xl lg:text-4xl xl:text-5xl font-medium tracking-tight text-softyellow leading-[1.05] md:leading-[1.08]">
-              Doamandeh, <br />
-              — Rencanakan <br />
-              Perjalanan
+            <h1 className="text-4xl sm:text-5xl md:text-3xl lg:text-4xl xl:text-5xl font-medium tracking-tight text-softyellow leading-[1.05] md:leading-[1.08] whitespace-pre-line">
+              {heroTitle || 'Doamandeh, \n— Rencanakan \nPerjalanan'}
             </h1>
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Buka Menu"
-              className="p-1 text-softyellow hover:bg-white/10 transition-colors shrink-0 rounded-none"
+              className="p-1 text-softyellow hover:bg-white/10 transition-colors shrink-0 rounded-none cursor-pointer"
             >
               {menuOpen ? <X className="w-7 h-7 stroke-[1.5]" /> : <Menu className="w-7 h-7 stroke-[1.5]" />}
             </button>
@@ -290,8 +311,8 @@ export function HeroSection({
                 type="button"
                 onClick={() => setCurrentIndex(idx)}
                 aria-label={`Slide ke layanan ${service.label}`}
-                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${currentIndex === idx
-                  ? 'w-7 bg-softyellow shadow-sm'
+                className={`h-1.5 rounded-none transition-all duration-300 cursor-pointer ${currentIndex === idx
+                  ? 'w-7 bg-softyellow'
                   : 'w-2 bg-softyellow/30 hover:bg-softyellow/60'
                   }`}
               />
@@ -308,7 +329,7 @@ export function HeroSection({
           </div>
 
           <p className="text-sm md:text-base text-softyellow/85 leading-relaxed font-normal line-clamp-3 md:line-clamp-2 lg:line-clamp-3 transition-all duration-300 text-justify md:text-left">
-            {currentService.description}
+            {currentDescription}
           </p>
 
           <div className="pt-1 flex items-center justify-start gap-4 md:gap-5 text-xs md:text-sm font-medium">

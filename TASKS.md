@@ -65,6 +65,39 @@
 - [x] End-to-end test: admin ubah site settings → homepage update
 - [x] `bun run build` (zero error & 100% pass)
 
+## Phase 8 — Admin UI Editorial Redesign & Full Dynamic CMS Engine (Owner: All)
+
+- [x] Git branch baru `feature/admin-redesign-dynamic-cms`
+- [x] Skema CMS dinamis tanpa hardcode (`siteSettingsSchema` & `DEFAULT_SITE_SETTINGS`)
+  - [x] Hero section per-kategori quotes & descriptions dinamis
+  - [x] About section (tagline, title, body, dynamic stats 1 & 2)
+  - [x] Services section (dynamic title & subtitle)
+  - [x] Testimonials manager dinamis (CRUD list via JSON parser di CMS)
+  - [x] FAQ manager dinamis (CRUD list via JSON parser di CMS)
+  - [x] CTA section (tagline, title, subtitle, button text dinamis)
+  - [x] Footer & Operasional (brand description, operating hours title, time, note, sosmed tiktok)
+- [x] Redesain UI Admin / CMS mengacu 100% ke `DESIGN.md`:
+  - [x] Halaman login admin (`/admin/login`) — Flat editorial aesthetic, `bg-softyellow`, `border-2 border-brown`, `rounded-none`, `shadow-none`, monogram D.
+  - [x] Layout dashboard & top header (`/admin/(dashboard)`) — Kanvas krem editorial, breadcrumbs tebal, border 2px solid
+  - [x] Sidebar admin (`app-sidebar.tsx`) — `rounded-none`, `border-r-2 border-brown`, tab aktif `bg-brown text-softyellow border-l-4 border-softyellow`
+  - [x] Overview dashboard (`/admin/(dashboard)/page.tsx`) — Flat KPI cards, border-2 border-brown, rounded-none, tabel booking terbaru
+  - [x] Layanan wisata (`/admin/(dashboard)/services`) — Filter category, search, action buttons, dialog form, delete alert, dropzone rounded-none
+  - [x] Manajemen reservasi (`/admin/(dashboard)/bookings`) — Filter tabs, detail modal, WhatsApp action, form dialog rounded-none
+  - [x] Form CMS site settings (`/admin/(dashboard)/settings`) — Multi-tab CMS editor (Hero, About, Services/CTA, Testimoni, FAQ, Kontak, Sosmed)
+- [x] Integrasi Website Publik ke CMS (Zero Hardcode):
+  - [x] `HeroSection` terkoneksi penuh ke data dinamis
+  - [x] `AboutSection` & halaman `/about` terkoneksi penuh ke data dinamis
+  - [x] `ServicesSection` terkoneksi penuh ke data dinamis
+  - [x] `TestimonialsSection` terkoneksi penuh ke data dinamis
+  - [x] `FaqSection` terkoneksi penuh ke data dinamis
+  - [x] `CtaSection` terkoneksi penuh ke data dinamis
+  - [x] `PublicHeader` & `PublicFooter` serta halaman `/contact` terkoneksi penuh ke data dinamis
+  - [x] Standardisasi seluruh border & radius publik ke `rounded-none` dan `border-2` (eliminasi sisa soft bubble/rounded relics)
+- [x] Dokumentasi & QA:
+  - [x] Update `DECISIONS.md` (DEC-011)
+  - [x] Update `TASKS.md` & `ISSUES.md`
+  - [x] Build verifikasi `bun run build` lolos 100% tanpa error
+
 ## Log Perubahan
 
 - [2026-09-02] Phase 1–5 selesai, masuk Phase 6.
@@ -76,6 +109,8 @@
 - [2026-09-03] Landing Page Complete Overhaul & Redesign Polish: Implementasi menyeluruh font Futura, penghapusan efek grayscale foto di seluruh seksi, perancangan carousel testimoni 6 kartu (#504139), penyempurnaan seksi FAQ compact pas 1 layar (gambar 02 hidden di mobile), pertipisan garis border seksi (#131718/15), tombol CTA ganda, footer bg #FFFFFF & kartu jam operasional #504139. Dokumentasi DEC-010 di DECISIONS.md dan penambahan 4 To-Do items di ISSUES.md.
 - [2026-09-04] Landing Page Palette (#FFF6C6), Typography (New York/Playfair Display), Framer Motion & Photo Borders: Penggantian 100% warna #FFFFFF menjadi Krem #FFF6C6, pengaplikasian font Apple New York & Playfair Display, sistem animasi scroll FadeIn/FadeInStagger via framer-motion, perbaikan layout foto FAQ (items-stretch & object-top), standardisasi border-2 border-[#fff6c6], serta git merge & push ke main branch.
 - [2026-09-04] Photos & Layout Overhaul: Pembaruan layout FAQ mobile, perombakan CTA section ke 5 layanan Doamandeh dengan tumpukan kartu interaktif (dating-app side-peek layout), penggantian foto About section & Testimonials section menggunakan aset offline SVG asli di `/assets` (Rumah pohon, Uluwatu, Kayaking, Floating pool breakfast, Sewa motor, Sewa mobil, Tattoo studio, Surfing lesson), serta pembaharuan checklist proyek.
+- [2026-09-04] Admin UI Editorial Redesign & Full Dynamic CMS Engine (Branch `feature/admin-redesign-dynamic-cms`): Standardisasi menyeluruh UI Admin/CMS (`/admin/login`, `/admin/(dashboard)`, sidebar, header, services, bookings, settings) sesuai pedoman `DESIGN.md` (Editorial Geometric Minimalist, sudut siku 0px `rounded-none`, flat 2px solid border, tanpa shadow artifisial, palet krem & cokelat tua). Penghapusan seluruh teks hardcode di website publik dengan arsitektur CMS dinamis untuk Hero quotes/descriptions, About stats/tagline, Services title/subtitle, Testimonials CRUD, FAQ CRUD, CTA content, Footer brand & jam operasional, serta verifikasi build lulus 100%.
+
 
 
 

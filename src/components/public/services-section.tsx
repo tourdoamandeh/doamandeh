@@ -10,9 +10,15 @@ import { FadeIn, FadeInStagger } from '@/components/ui/fade-in';
 
 interface ServicesSectionProps {
   services: Service[];
+  servicesTitle?: string;
+  servicesSubtitle?: string;
 }
 
-export function ServicesSection({ services }: ServicesSectionProps) {
+export function ServicesSection({
+  services,
+  servicesTitle = 'Pilih \nPetualanganmu',
+  servicesSubtitle = 'Mulai dari kamu mendarat sampai waktunya pulang, biarkan Doamandeh yang urus detailnya. Kami siapkan pilihan aktivitas dan fasilitas terbaik supaya liburanmu di Bali terasa santai, seru, dan pastinya bebas ribet.',
+}: ServicesSectionProps) {
   // State untuk melacak item yang sedang di-hover (default null: semua ketutup)
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
@@ -49,6 +55,14 @@ export function ServicesSection({ services }: ServicesSectionProps) {
       price: 75000,
       image: '/assets/service-vehicle.jpg',
     },
+    {
+      cat: 'tattoo',
+      line1: 'TATO',
+      line2: 'STUDIO',
+      desc: 'Abadikan kenangan liburan di Bali dengan karya tato custom steril berstandar higienis.',
+      price: 300000,
+      image: '/assets/service-tattoo.jpg',
+    },
   ];
 
   const displayServices = categoryConfig.map((item) => {
@@ -71,23 +85,23 @@ export function ServicesSection({ services }: ServicesSectionProps) {
     >
       <div className="max-w-[1400px] mx-auto px-8 sm:px-12 lg:px-16 relative z-10">
 
-        {/* Layout Utama: Kiri (Teks & Tombol) dan Kanan (Grid 2x2 Sejajar) */}
+        {/* Layout Utama: Kiri (Teks & Tombol) dan Kanan (Grid Sejajar) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
 
           {/* Kolom Kiri: Header Section (Sticky hanya di desktop lg:sticky) */}
           <FadeIn direction="up" className="lg:col-span-4 flex flex-col gap-4 sm:gap-6 lg:sticky lg:top-24 mb-6 lg:mb-0">
-            <h2 className="text-4xl sm:text-5xl lg:text-[2.7rem] uppercase font-medium leading-[0.95] tracking-tighter text-softyellow">
-              Pilih <br /> Petualanganmu
+            <h2 className="text-4xl sm:text-5xl lg:text-[2.7rem] uppercase font-medium leading-[0.95] tracking-tighter text-softyellow whitespace-pre-line">
+              {servicesTitle}
             </h2>
 
             <p className="text-base sm:text-lg md:text-xl leading-relaxed text-softyellow/80 max-w-sm mt-1 sm:mt-2 font-light">
-              Mulai dari kamu mendarat sampai waktunya pulang, biarkan Doamandeh yang urus detailnya. Kami siapkan pilihan aktivitas dan fasilitas terbaik supaya liburanmu di Bali terasa santai, seru, dan pastinya bebas ribet.
+              {servicesSubtitle}
             </p>
 
             <div className="mt-4 sm:mt-6">
               <Link
                 href="/services"
-                className="inline-flex items-center gap-3 px-6 sm:px-7 py-3 sm:py-3.5 bg-softyellow text-brown rounded-none hover:bg-softyellow/90 hover:text-brown transition-colors text-[10px] sm:text-xs uppercase tracking-widest font-bold shadow-sm"
+                className="inline-flex items-center gap-3 px-6 sm:px-7 py-3 sm:py-3.5 bg-softyellow text-brown rounded-none hover:bg-softyellow/90 hover:text-brown transition-colors text-[10px] sm:text-xs uppercase tracking-widest font-bold shadow-none border border-softyellow"
               >
                 <span>Lihat keseruan lainnya</span>
                 <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -95,7 +109,7 @@ export function ServicesSection({ services }: ServicesSectionProps) {
             </div>
           </FadeIn>
 
-          {/* Kolom Kanan: Grid 2x2 Sejajar ala Referensi Gambar (2 Grid di Mobile & Desktop) */}
+          {/* Kolom Kanan: Grid Sejajar ala Referensi Gambar */}
           <div className="lg:col-span-8">
             <FadeInStagger className="grid grid-cols-2 gap-x-4 sm:gap-x-10 gap-y-8 sm:gap-y-12 items-start">
               {displayServices.map((service) => {
@@ -111,7 +125,7 @@ export function ServicesSection({ services }: ServicesSectionProps) {
                     {/* Header Layanan: Judul 2 Baris & Panah Pojok */}
                     <div className="flex justify-between items-start gap-2 sm:gap-3">
                       <h3 className="text-xl sm:text-3xl md:text-[2.25rem] font-semibold leading-[0.95] tracking-tight uppercase text-softyellow w-4/5">
-                        <Link href={`/services/${service.id}`} className="block">
+                        <Link href={`/category/${service.category}`} className="block">
                           <span>{service.line1}</span>
                           <br />
                           <span>{service.line2}</span>
@@ -119,7 +133,7 @@ export function ServicesSection({ services }: ServicesSectionProps) {
                       </h3>
 
                       <Link
-                        href={`/services/${service.id}`}
+                        href={`/category/${service.category}`}
                         className="text-softyellow shrink-0"
                         aria-label={`Detail ${service.line1} ${service.line2}`}
                       >
@@ -140,7 +154,7 @@ export function ServicesSection({ services }: ServicesSectionProps) {
                         }`}
                     >
                       <div className="overflow-hidden">
-                        <div className="relative w-full aspect-[3/4] max-h-[220px] sm:max-h-[300px] bg-gray-200 rounded-none overflow-hidden border-2 border-softyellow shadow-sm">
+                        <div className="relative w-full aspect-[3/4] max-h-[220px] sm:max-h-[300px] bg-softblue rounded-none overflow-hidden border-2 border-softyellow shadow-none">
                           <Image
                             src={service.image_url}
                             alt={`${service.line1} ${service.line2}`}

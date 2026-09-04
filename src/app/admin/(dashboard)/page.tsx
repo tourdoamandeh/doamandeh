@@ -2,12 +2,10 @@ import { createClient } from '@/lib/supabase/server';
 import { Service, Booking } from '@/types/database';
 import Link from 'next/link';
 import {
-  Package,
   CalendarCheck,
   ArrowRight,
   Plus,
-  Search,
-  ExternalLink,
+  ArrowUpRight,
 } from 'lucide-react';
 
 function formatRupiah(amount: number): string {
@@ -69,174 +67,176 @@ export default async function AdminDashboardPage() {
   const recentBookings = bookings.slice(0, 6);
 
   return (
-    <div className="space-y-6">
-      {/* Operations Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 font-sans">
+      {/* Header Operations */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b-2 border-brown/20">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-stone-900">
-            Operations Dashboard
+          <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-brown/70">
+            // DOAMANDEH TOURS &amp; TRAVEL
+          </p>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight uppercase text-brown mt-0.5">
+            Overview Operasional
           </h1>
-          <p className="text-xs text-stone-500 mt-0.5">
-            Ringkasan metrik reservasi, pendapatan terkonfirmasi, dan status operasional.
+          <p className="text-xs text-brown/80 mt-1 font-light">
+            Ringkasan pemesanan paket wisata, status katalog aktif, dan estimasi nilai reservasi.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <Link
             href="/admin/services"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F766E] px-3.5 py-1.5 text-xs font-medium text-white hover:bg-[#115E59] transition-colors"
+            className="inline-flex items-center gap-2 rounded-none bg-brown text-softyellow hover:bg-black border-2 border-brown hover:border-black px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors shadow-none"
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>Tambah Layanan</span>
           </Link>
           <Link
             href="/admin/bookings"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-stone-200 bg-white px-3.5 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 transition-colors"
+            className="inline-flex items-center gap-2 rounded-none bg-softwhite text-brown hover:bg-softyellow border-2 border-brown px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors shadow-none"
           >
-            <span>Semua Booking ({pendingBookings} Pending)</span>
+            <span>Semua Booking ({pendingBookings})</span>
           </Link>
         </div>
       </div>
 
-      {/* Dense KPI Row (No AI slop, large mono numbers, clean 1px borders) */}
+      {/* KPI Bento Row (DESIGN.md Flat Geometric with 2px borders) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Booking */}
-        <div className="rounded-lg border border-stone-200 bg-white p-4">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-stone-500">
+        <div className="rounded-none border-2 border-brown bg-softwhite p-5 shadow-none">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brown/70">
             Total Booking
           </p>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-mono text-2xl font-bold tracking-tight text-stone-900 tabular-nums">
+            <span className="text-3xl font-bold tracking-tight text-brown">
               {totalBookings}
             </span>
-            <span className="font-mono text-xs text-stone-500 tabular-nums">
+            <span className="text-xs font-bold uppercase tracking-wider text-softblue">
               {confirmedBookings + completedBookings} sukses
             </span>
           </div>
-          <p className="text-[11px] text-stone-500 mt-1">Pemesanan customer terdaftar</p>
+          <p className="text-[11px] text-brown/75 font-light mt-1">Pemesanan customer tercatat</p>
         </div>
 
         {/* Pending Action */}
-        <div className="rounded-lg border border-stone-200 bg-white p-4">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-stone-500">
+        <div className="rounded-none border-2 border-brown bg-softyellow p-5 shadow-none">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brown/70">
             Perlu Konfirmasi
           </p>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-mono text-2xl font-bold tracking-tight text-amber-600 tabular-nums">
+            <span className="text-3xl font-bold tracking-tight text-black">
               {pendingBookings}
             </span>
-            <span className="text-xs font-medium text-amber-700">
-              {pendingBookings > 0 ? 'Action required' : 'Clear'}
+            <span className="text-xs font-bold uppercase tracking-wider text-brown">
+              {pendingBookings > 0 ? 'Tindakan diperlukan' : 'Aman'}
             </span>
           </div>
-          <p className="text-[11px] text-stone-500 mt-1">Booking menunggu tindakan admin</p>
+          <p className="text-[11px] text-brown/75 font-light mt-1">Menunggu respon admin</p>
         </div>
 
         {/* Layanan Aktif */}
-        <div className="rounded-lg border border-stone-200 bg-white p-4">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-stone-500">
-            Layanan Aktif
+        <div className="rounded-none border-2 border-brown bg-softwhite p-5 shadow-none">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brown/70">
+            Katalog Aktif
           </p>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-mono text-2xl font-bold tracking-tight text-[#0F766E] tabular-nums">
+            <span className="text-3xl font-bold tracking-tight text-brown">
               {activeServices}
             </span>
-            <span className="font-mono text-xs text-stone-500 tabular-nums">
-              dari {totalServices} katalog
+            <span className="text-xs font-bold uppercase tracking-wider text-brown/60">
+              dari {totalServices} paket
             </span>
           </div>
-          <p className="text-[11px] text-stone-500 mt-1">Siap dipesan di website</p>
+          <p className="text-[11px] text-brown/75 font-light mt-1">Ditampilkan di publik</p>
         </div>
 
         {/* Revenue Estimate */}
-        <div className="rounded-lg border border-stone-200 bg-white p-4">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-stone-500">
+        <div className="rounded-none border-2 border-brown bg-softwhite p-5 shadow-none">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brown/70">
             Estimasi Transaksi
           </p>
           <div className="mt-2">
-            <span className="font-mono text-xl font-bold tracking-tight text-stone-900 tabular-nums truncate block">
+            <span className="text-2xl font-bold tracking-tight text-brown truncate block">
               {formatRupiah(estimatedRevenue)}
             </span>
           </div>
-          <p className="text-[11px] text-stone-500 mt-1">Status confirmed & completed</p>
+          <p className="text-[11px] text-brown/75 font-light mt-1">Status confirmed &amp; completed</p>
         </div>
       </div>
 
       {/* Main Operations Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Bookings (2/3 width) */}
-        <div className="lg:col-span-2 rounded-lg border border-stone-200 bg-white overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-stone-200 bg-stone-50/50">
+        <div className="lg:col-span-2 rounded-none border-2 border-brown bg-softwhite overflow-hidden shadow-none">
+          <div className="flex items-center justify-between px-5 py-3.5 border-b-2 border-brown bg-softyellow/60">
             <div>
-              <h2 className="text-xs font-bold uppercase tracking-wider text-stone-900">
-                Pemesanan Terbaru
+              <h2 className="text-xs font-bold uppercase tracking-widest text-brown">
+                Pemesanan Terkini
               </h2>
-              <p className="text-[11px] text-stone-500 mt-0.5">
-                Aktivitas pemesanan paket wisata & layanan terakhir
+              <p className="text-[11px] text-brown/70 mt-0.5">
+                Aktivitas reservasi paket tour &amp; layanan terakhir
               </p>
             </div>
             <Link
               href="/admin/bookings"
-              className="text-xs font-medium text-[#0F766E] hover:text-[#115E59] inline-flex items-center gap-1"
+              className="text-xs uppercase tracking-wider font-bold text-brown hover:text-black inline-flex items-center gap-1.5 border-b border-brown"
             >
-              Lihat Semua <ArrowRight className="h-3 w-3" />
+              <span>Semua</span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
           {recentBookings.length === 0 ? (
-            <div className="p-8 text-center">
-              <CalendarCheck className="h-6 w-6 text-stone-400 mx-auto mb-2" />
-              <p className="text-xs font-medium text-stone-600">Belum ada data pemesanan yang masuk.</p>
+            <div className="p-10 text-center">
+              <CalendarCheck className="h-8 w-8 text-brown/40 mx-auto mb-2" />
+              <p className="text-xs font-bold uppercase tracking-wider text-brown">
+                Belum ada data reservasi.
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-stone-700">
-                <thead className="bg-stone-50 text-[11px] font-semibold text-stone-500 uppercase tracking-wider border-b border-stone-200">
+              <table className="w-full text-left text-xs text-black">
+                <thead className="bg-brown text-softyellow text-[10px] font-bold uppercase tracking-wider border-b-2 border-brown">
                   <tr>
-                    <th className="px-4 py-2.5">Pelanggan</th>
-                    <th className="px-4 py-2.5">Layanan</th>
-                    <th className="px-4 py-2.5">Tanggal</th>
-                    <th className="px-4 py-2.5">Total Biaya</th>
-                    <th className="px-4 py-2.5">Status</th>
+                    <th className="px-4 py-3">Pelanggan</th>
+                    <th className="px-4 py-3">Layanan</th>
+                    <th className="px-4 py-3">Tanggal</th>
+                    <th className="px-4 py-3">Biaya</th>
+                    <th className="px-4 py-3">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stone-100">
+                <tbody className="divide-y divide-brown/20">
                   {recentBookings.map((b) => (
-                    <tr key={b.id} className="h-11 hover:bg-stone-50/70 transition-colors">
-                      <td className="px-4 py-2 font-medium text-stone-900 truncate max-w-[140px]">
+                    <tr key={b.id} className="h-12 hover:bg-brown/5 transition-colors">
+                      <td className="px-4 py-2 font-semibold text-black truncate max-w-[140px]">
                         {b.customer_name}
                       </td>
-                      <td className="px-4 py-2 text-stone-600 truncate max-w-[160px]">
+                      <td className="px-4 py-2 text-brown/90 truncate max-w-[160px]">
                         {b.service?.title || 'Layanan Umum'}
                       </td>
-                      <td className="px-4 py-2 font-mono text-[11px] text-stone-500 whitespace-nowrap">
+                      <td className="px-4 py-2 font-mono text-[11px] text-black whitespace-nowrap">
                         {b.booking_date}
                       </td>
-                      <td className="px-4 py-2 font-mono text-xs font-medium text-stone-900 tabular-nums whitespace-nowrap">
+                      <td className="px-4 py-2 font-bold text-xs text-black whitespace-nowrap">
                         {b.total_price ? formatRupiah(b.total_price) : '-'}
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap">
                         {b.status === 'pending' && (
-                          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-amber-700">
-                            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                          <span className="inline-block px-2 py-0.5 rounded-none border border-brown bg-softyellow text-[10px] font-bold uppercase tracking-wider text-brown">
                             Pending
                           </span>
                         )}
                         {b.status === 'confirmed' && (
-                          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#0F766E]">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[#0F766E]" />
+                          <span className="inline-block px-2 py-0.5 rounded-none border border-softblue bg-softblue text-[10px] font-bold uppercase tracking-wider text-softyellow">
                             Confirmed
                           </span>
                         )}
                         {b.status === 'completed' && (
-                          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-700">
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                          <span className="inline-block px-2 py-0.5 rounded-none border border-black bg-black text-[10px] font-bold uppercase tracking-wider text-softyellow">
                             Completed
                           </span>
                         )}
                         {b.status === 'cancelled' && (
-                          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-rose-700">
-                            <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+                          <span className="inline-block px-2 py-0.5 rounded-none border border-brown bg-white text-[10px] font-bold uppercase tracking-wider text-black">
                             Cancelled
                           </span>
                         )}
@@ -252,9 +252,9 @@ export default async function AdminDashboardPage() {
         {/* Category Breakdown & Operations (1/3 width) */}
         <div className="space-y-6">
           {/* Distribution Card */}
-          <div className="rounded-lg border border-stone-200 bg-white p-4">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-stone-900 mb-3">
-              Distribusi Katalog
+          <div className="rounded-none border-2 border-brown bg-softwhite p-5 shadow-none">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-brown mb-3 pb-2 border-b-2 border-brown/20">
+              Distribusi Katalog Layanan
             </h2>
             <div className="space-y-2 text-xs">
               {[
@@ -266,10 +266,10 @@ export default async function AdminDashboardPage() {
               ].map((item) => (
                 <div
                   key={item.label}
-                  className="flex items-center justify-between py-1.5 border-b border-stone-100 last:border-0"
+                  className="flex items-center justify-between py-2 border-b border-brown/15 last:border-0"
                 >
-                  <span className="text-stone-600">{item.label}</span>
-                  <span className="font-mono text-xs font-semibold text-stone-900 tabular-nums">
+                  <span className="text-brown font-medium">{item.label}</span>
+                  <span className="font-bold text-xs text-black">
                     {item.count} unit
                   </span>
                 </div>
@@ -278,31 +278,31 @@ export default async function AdminDashboardPage() {
           </div>
 
           {/* Operational Quick Links */}
-          <div className="rounded-lg border border-stone-200 bg-white p-4 space-y-2.5">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-stone-900">
-              Akses Cepat
+          <div className="rounded-none border-2 border-brown bg-softwhite p-5 space-y-3 shadow-none">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-brown pb-2 border-b-2 border-brown/20">
+              Menu Cepat
             </h2>
-            <div className="space-y-1.5 text-xs">
+            <div className="space-y-2 text-xs">
               <Link
                 href="/admin/services"
-                className="flex items-center justify-between p-2 rounded-md hover:bg-stone-50 border border-transparent hover:border-stone-200 text-stone-700 font-medium transition-colors"
+                className="flex items-center justify-between p-3 rounded-none bg-softyellow/50 border border-brown text-brown font-bold uppercase tracking-wider hover:bg-brown hover:text-softyellow transition-colors"
               >
-                <span>Kelola Daftar Layanan</span>
-                <ArrowRight className="h-3.5 w-3.5 text-stone-400" />
+                <span>Kelola Layanan Wisata</span>
+                <ArrowUpRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/admin/bookings"
-                className="flex items-center justify-between p-2 rounded-md hover:bg-stone-50 border border-transparent hover:border-stone-200 text-stone-700 font-medium transition-colors"
+                className="flex items-center justify-between p-3 rounded-none bg-softyellow/50 border border-brown text-brown font-bold uppercase tracking-wider hover:bg-brown hover:text-softyellow transition-colors"
               >
-                <span>Kelola Semua Booking</span>
-                <ArrowRight className="h-3.5 w-3.5 text-stone-400" />
+                <span>Kelola Reservasi Booking</span>
+                <ArrowUpRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/admin/settings"
-                className="flex items-center justify-between p-2 rounded-md hover:bg-stone-50 border border-transparent hover:border-stone-200 text-stone-700 font-medium transition-colors"
+                className="flex items-center justify-between p-3 rounded-none bg-softyellow/50 border border-brown text-brown font-bold uppercase tracking-wider hover:bg-brown hover:text-softyellow transition-colors"
               >
                 <span>Pengaturan Konten Website</span>
-                <ArrowRight className="h-3.5 w-3.5 text-stone-400" />
+                <ArrowUpRight className="h-4 w-4" />
               </Link>
             </div>
           </div>

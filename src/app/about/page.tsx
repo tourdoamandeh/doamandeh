@@ -37,182 +37,182 @@ export default async function AboutPage() {
   )}`;
 
   return (
-    <div className="min-h-screen flex flex-col bg-tissue text-black selection:bg-peach selection:text-black">
+    <div className="min-h-screen flex flex-col bg-softyellow text-black font-sans selection:bg-brown selection:text-softyellow">
       <PublicHeader whatsappNumber={siteSettings.contact_whatsapp} />
 
       <main className="flex-1">
         {/* About Editorial Hero */}
-        <section className="relative overflow-hidden pt-12 pb-20 lg:pt-16 lg:pb-24 border-b border-gray-100 bg-tissue">
+        <section className="relative overflow-hidden pt-12 pb-20 lg:pt-16 lg:pb-24 border-b-2 border-brown bg-softyellow">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto">
-              <span className="font-serif italic text-sm text-black/60 bg-lightblue px-5 py-2 rounded-full inline-block mb-6 shadow-sm">
-                Mengenal Lebih Dekat Doamandeh
+              <span className="text-[11px] uppercase tracking-[0.25em] font-bold text-brown border-2 border-brown bg-softwhite px-5 py-2 inline-block mb-6 rounded-none shadow-none">
+                {siteSettings.about_tagline || 'Mengenal Lebih Dekat Doamandeh'}
               </span>
 
-              <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl text-black leading-tight mb-6">
-                Menciptakan Momen Liburan <span className="italic font-normal underline decoration-peach">Tak Terlupakan</span> di Bali
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-light text-black tracking-tight leading-tight mb-6 uppercase">
+                {siteSettings.about_title || 'Menciptakan Momen Liburan Tak Terlupakan di Bali'}
               </h1>
 
-              <p className="text-base sm:text-lg text-black/80 leading-relaxed max-w-2xl mx-auto mb-8 font-sans">
+              <p className="text-base sm:text-lg text-black/80 leading-relaxed max-w-2xl mx-auto mb-8 font-light">
                 {siteSettings.about_text}
               </p>
 
-              <div className="flex flex-wrap items-center justify-center gap-3 font-serif text-base">
-                <div className="flex items-center gap-2 bg-yellow px-5 py-2.5 rounded-full shadow-sm">
-                  <MapPin className="h-4 w-4 text-black" />
-                  <span>Berbasis di Canggu, Bali</span>
+              <div className="flex flex-wrap items-center justify-center gap-3 text-xs uppercase tracking-widest font-bold">
+                <div className="flex items-center gap-2 bg-softwhite border-2 border-brown px-5 py-2.5 rounded-none shadow-none text-brown">
+                  <MapPin className="h-4 w-4 text-brown" />
+                  <span>Canggu, Bali</span>
                 </div>
-                <div className="flex items-center gap-2 bg-lightblue px-5 py-2.5 rounded-full shadow-sm">
-                  <Users className="h-4 w-4 text-black" />
-                  <span>Ribuan Wisatawan Puas</span>
+                <div className="flex items-center gap-2 bg-softwhite border-2 border-brown px-5 py-2.5 rounded-none shadow-none text-brown">
+                  <Users className="h-4 w-4 text-brown" />
+                  <span>{siteSettings.about_stat_1_val} {siteSettings.about_stat_1_label}</span>
                 </div>
-                <div className="flex items-center gap-2 bg-softpink px-5 py-2.5 rounded-full shadow-sm">
-                  <HeartHandshake className="h-4 w-4 text-black" />
-                  <span>Layanan 24/7 Respon Cepat</span>
+                <div className="flex items-center gap-2 bg-softwhite border-2 border-brown px-5 py-2.5 rounded-none shadow-none text-brown">
+                  <HeartHandshake className="h-4 w-4 text-brown" />
+                  <span>{siteSettings.about_stat_2_val} {siteSettings.about_stat_2_label}</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Principles & Values Bento Grid */}
+        {/* Principles & Values Grid */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="font-serif italic text-sm text-black/60 block mb-2">
-              Prinsip & Nilai Kami
+            <span className="text-[11px] uppercase tracking-[0.25em] font-bold text-brown block mb-2">
+              Prinsip &amp; Nilai Kami
             </span>
-            <h2 className="font-serif text-3xl sm:text-5xl text-black">
-              Mengapa Wisatawan <span className="italic font-normal">Memilih</span> Doamandeh?
+            <h2 className="text-3xl sm:text-5xl font-light uppercase tracking-tight text-black">
+              Mengapa Memilih Doamandeh?
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="rounded-[28px] border-none bg-lightblue p-8 space-y-4 shadow-sm hover:-translate-y-1 transition-transform">
-              <span className="font-serif italic text-2xl opacity-40">01</span>
-              <h3 className="font-serif text-2xl text-black">Keamanan & Higienis</h3>
-              <p className="text-xs text-black/75 leading-relaxed font-sans">
+            <div className="rounded-none border-2 border-brown bg-softwhite p-8 space-y-4 shadow-none">
+              <span className="text-2xl font-light text-brown opacity-50 block">01</span>
+              <h3 className="text-xl font-bold uppercase tracking-wide text-brown">Keamanan &amp; Higienis</h3>
+              <p className="text-xs text-black/75 leading-relaxed font-light">
                 Setiap unit kendaraan diperiksa rutin, studio tato menerapkan standar jarum single-use steril, dan instruktur selancar bersertifikat resmi.
               </p>
             </div>
 
-            <div className="rounded-[28px] border-none bg-peach p-8 space-y-4 shadow-sm hover:-translate-y-1 transition-transform">
-              <span className="font-serif italic text-2xl opacity-40">02</span>
-              <h3 className="font-serif text-2xl text-black">Booking Cepat</h3>
-              <p className="text-xs text-black/75 leading-relaxed font-sans">
+            <div className="rounded-none border-2 border-brown bg-softwhite p-8 space-y-4 shadow-none">
+              <span className="text-2xl font-light text-brown opacity-50 block">02</span>
+              <h3 className="text-xl font-bold uppercase tracking-wide text-brown">Booking Cepat</h3>
+              <p className="text-xs text-black/75 leading-relaxed font-light">
                 Reservasi fleksibel langsung dari website atau WhatsApp. Bebas ribet dengan transparansi ketersediaan jadwal real-time.
               </p>
             </div>
 
-            <div className="rounded-[28px] border-none bg-yellow p-8 space-y-4 shadow-sm hover:-translate-y-1 transition-transform">
-              <span className="font-serif italic text-2xl opacity-40">03</span>
-              <h3 className="font-serif text-2xl text-black">Kualitas Pelayanan</h3>
-              <p className="text-xs text-black/75 leading-relaxed font-sans">
+            <div className="rounded-none border-2 border-brown bg-softwhite p-8 space-y-4 shadow-none">
+              <span className="text-2xl font-light text-brown opacity-50 block">03</span>
+              <h3 className="text-xl font-bold uppercase tracking-wide text-brown">Kualitas Pelayanan</h3>
+              <p className="text-xs text-black/75 leading-relaxed font-light">
                 Staf lokal yang ramah dan komunikatif siap membantu kebutuhan khusus Anda selama berlibur di Pulau Dewata.
               </p>
             </div>
 
-            <div className="rounded-[28px] border-none bg-softpink p-8 space-y-4 shadow-sm hover:-translate-y-1 transition-transform">
-              <span className="font-serif italic text-2xl opacity-40">04</span>
-              <h3 className="font-serif text-2xl text-black">Harga Transparan</h3>
-              <p className="text-xs text-black/75 leading-relaxed font-sans">
+            <div className="rounded-none border-2 border-brown bg-softwhite p-8 space-y-4 shadow-none">
+              <span className="text-2xl font-light text-brown opacity-50 block">04</span>
+              <h3 className="text-xl font-bold uppercase tracking-wide text-brown">Harga Transparan</h3>
+              <p className="text-xs text-black/75 leading-relaxed font-light">
                 Tidak ada biaya tersembunyi. Seluruh tarif tertera jelas sehingga Anda dapat merencanakan anggaran liburan dengan tenang.
               </p>
             </div>
           </div>
         </section>
 
-        {/* 5 Core Services Bento List */}
-        <section className="border-t border-gray-100 bg-[#FBFBFB] py-16 lg:py-24">
+        {/* 5 Core Services List */}
+        <section className="border-t-2 border-b-2 border-brown bg-softwhite py-16 lg:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto mb-14">
-              <span className="font-serif italic text-sm text-black/60 bg-yellow px-4 py-1.5 rounded-full inline-block">
+              <span className="text-[11px] uppercase tracking-[0.25em] font-bold text-brown border-2 border-brown bg-softyellow px-4 py-1.5 inline-block rounded-none">
                 Ekosistem Layanan
               </span>
-              <h2 className="font-serif text-3xl sm:text-5xl text-black mt-3">
-                5 Layanan <span className="italic font-normal">Utama</span> Doamandeh
+              <h2 className="text-3xl sm:text-5xl font-light uppercase tracking-tight text-black mt-4">
+                5 Layanan Utama Doamandeh
               </h2>
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-[28px] border-none bg-lightblue p-8 sm:p-9 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
+              <div className="rounded-none border-2 border-brown bg-softyellow p-8 sm:p-9 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-none">
                 <div className="space-y-2 max-w-2xl">
-                  <span className="font-serif italic text-sm text-black/60">01 / Kategori</span>
-                  <h3 className="font-serif text-3xl text-black">Sewa Kendaraan Motor & Mobil</h3>
-                  <p className="text-xs text-black/75 leading-relaxed font-sans">
+                  <span className="text-xs uppercase tracking-widest font-bold text-brown/70">01 / Kategori</span>
+                  <h3 className="text-2xl font-bold uppercase tracking-wide text-brown">Sewa Kendaraan Motor &amp; Mobil</h3>
+                  <p className="text-xs text-black/75 leading-relaxed font-light">
                     Unit motor matic (Scoopy, NMAX, PCX) dan mobil pribadi terawat dengan fasilitas helm, jas hujan, serta gratis antar-jemput ke area hotel/bandara.
                   </p>
                 </div>
                 <Link
                   href="/category/vehicle-rental"
-                  className="shrink-0 flex items-center gap-2 rounded-full bg-black px-6 py-3 font-serif text-base text-tissue hover:bg-black/90 transition-colors shadow-sm"
+                  className="shrink-0 flex items-center gap-2 rounded-none bg-brown text-softyellow px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-black transition-colors shadow-none"
                 >
                   <span>Lihat Kendaraan</span>
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </div>
 
-              <div className="rounded-[28px] border-none bg-peach p-8 sm:p-9 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
+              <div className="rounded-none border-2 border-brown bg-softyellow p-8 sm:p-9 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-none">
                 <div className="space-y-2 max-w-2xl">
-                  <span className="font-serif italic text-sm text-black/60">02 / Kategori</span>
-                  <h3 className="font-serif text-3xl text-black">Tattoo Studio & Artist</h3>
-                  <p className="text-xs text-black/75 leading-relaxed font-sans">
+                  <span className="text-xs uppercase tracking-widest font-bold text-brown/70">02 / Kategori</span>
+                  <h3 className="text-2xl font-bold uppercase tracking-wide text-brown">Tattoo Studio &amp; Artist</h3>
+                  <p className="text-xs text-black/75 leading-relaxed font-light">
                     Studio tato modern higienis dengan peralatan single-use steril dan seniman tato berpengalaman dalam berbagai style (realism, fineline, traditional, tribal).
                   </p>
                 </div>
                 <Link
                   href="/category/tattoo"
-                  className="shrink-0 flex items-center gap-2 rounded-full bg-black px-6 py-3 font-serif text-base text-tissue hover:bg-black/90 transition-colors shadow-sm"
+                  className="shrink-0 flex items-center gap-2 rounded-none bg-brown text-softyellow px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-black transition-colors shadow-none"
                 >
-                  <span>Lihat Studio & Artist</span>
+                  <span>Lihat Studio &amp; Artist</span>
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </div>
 
-              <div className="rounded-[28px] border-none bg-yellow p-8 sm:p-9 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
+              <div className="rounded-none border-2 border-brown bg-softyellow p-8 sm:p-9 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-none">
                 <div className="space-y-2 max-w-2xl">
-                  <span className="font-serif italic text-sm text-black/60">03 / Kategori</span>
-                  <h3 className="font-serif text-3xl text-black">Villa & Vacation Stay</h3>
-                  <p className="text-xs text-black/75 leading-relaxed font-sans">
-                    Akomodasi villa privat estetik lengkap dengan private pool, dapur modern, WiFi kencang, dan suasana tenang dekat pusat hiburan Canggu & Seminyak.
+                  <span className="text-xs uppercase tracking-widest font-bold text-brown/70">03 / Kategori</span>
+                  <h3 className="text-2xl font-bold uppercase tracking-wide text-brown">Villa &amp; Vacation Stay</h3>
+                  <p className="text-xs text-black/75 leading-relaxed font-light">
+                    Akomodasi villa privat estetik lengkap dengan private pool, dapur modern, WiFi kencang, dan suasana tenang dekat pusat hiburan Canggu &amp; Seminyak.
                   </p>
                 </div>
                 <Link
                   href="/category/villa"
-                  className="shrink-0 flex items-center gap-2 rounded-full bg-black px-6 py-3 font-serif text-base text-tissue hover:bg-black/90 transition-colors shadow-sm"
+                  className="shrink-0 flex items-center gap-2 rounded-none bg-brown text-softyellow px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-black transition-colors shadow-none"
                 >
                   <span>Lihat Pilihan Villa</span>
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </div>
 
-              <div className="rounded-[28px] border-none bg-softpink p-8 sm:p-9 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
+              <div className="rounded-none border-2 border-brown bg-softyellow p-8 sm:p-9 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-none">
                 <div className="space-y-2 max-w-2xl">
-                  <span className="font-serif italic text-sm text-black/60">04 / Kategori</span>
-                  <h3 className="font-serif text-3xl text-black">Paket Travel & Wisata Tour</h3>
-                  <p className="text-xs text-black/75 leading-relaxed font-sans">
+                  <span className="text-xs uppercase tracking-widest font-bold text-brown/70">04 / Kategori</span>
+                  <h3 className="text-2xl font-bold uppercase tracking-wide text-brown">Paket Travel &amp; Wisata Tour</h3>
+                  <p className="text-xs text-black/75 leading-relaxed font-light">
                     Paket wisata keliling destinasi eksotis Bali (Ubud, Uluwatu, Nusa Penida, Bedugul) lengkap dengan driver ramah dan kendaraan ber-AC yang nyaman.
                   </p>
                 </div>
                 <Link
                   href="/category/travel"
-                  className="shrink-0 flex items-center gap-2 rounded-full bg-black px-6 py-3 font-serif text-base text-tissue hover:bg-black/90 transition-colors shadow-sm"
+                  className="shrink-0 flex items-center gap-2 rounded-none bg-brown text-softyellow px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-black transition-colors shadow-none"
                 >
                   <span>Lihat Paket Tour</span>
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </div>
 
-              <div className="rounded-[28px] border-none bg-lightblue p-8 sm:p-9 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
+              <div className="rounded-none border-2 border-brown bg-softyellow p-8 sm:p-9 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-none">
                 <div className="space-y-2 max-w-2xl">
-                  <span className="font-serif italic text-sm text-black/60">05 / Kategori</span>
-                  <h3 className="font-serif text-3xl text-black">Surfing Lesson Pemula & Lanjutan</h3>
-                  <p className="text-xs text-black/75 leading-relaxed font-sans">
+                  <span className="text-xs uppercase tracking-widest font-bold text-brown/70">05 / Kategori</span>
+                  <h3 className="text-2xl font-bold uppercase tracking-wide text-brown">Surfing Lesson Pemula &amp; Lanjutan</h3>
+                  <p className="text-xs text-black/75 leading-relaxed font-light">
                     Sekolah selancar bersertifikat dengan bimbingan 1-on-1 dari instruktur profesional. Perlengkapan surf board, rashguard, dan dokumentasi foto/video gratis.
                   </p>
                 </div>
                 <Link
                   href="/category/surfing-lesson"
-                  className="shrink-0 flex items-center gap-2 rounded-full bg-black px-6 py-3 font-serif text-base text-tissue hover:bg-black/90 transition-colors shadow-sm"
+                  className="shrink-0 flex items-center gap-2 rounded-none bg-brown text-softyellow px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-black transition-colors shadow-none"
                 >
                   <span>Lihat Kelas Surfing</span>
                   <ArrowUpRight className="h-4 w-4" />
@@ -223,30 +223,33 @@ export default async function AboutPage() {
         </section>
 
         {/* Testimonials */}
-        <TestimonialsSection />
+        <TestimonialsSection
+          testimonialsTitle={siteSettings.testimonials_title}
+          testimonialsJson={siteSettings.testimonials_data}
+        />
 
         {/* Contact CTA */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="rounded-[36px] border-none bg-lightblue p-8 sm:p-14 text-center space-y-4 shadow-sm">
-            <h2 className="font-serif text-3xl sm:text-5xl text-black">
-              Ingin Diskusi atau Tanya <span className="italic font-normal">Rencana Liburan?</span>
+          <div className="rounded-none border-2 border-brown bg-brown text-softyellow p-8 sm:p-14 text-center space-y-4 shadow-none">
+            <h2 className="text-3xl sm:text-5xl font-light uppercase tracking-tight text-softyellow">
+              {siteSettings.cta_title || 'Ingin Diskusi atau Tanya Rencana Liburan?'}
             </h2>
-            <p className="text-xs sm:text-sm text-black/80 max-w-xl mx-auto font-sans font-medium">
-              Tim kami selalu siap membantu memberikan rekomendasi terbaik sesuai dengan budget dan preferensi Anda.
+            <p className="text-xs sm:text-sm text-softyellow/80 max-w-xl mx-auto font-light leading-relaxed">
+              {siteSettings.cta_subtitle || 'Tim kami selalu siap membantu memberikan rekomendasi terbaik sesuai dengan budget dan preferensi Anda.'}
             </p>
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 font-serif">
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 text-xs uppercase tracking-widest font-bold">
               <a
                 href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-full bg-black text-tissue px-8 py-4 text-xl hover:bg-black/90 transition-colors shadow-sm"
+                className="flex items-center gap-3 rounded-none bg-softyellow text-brown px-8 py-4 hover:bg-white transition-colors shadow-none"
               >
-                <Phone className="h-4 w-4 text-tissue" />
-                <span>Konsultasi WhatsApp Sekarang</span>
+                <Phone className="h-4 w-4 text-brown" />
+                <span>{siteSettings.cta_button_text || 'Konsultasi WhatsApp Sekarang'}</span>
               </a>
               <Link
                 href="/contact"
-                className="flex items-center gap-3 rounded-full bg-tissue text-black px-8 py-4 text-xl hover:bg-slate-50 transition-colors shadow-sm border-none"
+                className="flex items-center gap-3 rounded-none bg-transparent border-2 border-softyellow text-softyellow px-8 py-4 hover:bg-softyellow hover:text-brown transition-colors shadow-none"
               >
                 <span>Halaman Kontak Lengkap</span>
               </Link>

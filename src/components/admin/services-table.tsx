@@ -173,26 +173,26 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Dense Toolbar */}
+    <div className="space-y-4 font-sans">
+      {/* Editorial Toolbar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="flex flex-1 flex-wrap items-center gap-2.5">
           {/* Live Search */}
           <div className="relative flex-1 min-w-[200px] max-w-sm">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-brown/60" />
             <input
               type="text"
-              placeholder="Cari nama layanan, deskripsi..."
+              placeholder="Cari nama paket, deskripsi..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-lg border border-stone-200 bg-white pl-8 pr-7 py-1.5 text-xs text-stone-900 placeholder:text-stone-400 focus:border-teal-700 focus:outline-none"
+              className="w-full rounded-none border-2 border-brown bg-softwhite pl-9 pr-8 py-2 text-xs text-black placeholder:text-brown/40 focus:border-black focus:outline-none"
             />
             {search && (
               <button
                 onClick={() => setSearch('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-stone-400 hover:text-stone-600"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-brown/60 hover:text-black"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3.5 w-3.5" />
               </button>
             )}
           </div>
@@ -201,7 +201,7 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-xs text-stone-700 focus:border-teal-700 focus:outline-none"
+            className="rounded-none border-2 border-brown bg-softwhite px-3 py-2 text-xs font-medium uppercase text-brown focus:border-black focus:outline-none cursor-pointer"
           >
             <option value="all">Semua Kategori</option>
             <option value="vehicle-rental">Sewa Kendaraan</option>
@@ -215,7 +215,7 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-xs text-stone-700 focus:border-teal-700 focus:outline-none"
+            className="rounded-none border-2 border-brown bg-softwhite px-3 py-2 text-xs font-medium uppercase text-brown focus:border-black focus:outline-none cursor-pointer"
           >
             <option value="all">Semua Status</option>
             <option value="active">Aktif Saja</option>
@@ -223,12 +223,12 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
           </select>
 
           {/* Sort By */}
-          <div className="flex items-center gap-1 rounded-lg border border-stone-200 bg-white px-2 py-1 text-xs text-stone-600">
-            <ArrowUpDown className="h-3 w-3 text-stone-400" />
+          <div className="flex items-center gap-1.5 rounded-none border-2 border-brown bg-softwhite px-2.5 py-1.5 text-xs text-brown">
+            <ArrowUpDown className="h-3.5 w-3.5 text-brown/60" />
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="bg-transparent text-xs text-stone-700 focus:outline-none cursor-pointer"
+              className="bg-transparent text-xs font-medium uppercase text-brown focus:outline-none cursor-pointer"
             >
               <option value="newest">Terbaru</option>
               <option value="title">Nama (A-Z)</option>
@@ -241,52 +241,52 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
         {/* Primary Action Button */}
         <button
           onClick={handleOpenCreate}
-          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#0F766E] px-3.5 py-1.5 text-xs font-medium text-white hover:bg-[#115E59] transition-colors"
+          className="inline-flex items-center justify-center gap-2 rounded-none bg-brown text-softyellow hover:bg-black border-2 border-brown hover:border-black px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-none"
         >
-          <Plus className="h-3.5 w-3.5" />
+          <Plus className="h-4 w-4 stroke-[2.5]" />
           <span>Tambah Layanan</span>
         </button>
       </div>
 
-      {/* Compact Table */}
-      <div className="rounded-lg border border-stone-200 bg-white overflow-hidden">
+      {/* Editorial Table */}
+      <div className="rounded-none border-2 border-brown bg-softwhite overflow-hidden shadow-none">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-stone-700">
-            <thead className="bg-stone-50 text-[11px] font-semibold text-stone-500 uppercase tracking-wider border-b border-stone-200">
+          <table className="w-full text-left text-xs text-black">
+            <thead className="bg-brown text-softyellow text-[10px] font-bold uppercase tracking-wider border-b-2 border-brown">
               <tr>
-                <th className="px-4 py-2.5">Foto & Layanan</th>
-                <th className="px-4 py-2.5">Kategori</th>
-                <th className="px-4 py-2.5">Harga / Satuan</th>
-                <th className="px-4 py-2.5">Status</th>
-                <th className="px-4 py-2.5 text-right">Aksi</th>
+                <th className="px-4 py-3">Foto & Layanan</th>
+                <th className="px-4 py-3">Kategori</th>
+                <th className="px-4 py-3">Harga / Satuan</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-100">
+            <tbody className="divide-y divide-brown/20">
               {filteredServices.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center">
-                    <Package className="h-6 w-6 text-stone-400 mx-auto mb-2" />
-                    <p className="text-xs font-medium text-stone-700 mb-1">
+                  <td colSpan={5} className="py-14 text-center">
+                    <Package className="h-8 w-8 text-brown/40 mx-auto mb-2" />
+                    <p className="text-xs font-bold uppercase tracking-wider text-brown mb-1">
                       Tidak ada data layanan ditemukan.
                     </p>
-                    <p className="text-[11px] text-stone-500 mb-3">
+                    <p className="text-[11px] text-brown/70 mb-4 font-light">
                       {search || categoryFilter !== 'all' || statusFilter !== 'all'
-                        ? 'Coba ubah kata kunci atau reset filter pencarian.'
-                        : 'Belum ada katalog layanan yang terdaftar.'}
+                        ? 'Coba ubah kata kunci pencarian atau reset filter aktif.'
+                        : 'Belum ada katalog layanan yang terdaftar di sistem.'}
                     </p>
                     {search || categoryFilter !== 'all' || statusFilter !== 'all' ? (
                       <button
                         onClick={resetFilters}
-                        className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50"
+                        className="rounded-none border-2 border-brown bg-softwhite px-4 py-2 text-xs font-bold uppercase tracking-wider text-brown hover:bg-softyellow cursor-pointer"
                       >
                         Reset Filter
                       </button>
                     ) : (
                       <button
                         onClick={handleOpenCreate}
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F766E] px-3.5 py-1.5 text-xs font-medium text-white hover:bg-[#115E59]"
+                        className="inline-flex items-center gap-2 rounded-none bg-brown text-softyellow hover:bg-black border-2 border-brown px-4 py-2 text-xs font-bold uppercase tracking-wider cursor-pointer"
                       >
-                        <Plus className="h-3.5 w-3.5" />
+                        <Plus className="h-4 w-4" />
                         <span>Tambah Layanan Sekarang</span>
                       </button>
                     )}
@@ -300,16 +300,16 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
                   return (
                     <tr
                       key={service.id}
-                      className="h-12 hover:bg-stone-50/70 transition-colors"
+                      className="h-14 hover:bg-brown/5 transition-colors"
                     >
                       {/* Photo + Title */}
-                      <td className="px-4 py-2 max-w-sm">
+                      <td className="px-4 py-2.5 max-w-sm">
                         <div className="flex items-center gap-3">
                           {service.image_url ? (
                             <img
                               src={service.image_url}
                               alt={service.title}
-                              className="h-8 w-11 rounded border border-stone-200 object-cover bg-stone-100 shrink-0"
+                              className="h-10 w-14 rounded-none border-2 border-brown object-cover bg-softwhite shrink-0"
                               onError={(e) => {
                                 (e.target as HTMLElement).style.display = 'none';
                               }}
@@ -319,17 +319,17 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
                               type="button"
                               onClick={() => handleOpenEdit(service)}
                               title="Tambah foto layanan"
-                              className="flex h-8 w-11 flex-col items-center justify-center rounded border border-dashed border-stone-300 bg-stone-50 text-stone-400 hover:border-stone-400 hover:text-stone-600 transition-colors shrink-0"
+                              className="flex h-10 w-14 flex-col items-center justify-center rounded-none border-2 border-dashed border-brown bg-softyellow/50 text-brown hover:bg-softyellow transition-colors shrink-0 cursor-pointer"
                             >
-                              <ImageIcon className="h-3.5 w-3.5" />
+                              <ImageIcon className="h-4 w-4 text-brown" />
                             </button>
                           )}
 
                           <div className="min-w-0 flex-1">
-                            <p className="font-medium text-stone-900 truncate">
+                            <p className="font-bold text-black uppercase tracking-tight truncate">
                               {service.title}
                             </p>
-                            <p className="text-[11px] text-stone-500 line-clamp-1">
+                            <p className="text-[11px] text-brown/80 line-clamp-1 font-light">
                               {service.description || 'Tanpa deskripsi'}
                             </p>
                           </div>
@@ -337,40 +337,38 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
                       </td>
 
                       {/* Category */}
-                      <td className="px-4 py-2 whitespace-nowrap">
-                        <span className="inline-block px-2 py-0.5 rounded text-[11px] font-medium bg-stone-100 border border-stone-200 text-stone-700">
+                      <td className="px-4 py-2.5 whitespace-nowrap">
+                        <span className="inline-block px-2.5 py-1 rounded-none text-[10px] font-bold uppercase tracking-wider bg-softyellow border border-brown text-brown">
                           {catLabel}
                         </span>
                       </td>
 
                       {/* Price */}
-                      <td className="px-4 py-2 whitespace-nowrap">
-                        <span className="font-mono text-xs font-semibold text-stone-900 tabular-nums">
+                      <td className="px-4 py-2.5 whitespace-nowrap">
+                        <span className="font-bold text-xs text-black">
                           {formatRupiah(service.price)}
                         </span>
-                        <span className="text-[11px] text-stone-500 ml-1">
+                        <span className="text-[11px] text-brown/70 ml-1">
                           {service.unit ? `/${service.unit.replace(/^per\s+/i, '')}` : ''}
                         </span>
                       </td>
 
                       {/* Status: Dot + Text */}
-                      <td className="px-4 py-2 whitespace-nowrap">
+                      <td className="px-4 py-2.5 whitespace-nowrap">
                         <button
                           onClick={() => handleToggleStatus(service.id, service.is_active)}
                           disabled={isPending || isTogglingThis}
                           title="Klik untuk mengubah status aktif"
-                          className="inline-flex items-center gap-1.5 text-xs font-medium hover:opacity-80 transition-opacity"
+                          className="cursor-pointer"
                         >
                           {isTogglingThis ? (
-                            <Loader2 className="h-3 w-3 animate-spin text-stone-400" />
+                            <Loader2 className="h-4 w-4 animate-spin text-brown" />
                           ) : service.is_active ? (
-                            <span className="inline-flex items-center gap-1.5 text-emerald-700">
-                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                            <span className="inline-block px-2.5 py-1 rounded-none border border-softblue bg-softblue text-[10px] font-bold uppercase tracking-wider text-softyellow">
                               Aktif
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 text-stone-500">
-                              <span className="h-1.5 w-1.5 rounded-full bg-stone-400" />
+                            <span className="inline-block px-2.5 py-1 rounded-none border border-brown bg-softwhite text-[10px] font-bold uppercase tracking-wider text-brown/70">
                               Nonaktif
                             </span>
                           )}
@@ -378,18 +376,18 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
                       </td>
 
                       {/* Actions */}
-                      <td className="px-4 py-2 whitespace-nowrap text-right">
-                        <div className="flex items-center justify-end gap-1">
+                      <td className="px-4 py-2.5 whitespace-nowrap text-right">
+                        <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => handleOpenEdit(service)}
-                            className="p-1 rounded text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+                            className="p-1.5 rounded-none border border-brown text-brown hover:bg-brown hover:text-softyellow transition-colors cursor-pointer"
                             title="Edit Layanan"
                           >
                             <Edit2 className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() => setServiceToDelete(service)}
-                            className="p-1 rounded text-stone-500 hover:bg-rose-50 hover:text-rose-600 transition-colors"
+                            className="p-1.5 rounded-none border border-black text-black hover:bg-black hover:text-softyellow transition-colors cursor-pointer"
                             title="Hapus Layanan"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -415,28 +413,28 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
 
       {/* Delete Confirmation Modal */}
       {serviceToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className="w-full max-w-sm rounded-lg border border-stone-200 bg-white p-5 text-stone-900 shadow-xl">
-            <div className="flex items-center gap-2.5 mb-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-rose-50 text-rose-600 border border-rose-200">
-                <AlertTriangle className="h-4 w-4" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-none">
+          <div className="w-full max-w-sm rounded-none border-2 border-brown bg-softwhite p-6 text-black shadow-none">
+            <div className="flex items-center gap-3 mb-3 pb-3 border-b-2 border-brown/30">
+              <div className="flex h-9 w-9 items-center justify-center rounded-none bg-brown text-softyellow border border-brown">
+                <AlertTriangle className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-xs font-bold text-stone-900">Hapus Layanan</h3>
-                <p className="text-[11px] text-stone-500">Tindakan ini permanen.</p>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-brown">Hapus Layanan</h3>
+                <p className="text-[10px] text-brown/70">Tindakan ini permanen.</p>
               </div>
             </div>
 
-            <p className="text-xs text-stone-600 mb-5 leading-relaxed">
-              Yakin ingin menghapus <strong className="text-stone-900">{serviceToDelete.title}</strong>? Data ini akan dihapus dari katalog.
+            <p className="text-xs text-black mb-5 leading-relaxed">
+              Yakin ingin menghapus katalog <strong className="text-brown">{serviceToDelete.title}</strong>? Data akan dihapus permanen dari Supabase.
             </p>
 
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-2.5">
               <button
                 type="button"
                 onClick={() => setServiceToDelete(null)}
                 disabled={isDeleting}
-                className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50"
+                className="rounded-none border-2 border-brown bg-softwhite px-4 py-2 text-xs font-bold uppercase tracking-wider text-brown hover:bg-softyellow cursor-pointer"
               >
                 Batal
               </button>
@@ -444,10 +442,10 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
                 type="button"
                 onClick={confirmDelete}
                 disabled={isDeleting}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-[#DC2626] px-3.5 py-1.5 text-xs font-medium text-white hover:bg-rose-700 transition-colors"
+                className="inline-flex items-center gap-2 rounded-none bg-black text-softyellow border-2 border-black hover:bg-brown hover:border-brown px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
               >
-                {isDeleting && <Loader2 className="h-3 w-3 animate-spin" />}
-                <span>{isDeleting ? 'Menghapus...' : 'Hapus'}</span>
+                {isDeleting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                <span>{isDeleting ? 'Menghapus...' : 'Hapus Layanan'}</span>
               </button>
             </div>
           </div>
