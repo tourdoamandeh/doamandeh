@@ -5,9 +5,9 @@ import { getSiteSettingsAction } from '@/lib/actions/admin/settings';
 import { DEFAULT_SITE_SETTINGS } from '@/lib/validations/admin';
 import { PublicHeader } from '@/components/public/public-header';
 import { PublicFooter } from '@/components/public/public-footer';
-import { TestimonialsSection } from '@/components/public/testimonials-section';
 import { AboutGallerySlider } from '@/components/public/about-gallery-slider';
-import { ArrowRight, ArrowUpRight, MapPin, Star, ShieldCheck, Zap, HeartHandshake, BadgePercent } from 'lucide-react';
+import { FadeIn, FadeInStagger } from '@/components/ui/fade-in';
+import { ArrowRight, MapPin, Star, ShieldCheck, Zap, HeartHandshake, BadgePercent } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Tentang Kami | Doamandeh Tours & Travel Bali',
@@ -82,12 +82,12 @@ export default async function AboutPage() {
       <main className="flex-1">
 
         {/* 1. EDITORIAL 3-COLUMN HERO SECTION (Background Brown) */}
-        <section className="bg-brown pt-2 sm:pt-4 pb-12 lg:pb-16 border-b-2 border-softyellow/30 font-sans">
+        <section className="bg-brown pt-2 sm:pt-4 pb-12 lg:pb-16 border-b-2 border-softyellow/30 font-sans overflow-hidden">
           <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
 
               {/* KOLOM KIRI (Headline, Subtitle, CTA Button, & Stats Avatars) */}
-              <div className="lg:col-span-4 flex flex-col justify-between gap-8">
+              <FadeIn direction="up" delay={0.1} className="lg:col-span-4 flex flex-col justify-between gap-8">
                 <div>
                   <h1 className="text-3xl sm:text-4xl lg:text-6xl font-medium text-softyellow tracking-tight leading-[0.95] mb-6">
                     Eksplor Bali Bersama Doamandeh
@@ -133,10 +133,10 @@ export default async function AboutPage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </FadeIn>
 
               {/* KOLOM TENGAH (Tall Portrait Featured Hero Image) */}
-              <div className="lg:col-span-4">
+              <FadeIn direction="up" delay={0.25} className="lg:col-span-4 h-full">
                 <div className="relative w-full h-[480px] sm:h-[580px] lg:h-full min-h-[480px] border-2 border-softyellow overflow-hidden bg-brown rounded-none shadow-none">
                   <Image
                     src="/assets/hero-bali.svg"
@@ -146,11 +146,11 @@ export default async function AboutPage() {
                     className="object-cover"
                   />
                 </div>
-              </div>
+              </FadeIn>
 
-              {/* KOLOM KANAN (Top Location, Consultation Button, Rating, 2 Thumbnails & Award Section) */}
-              <div className="lg:col-span-4 flex flex-col justify-between gap-8">
-                {/* Top Location Bar & Consultation Button */}
+              {/* KOLOM KANAN (Top Location, Rating, 2 Thumbnails & Award Section) */}
+              <FadeIn direction="up" delay={0.4} className="lg:col-span-4 flex flex-col justify-between gap-8">
+                {/* Top Location Bar */}
                 <div className="flex items-center justify-between gap-4 border-b-2 border-softyellow/20 pb-4">
                   <div className="flex items-center gap-2 text-xs font-medium text-softyellow">
                     <MapPin className="w-4 h-4 stroke-[2]" />
@@ -185,21 +185,20 @@ export default async function AboutPage() {
                     Nyaman, aman, dan pastinya berkesan—ini alasan kenapa banyak banget yang balik lagi liburan bareng kami.
                   </p>
                 </div>
-              </div>
+              </FadeIn>
 
             </div>
           </div>
         </section>
 
         {/* 2. PRINSIP & NILAI KAMI / MENGAPA MEMILIH DOAMANDEH (2-Column Grid Layout) */}
-        <section className="py-12 lg:py-20 border-b-2 border-softyellow/30 bg-brown text-softyellow font-sans">
+        <section className="py-12 lg:py-20 border-b-2 border-softyellow/30 bg-brown text-softyellow font-sans overflow-hidden">
           <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
 
               {/* LEFT COLUMN: Subtitle, Large Title, Paragraph, & Featured Bottom Image (40% width) */}
-              <div className="lg:col-span-5 flex flex-col justify-between gap-6">
+              <FadeIn direction="up" delay={0.1} className="lg:col-span-5 flex flex-col justify-between gap-6">
                 <div>
-
                   {/* Large Title */}
                   <h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-softyellow leading-[1.05] mb-5">
                     Kenapa Jalan Bareng Doamandeh?
@@ -220,83 +219,83 @@ export default async function AboutPage() {
                     className="object-cover"
                   />
                 </div>
-              </div>
+              </FadeIn>
 
               {/* RIGHT COLUMN: Full-Height 2x2 Grid with Center + Divider */}
-              <div className="lg:col-span-7 h-full grid grid-cols-2 grid-rows-2">
+              <div className="lg:col-span-7 h-full">
+                <FadeInStagger className="grid grid-cols-2 grid-rows-2 h-full">
+                  {/* Cell 01 */}
+                  <FadeIn direction="up" className="h-full p-4 sm:p-5 lg:p-6 border-b border-r border-softyellow/30 flex flex-col justify-between group hover:bg-softyellow/5 transition-colors">
+                    <div>
+                      {/* Soft Icon Badge */}
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-softyellow/15 border border-softyellow/30 flex items-center justify-center text-softyellow mb-3 sm:mb-4 rounded-none">
+                        <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-softyellow" />
+                      </div>
 
-                {/* Cell 01 */}
-                <div className="h-full p-4 sm:p-5 lg:p-6 border-b border-r border-softyellow/30 flex flex-col justify-between group hover:bg-softyellow/5 transition-colors">
-                  <div>
-                    {/* Soft Icon Badge */}
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-softyellow/15 border border-softyellow/30 flex items-center justify-center text-softyellow mb-3 sm:mb-4 rounded-none">
-                      <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-softyellow" />
+                      <h3 className="text-base sm:text-xl lg:text-[22px] font-medium text-softyellow mb-1.5 sm:mb-2">
+                        Keamanan &amp; Higienis
+                      </h3>
+
+                      <p className="text-[11px] sm:text-[13px] lg:text-sm text-softyellow/80 font-light leading-snug sm:leading-relaxed">
+                        Mulai dari kendaraan yang rajin diservis sampai studio tato berstandar medis, kesehatan dan keamananmu selalu jadi prioritas.
+                      </p>
                     </div>
+                  </FadeIn>
 
-                    <h3 className="text-base sm:text-xl lg:text-[22px] font-medium text-softyellow mb-1.5 sm:mb-2">
-                      Keamanan &amp; Higienis
-                    </h3>
+                  {/* Cell 02 */}
+                  <FadeIn direction="up" className="h-full p-4 sm:p-5 lg:p-6 border-b border-softyellow/30 flex flex-col justify-between group hover:bg-softyellow/5 transition-colors">
+                    <div>
+                      {/* Soft Icon Badge */}
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-softyellow/15 border border-softyellow/30 flex items-center justify-center text-softyellow mb-3 sm:mb-4 rounded-none">
+                        <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-softyellow" />
+                      </div>
 
-                    <p className="text-[11px] sm:text-[13px] lg:text-sm text-softyellow/80 font-light leading-snug sm:leading-relaxed">
-                      Mulai dari kendaraan yang rajin diservis sampai studio tato berstandar medis, kesehatan dan keamananmu selalu jadi prioritas.
-                    </p>
-                  </div>
-                </div>
+                      <h3 className="text-base sm:text-xl lg:text-[22px] font-medium text-softyellow mb-1.5 sm:mb-2">
+                        Booking Cepat
+                      </h3>
 
-                {/* Cell 02 */}
-                <div className="h-full p-4 sm:p-5 lg:p-6 border-b border-softyellow/30 flex flex-col justify-between group hover:bg-softyellow/5 transition-colors">
-                  <div>
-                    {/* Soft Icon Badge */}
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-softyellow/15 border border-softyellow/30 flex items-center justify-center text-softyellow mb-3 sm:mb-4 rounded-none">
-                      <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-softyellow" />
+                      <p className="text-[11px] sm:text-[13px] lg:text-sm text-softyellow/80 font-light leading-snug sm:leading-relaxed">
+                        Mau nanya-nanya atau langsung booking? Cukup chat WhatsApp aja, admin kami bakal langsung respon tanpa proses ribet.
+                      </p>
                     </div>
+                  </FadeIn>
 
-                    <h3 className="text-base sm:text-xl lg:text-[22px] font-medium text-softyellow mb-1.5 sm:mb-2">
-                      Booking Cepat
-                    </h3>
+                  {/* Cell 03 */}
+                  <FadeIn direction="up" className="h-full p-4 sm:p-5 lg:p-6 border-r border-softyellow/30 flex flex-col justify-between group hover:bg-softyellow/5 transition-colors">
+                    <div>
+                      {/* Soft Icon Badge */}
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-softyellow/15 border border-softyellow/30 flex items-center justify-center text-softyellow mb-3 sm:mb-4 rounded-none">
+                        <HeartHandshake className="w-4 h-4 sm:w-5 sm:h-5 text-softyellow" />
+                      </div>
 
-                    <p className="text-[11px] sm:text-[13px] lg:text-sm text-softyellow/80 font-light leading-snug sm:leading-relaxed">
-                      Mau nanya-nanya atau langsung booking? Cukup chat WhatsApp aja, admin kami bakal langsung respon tanpa proses ribet.
-                    </p>
-                  </div>
-                </div>
+                      <h3 className="text-base sm:text-xl lg:text-[22px] font-medium text-softyellow mb-1.5 sm:mb-2">
+                        Kualitas Pelayanan
+                      </h3>
 
-                {/* Cell 03 */}
-                <div className="h-full p-4 sm:p-5 lg:p-6 border-r border-softyellow/30 flex flex-col justify-between group hover:bg-softyellow/5 transition-colors">
-                  <div>
-                    {/* Soft Icon Badge */}
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-softyellow/15 border border-softyellow/30 flex items-center justify-center text-softyellow mb-3 sm:mb-4 rounded-none">
-                      <HeartHandshake className="w-4 h-4 sm:w-5 sm:h-5 text-softyellow" />
+                      <p className="text-[11px] sm:text-[13px] lg:text-sm text-softyellow/80 font-light leading-snug sm:leading-relaxed">
+                        Tim lokal kami udah anggap kamu kayak teman sendiri. Santai, ramah, dan pastinya siap bantu kebutuhan liburanmu kapan aja.
+                      </p>
                     </div>
+                  </FadeIn>
 
-                    <h3 className="text-base sm:text-xl lg:text-[22px] font-medium text-softyellow mb-1.5 sm:mb-2">
-                      Kualitas Pelayanan
-                    </h3>
+                  {/* Cell 04 */}
+                  <FadeIn direction="up" className="h-full p-4 sm:p-5 lg:p-6 flex flex-col justify-between group hover:bg-softyellow/5 transition-colors">
+                    <div>
+                      {/* Soft Icon Badge */}
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-softyellow/15 border border-softyellow/30 flex items-center justify-center text-softyellow mb-3 sm:mb-4 rounded-none">
+                        <BadgePercent className="w-4 h-4 sm:w-5 sm:h-5 text-softyellow" />
+                      </div>
 
-                    <p className="text-[11px] sm:text-[13px] lg:text-sm text-softyellow/80 font-light leading-snug sm:leading-relaxed">
-                      Tim lokal kami udah anggap kamu kayak teman sendiri. Santai, ramah, dan pastinya siap bantu kebutuhan liburanmu kapan aja.
-                    </p>
-                  </div>
-                </div>
+                      <h3 className="text-base sm:text-xl lg:text-[22px] font-medium text-softyellow mb-1.5 sm:mb-2">
+                        Harga Transparan
+                      </h3>
 
-                {/* Cell 04 */}
-                <div className="h-full p-4 sm:p-5 lg:p-6 flex flex-col justify-between group hover:bg-softyellow/5 transition-colors">
-                  <div>
-                    {/* Soft Icon Badge */}
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-softyellow/15 border border-softyellow/30 flex items-center justify-center text-softyellow mb-3 sm:mb-4 rounded-none">
-                      <BadgePercent className="w-4 h-4 sm:w-5 sm:h-5 text-softyellow" />
+                      <p className="text-[11px] sm:text-[13px] lg:text-sm text-softyellow/80 font-light leading-snug sm:leading-relaxed">
+                        Nggak ada biaya kaget di akhir liburan. Semua harga yang kamu lihat udah jujur dan transparan dari awal.
+                      </p>
                     </div>
-
-                    <h3 className="text-base sm:text-xl lg:text-[22px] font-medium text-softyellow mb-1.5 sm:mb-2">
-                      Harga Transparan
-                    </h3>
-
-                    <p className="text-[11px] sm:text-[13px] lg:text-sm text-softyellow/80 font-light leading-snug sm:leading-relaxed">
-                      Nggak ada biaya kaget di akhir liburan. Semua harga yang kamu lihat udah jujur dan transparan dari awal.
-                    </p>
-                  </div>
-                </div>
-
+                  </FadeIn>
+                </FadeInStagger>
               </div>
 
             </div>
@@ -304,121 +303,132 @@ export default async function AboutPage() {
         </section>
 
         {/* 3. EKOSISTEM LAYANAN (Background Brown) */}
-        <section className="py-16 sm:py-24 border-b-2 border-softyellow/30 bg-brown text-softyellow font-sans">
+        <section className="py-16 sm:py-24 border-b-2 border-softyellow/30 bg-brown text-softyellow font-sans overflow-hidden">
           <div className="max-w-[1200px] mx-auto px-6 sm:px-10 lg:px-12">
 
             {/* Header Centered */}
-            <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+            <FadeIn direction="up" className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-softyellow leading-[1.05] mb-4">
                 Semua Ada di Doamandeh
               </h2>
               <p className="text-sm sm:text-base text-softyellow/85 font-light leading-relaxed max-w-2xl mx-auto">
                 Apa pun gaya liburanmu, kami punya pilihan yang pas buat bikin momenmu di Bali makin berkesan.
               </p>
-            </div>
+            </FadeIn>
 
             {/* Numbered List Stack */}
-            <div className="border-t border-softyellow/30 flex flex-col">
+            <FadeInStagger className="border-t border-softyellow/30 flex flex-col">
               {CATEGORIES.map((cat) => (
-                <Link
-                  key={cat.slug}
-                  href={`/category/${cat.slug}`}
-                  className="group flex flex-row items-start justify-between gap-4 sm:gap-8 py-6 sm:py-9 border-b border-softyellow/30 hover:bg-softyellow/5 px-2 sm:px-6 transition-colors rounded-none"
-                >
-                  {/* Left Numbering & Text Content */}
-                  <div className="flex items-start gap-3 sm:gap-6 flex-1 min-w-0">
-                    {/* Numbering */}
-                    <span className="text-sm sm:text-lg font-medium text-softyellow/80 pt-0.5 shrink-0 w-6 sm:w-7">
-                      {cat.num}
-                    </span>
+                <FadeIn key={cat.slug} direction="up">
+                  <Link
+                    href={`/category/${cat.slug}`}
+                    className="group flex flex-row items-start justify-between gap-4 sm:gap-8 py-6 sm:py-9 border-b border-softyellow/30 hover:bg-softyellow/5 px-2 sm:px-6 transition-colors rounded-none"
+                  >
+                    {/* Left Numbering & Text Content */}
+                    <div className="flex items-start gap-3 sm:gap-6 flex-1 min-w-0">
+                      {/* Numbering */}
+                      <span className="text-sm sm:text-lg font-medium text-softyellow/80 pt-0.5 shrink-0 w-6 sm:w-7">
+                        {cat.num}
+                      </span>
 
-                    {/* Details (Title, Description, & Badges aligned) */}
-                    <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                      <h3 className="text-base sm:text-2xl font-medium text-softyellow group-hover:text-white transition-colors">
-                        {cat.label}
-                      </h3>
+                      {/* Details (Title, Description, & Badges aligned) */}
+                      <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                        <h3 className="text-base sm:text-2xl font-medium text-softyellow group-hover:text-white transition-colors">
+                          {cat.label}
+                        </h3>
 
-                      <p className="text-[11px] sm:text-sm text-softyellow/80 font-light leading-relaxed max-w-xl">
-                        {cat.desc}
-                      </p>
+                        <p className="text-[11px] sm:text-sm text-softyellow/80 font-light leading-relaxed max-w-xl">
+                          {cat.desc}
+                        </p>
 
-                      {/* Tag Badges (Aligned cleanly with title & text) */}
-                      <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-3">
-                        {cat.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-[10px] sm:text-xs font-light text-softyellow/90 bg-softyellow/10 border border-softyellow/30 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-none inline-block"
-                          >
-                            {tag}
-                          </span>
-                        ))}
+                        {/* Tag Badges (Aligned cleanly with title & text) */}
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-3">
+                          {cat.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="text-[10px] sm:text-xs font-light text-softyellow/90 bg-softyellow/10 border border-softyellow/30 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-none inline-block"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Right Side: Portrait Image with 2px Border */}
-                  <div className="relative w-24 h-32 sm:w-36 sm:h-48 md:w-44 md:h-56 aspect-[3/4] border-2 border-softyellow overflow-hidden bg-brown rounded-none shrink-0 group-hover:border-white transition-colors">
-                    <Image
-                      src={cat.image}
-                      alt={cat.label}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                </Link>
+                    {/* Right Side: Portrait Image with 2px Border */}
+                    <div className="relative w-24 h-32 sm:w-36 sm:h-48 md:w-44 md:h-56 aspect-[3/4] border-2 border-softyellow overflow-hidden bg-brown rounded-none shrink-0 group-hover:border-white transition-colors">
+                      <Image
+                        src={cat.image}
+                        alt={cat.label}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  </Link>
+                </FadeIn>
               ))}
-            </div>
+            </FadeInStagger>
 
           </div>
         </section>
 
         {/* 5. CTA SECTION (Background Photo with Overlay Text) */}
-        <section className="bg-brown border-b-2 border-softyellow/30 font-sans">
+        <section className="bg-brown border-b-2 border-softyellow/30 font-sans overflow-hidden">
           <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-16 lg:py-24">
-            <div className="relative border-2 border-softyellow p-10 md:p-20 text-center flex flex-col items-center justify-center rounded-none overflow-hidden min-h-[420px]">
-              {/* Background Image */}
-              <Image
-                src="/assets/hero-bali.jpg"
-                alt="Liburan Impian Bali Doamandeh"
-                fill
-                className="object-cover"
-              />
+            <FadeIn direction="up">
+              <div className="relative border-2 border-softyellow p-10 md:p-20 text-center flex flex-col items-center justify-center rounded-none overflow-hidden min-h-[420px]">
+                {/* Background Image */}
+                <Image
+                  src="/assets/hero-bali.jpg"
+                  alt="Liburan Impian Bali Doamandeh"
+                  fill
+                  className="object-cover"
+                />
 
-              {/* Dark Overlay Mask */}
-              <div className="absolute inset-0 bg-gradient-to-t from-brown/95 via-brown/85 to-brown/75" />
+                {/* Dark Overlay Mask */}
+                <div className="absolute inset-0 bg-gradient-to-t from-brown/95 via-brown/85 to-brown/75" />
 
-              {/* Content Box */}
-              <div className="relative z-10 flex flex-col items-center max-w-2xl mx-auto">
-                <span className="text-xs font-medium text-softyellow/90 tracking-wider uppercase mb-4 block">
-                  ✦ MULAI CERITAMU ✦
-                </span>
+                {/* Content Box */}
+                <FadeInStagger className="relative z-10 flex flex-col items-center max-w-2xl mx-auto">
+                  <FadeIn direction="up">
+                    <span className="text-xs font-medium text-softyellow/90 tracking-wider uppercase mb-4 block">
+                      ✦ MULAI CERITAMU ✦
+                    </span>
+                  </FadeIn>
 
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-softyellow mb-5 leading-tight">
-                  Udah Kebayang Serunya Liburan di Bali?
-                </h2>
+                  <FadeIn direction="up">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-softyellow mb-5 leading-tight">
+                      Udah Kebayang Serunya Liburan di Bali?
+                    </h2>
+                  </FadeIn>
 
-                <p className="text-sm md:text-base font-light text-softyellow/85 max-w-xl mb-9 leading-relaxed">
-                  Nggak usah sungkan buat tanya-tanya dulu. Ceritain aja liburan kayak apa yang kamu mau, dan tim Doamandeh bakal bantu susun rencana paling asyik buat kamu.
-                </p>
+                  <FadeIn direction="up">
+                    <p className="text-sm md:text-base font-light text-softyellow/85 max-w-xl mb-9 leading-relaxed">
+                      Nggak usah sungkan buat tanya-tanya dulu. Ceritain aja liburan kayak apa yang kamu mau, dan tim Doamandeh bakal bantu susun rencana paling asyik buat kamu.
+                    </p>
+                  </FadeIn>
 
-                <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center justify-center gap-4">
-                  <a
-                    href={waUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-softyellow text-brown px-8 py-4 border-2 border-softyellow hover:bg-white hover:text-brown transition-colors text-xs font-bold rounded-none shadow-lg"
-                  >
-                    Tanya-tanya via WhatsApp
-                  </a>
-                  <Link
-                    href="/contact"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-brown/60 backdrop-blur-md text-softyellow px-8 py-4 border-2 border-softyellow hover:bg-softyellow hover:text-brown transition-colors text-xs font-bold rounded-none"
-                  >
-                    Liat Kontak Kami
-                  </Link>
-                </div>
+                  <FadeIn direction="up">
+                    <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center justify-center gap-4">
+                      <a
+                        href={waUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-softyellow text-brown px-8 py-4 border-2 border-softyellow hover:bg-white hover:text-brown transition-colors text-xs font-bold rounded-none shadow-lg"
+                      >
+                        Tanya-tanya via WhatsApp
+                      </a>
+                      <Link
+                        href="/contact"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-brown/60 backdrop-blur-md text-softyellow px-8 py-4 border-2 border-softyellow hover:bg-softyellow hover:text-brown transition-colors text-xs font-bold rounded-none"
+                      >
+                        Liat Kontak Kami
+                      </Link>
+                    </div>
+                  </FadeIn>
+                </FadeInStagger>
               </div>
-            </div>
+            </FadeIn>
           </div>
         </section>
 
@@ -427,4 +437,4 @@ export default async function AboutPage() {
       <PublicFooter settings={siteSettings} />
     </div>
   );
-}
+}

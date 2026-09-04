@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const GALLERY_IMAGES = [
   { id: 1, src: '/assets/about-photo-1.svg', alt: 'Nusa Penida Treehouse' },
@@ -35,27 +36,47 @@ export function AboutGallerySlider() {
       {/* 2 Side-by-Side Thumbnails */}
       <div className="grid grid-cols-2 gap-3">
         <div className="relative aspect-[4/3] w-full border-2 border-softyellow overflow-hidden rounded-none bg-brown group">
-          <Image
-            key={firstImg.id}
-            src={firstImg.src}
-            alt={firstImg.alt}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute bottom-0 inset-x-0 bg-black/60 px-2 py-1 text-[10px] text-softyellow truncate">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={firstImg.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="relative w-full h-full"
+            >
+              <Image
+                src={firstImg.src}
+                alt={firstImg.alt}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </motion.div>
+          </AnimatePresence>
+          <div className="absolute bottom-0 inset-x-0 bg-black/60 px-2 py-1 text-[10px] text-softyellow truncate z-10">
             {firstImg.alt}
           </div>
         </div>
 
         <div className="relative aspect-[4/3] w-full border-2 border-softyellow overflow-hidden rounded-none bg-brown group">
-          <Image
-            key={secondImg.id}
-            src={secondImg.src}
-            alt={secondImg.alt}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute bottom-0 inset-x-0 bg-black/60 px-2 py-1 text-[10px] text-softyellow truncate">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={secondImg.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="relative w-full h-full"
+            >
+              <Image
+                src={secondImg.src}
+                alt={secondImg.alt}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </motion.div>
+          </AnimatePresence>
+          <div className="absolute bottom-0 inset-x-0 bg-black/60 px-2 py-1 text-[10px] text-softyellow truncate z-10">
             {secondImg.alt}
           </div>
         </div>
