@@ -92,7 +92,7 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section className="bg-[#607a8f] text-[#fff6c6] font-sans py-20 lg:py-32 overflow-hidden">
+    <section className="bg-softblue text-softyellow font-sans py-20 lg:py-32 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-8 sm:px-12 lg:px-16">
         <FadeIn direction="up">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
@@ -100,14 +100,14 @@ export function TestimonialsSection() {
             {/* Kolom Kiri: Teks & Kontrol Navigasi */}
             <div className="lg:col-span-3 flex flex-col justify-end lg:pb-6">
 
-              <h2 className="text-4xl md:text-5xl font-medium leading-[1.1] tracking-tight mb-12 text-[#fff6c6]">
+              <h2 className="text-4xl md:text-5xl font-medium leading-[1.1] tracking-tight mb-12 text-softyellow">
                 Kisah &amp; pengalaman liburan impian.
               </h2>
 
               <div className="flex flex-wrap items-center justify-between gap-6">
                 <Link
                   href="/reviews"
-                  className="text-[10px] uppercase tracking-widest font-bold border-b border-[#FFFFFF]/40 pb-1 text-[#fff6c6] hover:text-white hover:border-white transition-colors"
+                  className="text-[10px] uppercase tracking-widest font-bold border-b border-white/40 pb-1 text-softyellow hover:text-white hover:border-white transition-colors"
                 >
                   Lihat Semua Ulasan
                 </Link>
@@ -118,7 +118,7 @@ export function TestimonialsSection() {
                     type="button"
                     onClick={prevSlide}
                     aria-label="Ulasan sebelumnya"
-                    className="p-3 rounded-full border border-[#FFF6C6]/30 text-[#fff6c6] hover:bg-[#FFF6C6] hover:text-[#607a8f] transition-all cursor-pointer shadow-sm"
+                    className="p-3 rounded-full border border-softyellow/30 text-softyellow hover:bg-softyellow hover:text-softblue transition-all cursor-pointer shadow-sm"
                   >
                     <ArrowLeft className="w-5 h-5 stroke-[1.5]" />
                   </button>
@@ -126,7 +126,7 @@ export function TestimonialsSection() {
                     type="button"
                     onClick={nextSlide}
                     aria-label="Ulasan selanjutnya"
-                    className="p-3 rounded-full border border-[#FFF6C6]/30 text-[#fff6c6] hover:bg-[#FFF6C6] hover:text-[#607a8f] transition-all cursor-pointer shadow-sm"
+                    className="p-3 rounded-full border border-softyellow/30 text-softyellow hover:bg-softyellow hover:text-softblue transition-all cursor-pointer shadow-sm"
                   >
                     <ArrowRight className="w-5 h-5 stroke-[1.5]" />
                   </button>
@@ -148,7 +148,7 @@ export function TestimonialsSection() {
                     className="w-[85vw] sm:w-[50vw] lg:w-[33.333%] shrink-0 px-3 lg:px-4 flex flex-col group cursor-grab active:cursor-grabbing"
                   >
                     {/* Foto Persegi Warna Asli (Aspect Square) */}
-                    <div className="relative aspect-square w-full mb-5 bg-[#4a6173] rounded-none overflow-hidden border-2 border-[#fff6c6] shadow-sm">
+                    <div className="relative aspect-square w-full mb-5 bg-softblue rounded-none overflow-hidden border-2 border-softyellow shadow-sm">
                       <Image
                         src={item.image}
                         alt={`Testimonial dari ${item.name}`}
@@ -160,23 +160,23 @@ export function TestimonialsSection() {
 
                     {/* Header Konten: Nama & Layanan/Lokasi */}
                     <div className="mb-3">
-                      <h3 className="text-sm font-medium uppercase tracking-widest text-[#fff6c6] mb-1">
+                      <h3 className="text-sm font-medium uppercase tracking-widest text-softyellow mb-1">
                         {item.name}
                       </h3>
-                      <p className="text-[11px] font-medium uppercase tracking-widest text-[#fff6c6]">
+                      <p className="text-[11px] font-medium uppercase tracking-widest text-softyellow">
                         {item.location}, {item.serviceCategory}
                       </p>
                     </div>
 
                     {/* Teks Ulasan */}
-                    <p className="text-sm text-[#fff6c6]/85 leading-relaxed font-normal line-clamp-3 mb-4 pr-4">
+                    <p className="text-sm text-softyellow/85 leading-relaxed font-normal line-clamp-3 mb-4 pr-4">
                       &ldquo;{item.comment}&rdquo;
                     </p>
 
                     {/* Bintang & Tanggal */}
                     <div className="flex items-center gap-1 mt-auto pt-2">
                       {Array.from({ length: item.rating }).map((_, i) => (
-                        <Star key={i} className="h-3 w-3 fill-[#FFFFFF] text-[#fff6c6]" />
+                        <Star key={i} className="h-3 w-3 fill-white text-softyellow" />
                       ))}
                     </div>
                   </article>

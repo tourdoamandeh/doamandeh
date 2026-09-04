@@ -134,22 +134,22 @@ export function CtaSection({
   return (
     <section
       id="contact"
-      className="relative bg-[#FFF6C6] text-[#504139] py-16 md:py-24 lg:py-28 font-sans overflow-hidden"
+      className="relative bg-softyellow text-brown py-16 md:py-24 lg:py-28 font-sans overflow-hidden"
     >
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10 md:px-12 lg:px-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16 items-center">
           {/* Kolom Kiri: Header, Subtitle & Tombol Utama */}
           <FadeIn direction="up" className="md:col-span-6 lg:col-span-5 flex flex-col justify-center">
             <div>
-              <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium text-[#504139]/80 flex items-center gap-2 mb-3">
+              <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium text-brown/80 flex items-center gap-2 mb-3">
                 <span>//</span> LAYANAN UNGGULAN DOAMANDEH
               </p>
 
-              <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight text-[#504139] mb-4">
+              <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight text-brown mb-4">
                 Solusi lengkap <br /> liburanmu di Bali.
               </h2>
 
-              <p className="text-sm md:text-base text-[#504139]/80 leading-relaxed font-light mb-8 max-w-md">
+              <p className="text-sm md:text-base text-brown/80 leading-relaxed font-light mb-8 max-w-md">
                 Pilih layanan favoritmu dari Doamandeh untuk pengalaman wisata, akomodasi, serta lifestyle terbaik di Pulau Dewata.
               </p>
 
@@ -157,7 +157,7 @@ export function CtaSection({
                 href={mainWaUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 bg-[#504139] text-[#FFF6C6] px-6 py-3.5 text-xs md:text-sm font-medium tracking-wider uppercase hover:bg-[#504139]/90 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-3 bg-brown text-softyellow px-6 py-3.5 text-xs md:text-sm font-medium tracking-wider uppercase hover:bg-brown/90 transition-colors cursor-pointer"
               >
                 <span>Pesan Layanan Sekarang</span>
                 <ArrowRight className="w-4 h-4" />
@@ -225,7 +225,7 @@ export function CtaSection({
                       opacity: opacity,
                       transition: isDragging && isCurrent ? 'none' : 'all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1)',
                     }}
-                    className={`absolute inset-0 w-full h-full rounded-3xl overflow-hidden border border-[#504139]/20 shadow-xl flex flex-col justify-between p-6 bg-[#504139] ${isCurrent ? 'cursor-grab active:cursor-grabbing' : 'pointer-events-none'
+                    className={`absolute inset-0 w-full h-full rounded-3xl overflow-hidden border border-brown/20 shadow-xl flex flex-col justify-between p-6 bg-brown ${isCurrent ? 'cursor-grab active:cursor-grabbing' : 'pointer-events-none'
                       }`}
                   >
                     {/* Background Image */}
@@ -271,7 +271,7 @@ export function CtaSection({
                           href={activeWaUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-5 py-2.5 bg-white text-[#131718] font-medium text-xs rounded-full hover:bg-white/90 transition-all shadow-md shrink-0"
+                          className="px-5 py-2.5 bg-white text-black font-medium text-xs rounded-full hover:bg-white/90 transition-all shadow-md shrink-0"
                         >
                           Pesan
                         </a>
@@ -284,10 +284,10 @@ export function CtaSection({
 
             {/* Indikator Geser Minimalis Natural & Dots Navigasi */}
             <div className="flex flex-col items-center justify-center gap-2.5 mt-6 z-30">
-              <div className="flex items-center gap-2 text-[11px] font-light tracking-[0.2em] uppercase text-[#504139]/70">
-                <span className="text-[#504139]/40 font-normal">‹</span>
+              <div className="flex items-center gap-2 text-[11px] font-light tracking-[0.2em] uppercase text-brown/70">
+                <span className="text-brown/40 font-normal">‹</span>
                 <span>Geser kartu</span>
-                <span className="text-[#504139]/40 font-normal">›</span>
+                <span className="text-brown/40 font-normal">›</span>
               </div>
 
               {/* Dots Indicator Minimalis */}
@@ -299,8 +299,8 @@ export function CtaSection({
                     onClick={() => setCurrentIndex(idx)}
                     aria-label={`Go to slide ${idx + 1}`}
                     className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${idx === currentIndex
-                      ? 'w-6 bg-[#504139]'
-                      : 'w-1.5 bg-[#504139]/25 hover:bg-[#504139]/40'
+                      ? 'w-6 bg-brown'
+                      : 'w-1.5 bg-brown/25 hover:bg-brown/40'
                       }`}
                   />
                 ))}

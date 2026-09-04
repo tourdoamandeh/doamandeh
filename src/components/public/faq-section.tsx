@@ -53,13 +53,13 @@ export function FaqSection() {
   };
 
   return (
-    <section id="faq" className="relative w-full bg-[#504139] text-[#FFF6C6] font-sans overflow-hidden">
+    <section id="faq" className="relative w-full bg-brown text-softyellow font-sans overflow-hidden">
 
       {/* 1. TAMPILAN MOBILE: Sesuai Design Mockup Gambar */}
-      <div className="block md:hidden px-6 py-10 text-[#FFF6C6]">
+      <div className="block md:hidden px-6 py-10 text-softyellow">
         {/* Header Row: Title & Top Right Thumbnail Image */}
         <div className="flex items-end justify-between gap-4 mb-8">
-          <h2 className="text-2xl sm:text-3xl font-medium leading-[1.15] tracking-tight text-[#FFF6C6] max-w-[62%]">
+          <h2 className="text-2xl sm:text-3xl font-medium leading-[1.15] tracking-tight text-softyellow max-w-[62%]">
             Jawaban untuk <br /> pertanyaanmu.
           </h2>
           <div className="relative w-28 h-36 shrink-0 overflow-hidden border border-white/30">
@@ -88,10 +88,10 @@ export function FaqSection() {
                   onClick={() => toggleFaq(index)}
                   className="w-full flex items-center justify-between py-4 focus:outline-none text-left group cursor-pointer"
                 >
-                  <h3 className="text-xs sm:text-sm font-medium tracking-wider pr-4 text-[#FFF6C6]">
+                  <h3 className="text-xs sm:text-sm font-medium tracking-wider pr-4 text-softyellow">
                     {faq.num}. {faq.question}
                   </h3>
-                  <div className="shrink-0 text-[#FFF6C6]">
+                  <div className="shrink-0 text-softyellow">
                     {isOpen ? (
                       <Minus className="w-4 h-4 stroke-[2]" />
                     ) : (
@@ -123,10 +123,10 @@ export function FaqSection() {
 
           {/* Header Judul Desktop */}
           <div className="mb-12 lg:mb-16">
-            <h2 className="text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight text-[#FFF6C6] mb-4">
+            <h2 className="text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight text-softyellow mb-4">
               Jawaban untuk <br /> setiap pertanyaanmu.
             </h2>
-            <p className="text-sm leading-relaxed text-[#FFF6C6]/80 font-light max-w-md">
+            <p className="text-sm leading-relaxed text-softyellow/80 font-light max-w-md">
               Jawaban jelas mengenai proses pemesanan, fasilitas layanan, jadwal, dan semua kebutuhan perjalanan Anda di Bali.
             </p>
           </div>
@@ -145,10 +145,10 @@ export function FaqSection() {
                     onClick={() => toggleFaq(index)}
                     className="w-full flex items-center justify-between py-4 sm:py-5 focus:outline-none text-left group cursor-pointer"
                   >
-                    <h3 className="text-xs sm:text-sm font-medium tracking-wider pr-6 text-[#FFF6C6] group-hover:opacity-80 transition-opacity">
+                    <h3 className="text-xs sm:text-sm font-medium tracking-wider pr-6 text-softyellow group-hover:opacity-80 transition-opacity">
                       {faq.num}. {faq.question}
                     </h3>
-                    <div className="shrink-0 text-[#FFF6C6]">
+                    <div className="shrink-0 text-softyellow">
                       {isOpen ? (
                         <Minus className="w-4 h-4 stroke-[2]" />
                       ) : (

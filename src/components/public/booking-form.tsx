@@ -125,7 +125,7 @@ export function BookingForm({ service }: BookingFormProps) {
 
     return (
       <div className="rounded-[32px] bg-lightblue p-8 sm:p-10 text-center shadow-sm border-none">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-black text-[#D1E6F6] mb-5 shadow-sm">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-black text-softblue mb-5 shadow-sm">
           <CheckCircle2 className="h-8 w-8" />
         </div>
 

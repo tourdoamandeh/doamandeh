@@ -7,32 +7,32 @@
   --font-serif: "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif;
 
   /* Strict Design System Token Names (DESIGN.md) */
-  --color-tissue: #FFFFFF;
-  --color-black: #131718;
-  --color-lightblue: #D1E6F6;
-  --color-peach: #FEC29F;
+  --color-softyellow: #FFF6C6;
   --color-yellow: #FFF6C6;
-  --color-softpink: #FFDAE4;
+  --color-softblue: #5F7A8E;
+  --color-brown: #504139;
+  --color-softwhite: #E7E8DF;
+  --color-black: #2C2E31;
 }
 
 :root {
-  --background: #FFFFFF;
-  --foreground: #131718;
-  --card: #FFFFFF;
-  --card-foreground: #131718;
-  --popover: #FFFFFF;
-  --popover-foreground: #131718;
-  --primary: #131718;
-  --primary-foreground: #FFFFFF;
-  --secondary: #D1E6F6;
-  --secondary-foreground: #131718;
-  --muted: #FFF6C6;
-  --muted-foreground: #131718;
-  --accent: #FEC29F;
-  --accent-foreground: #131718;
-  --border: #E5E7EB;
-  --input: #E5E7EB;
-  --ring: #131718;
+  --background: #FFF6C6;
+  --foreground: #2C2E31;
+  --card: #E7E8DF;
+  --card-foreground: #2C2E31;
+  --popover: #E7E8DF;
+  --popover-foreground: #2C2E31;
+  --primary: #2C2E31;
+  --primary-foreground: #FFF6C6;
+  --secondary: #5F7A8E;
+  --secondary-foreground: #FFF6C6;
+  --muted: #504139;
+  --muted-foreground: #FFF6C6;
+  --accent: #5F7A8E;
+  --accent-foreground: #FFF6C6;
+  --border: #504139;
+  --input: #E7E8DF;
+  --ring: #2C2E31;
 
   /* Sidebar Theme Variables */
   --sidebar: #101010;
@@ -46,52 +46,71 @@
 }
 
 /* Explicit Utility Classes for Color Tokens */
-.bg-tissue {
-  background-color: #FFFFFF;
-}
-
-.text-tissue {
-  color: #FFFFFF;
-}
-
-.bg-black {
-  background-color: #131718;
-}
-
-.text-black {
-  color: #131718;
-}
-
-.bg-lightblue {
-  background-color: #D1E6F6;
-}
-
-.text-lightblue {
-  color: #D1E6F6;
-}
-
-.bg-peach {
-  background-color: #FEC29F;
-}
-
-.text-peach {
-  color: #FEC29F;
-}
-
+.bg-softyellow,
 .bg-yellow {
   background-color: #FFF6C6;
 }
 
+.text-softyellow,
 .text-yellow {
   color: #FFF6C6;
 }
 
-.bg-softpink {
-  background-color: #FFDAE4;
+.bg-softblue {
+  background-color: #5F7A8E;
 }
 
-.text-softpink {
-  color: #FFDAE4;
+.text-softblue {
+  color: #5F7A8E;
+}
+
+.bg-brown {
+  background-color: #504139;
+}
+
+.text-brown {
+  color: #504139;
+}
+
+.bg-softwhite {
+  background-color: #E7E8DF;
+}
+
+.text-softwhite {
+  color: #E7E8DF;
+}
+
+.bg-black {
+  background-color: #2C2E31;
+}
+
+.text-black {
+  color: #2C2E31;
+}
+
+/* Backward compatibility classes */
+.bg-tissue {
+  background-color: #FFF6C6;
+}
+
+.text-tissue {
+  color: #FFF6C6;
+}
+
+.bg-lightblue {
+  background-color: #5F7A8E;
+}
+
+.text-lightblue {
+  color: #5F7A8E;
+}
+
+.bg-peach {
+  background-color: #504139;
+}
+
+.text-peach {
+  color: #504139;
 }
 
 body,

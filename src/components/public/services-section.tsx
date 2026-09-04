@@ -67,7 +67,7 @@ export function ServicesSection({ services }: ServicesSectionProps) {
   return (
     <section
       id="services"
-      className="relative bg-[#504139] text-[#fff6c6] font-sans py-20 lg:py-28 overflow-hidden"
+      className="relative bg-brown text-softyellow font-sans py-20 lg:py-28 overflow-hidden"
     >
       <div className="max-w-[1400px] mx-auto px-8 sm:px-12 lg:px-16 relative z-10">
 
@@ -76,18 +76,18 @@ export function ServicesSection({ services }: ServicesSectionProps) {
 
           {/* Kolom Kiri: Header Section (Sticky hanya di desktop lg:sticky) */}
           <FadeIn direction="up" className="lg:col-span-4 flex flex-col gap-4 sm:gap-6 lg:sticky lg:top-24 mb-6 lg:mb-0">
-            <h2 className="text-4xl sm:text-5xl lg:text-[2.7rem] uppercase font-medium leading-[0.95] tracking-tighter text-[#fff6c6]">
+            <h2 className="text-4xl sm:text-5xl lg:text-[2.7rem] uppercase font-medium leading-[0.95] tracking-tighter text-softyellow">
               Pilih <br /> Petualanganmu
             </h2>
 
-            <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#fff6c6]/80 max-w-sm mt-1 sm:mt-2 font-light">
+            <p className="text-base sm:text-lg md:text-xl leading-relaxed text-softyellow/80 max-w-sm mt-1 sm:mt-2 font-light">
               Mulai dari kamu mendarat sampai waktunya pulang, biarkan Doamandeh yang urus detailnya. Kami siapkan pilihan aktivitas dan fasilitas terbaik supaya liburanmu di Bali terasa santai, seru, dan pastinya bebas ribet.
             </p>
 
             <div className="mt-4 sm:mt-6">
               <Link
                 href="/services"
-                className="inline-flex items-center gap-3 px-6 sm:px-7 py-3 sm:py-3.5 bg-[#fff6c6] text-[#504139] rounded-none hover:bg-[#fff6c6]/90 hover:text-[#504139] transition-colors text-[10px] sm:text-xs uppercase tracking-widest font-bold shadow-sm"
+                className="inline-flex items-center gap-3 px-6 sm:px-7 py-3 sm:py-3.5 bg-softyellow text-brown rounded-none hover:bg-softyellow/90 hover:text-brown transition-colors text-[10px] sm:text-xs uppercase tracking-widest font-bold shadow-sm"
               >
                 <span>Lihat keseruan lainnya</span>
                 <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -106,11 +106,11 @@ export function ServicesSection({ services }: ServicesSectionProps) {
                     key={service.id}
                     onMouseEnter={() => setHoveredId(service.category)}
                     onMouseLeave={() => setHoveredId(null)}
-                    className="group relative flex flex-col gap-2.5 sm:gap-3 border-t border-[#FFFFFF]/30 pt-4 sm:pt-6 cursor-pointer"
+                    className="group relative flex flex-col gap-2.5 sm:gap-3 border-t border-white/30 pt-4 sm:pt-6 cursor-pointer"
                   >
                     {/* Header Layanan: Judul 2 Baris & Panah Pojok */}
                     <div className="flex justify-between items-start gap-2 sm:gap-3">
-                      <h3 className="text-xl sm:text-3xl md:text-[2.25rem] font-semibold leading-[0.95] tracking-tight uppercase text-[#fff6c6] w-4/5">
+                      <h3 className="text-xl sm:text-3xl md:text-[2.25rem] font-semibold leading-[0.95] tracking-tight uppercase text-softyellow w-4/5">
                         <Link href={`/services/${service.id}`} className="block">
                           <span>{service.line1}</span>
                           <br />
@@ -120,7 +120,7 @@ export function ServicesSection({ services }: ServicesSectionProps) {
 
                       <Link
                         href={`/services/${service.id}`}
-                        className="text-[#fff6c6] shrink-0"
+                        className="text-softyellow shrink-0"
                         aria-label={`Detail ${service.line1} ${service.line2}`}
                       >
                         <ArrowUpRight className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2]" />
@@ -128,7 +128,7 @@ export function ServicesSection({ services }: ServicesSectionProps) {
                     </div>
 
                     {/* Deskripsi Singkat */}
-                    <p className="text-sm sm:text-base md:text-lg text-[#fff6c6]/85 leading-relaxed font-light mt-0.5 sm:mt-1">
+                    <p className="text-sm sm:text-base md:text-lg text-softyellow/85 leading-relaxed font-light mt-0.5 sm:mt-1">
                       {service.description}
                     </p>
 
@@ -140,7 +140,7 @@ export function ServicesSection({ services }: ServicesSectionProps) {
                         }`}
                     >
                       <div className="overflow-hidden">
-                        <div className="relative w-full aspect-[3/4] max-h-[220px] sm:max-h-[300px] bg-gray-200 rounded-none overflow-hidden border-2 border-[#fff6c6] shadow-sm">
+                        <div className="relative w-full aspect-[3/4] max-h-[220px] sm:max-h-[300px] bg-gray-200 rounded-none overflow-hidden border-2 border-softyellow shadow-sm">
                           <Image
                             src={service.image_url}
                             alt={`${service.line1} ${service.line2}`}
@@ -153,11 +153,11 @@ export function ServicesSection({ services }: ServicesSectionProps) {
                     </div>
 
                     {/* Footer Layanan: Harga */}
-                    <div className="mt-auto pt-2 sm:pt-3 flex items-baseline gap-1.5 sm:gap-2 text-[#fff6c6]">
-                      <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-[#fff6c6]/70 font-medium">
+                    <div className="mt-auto pt-2 sm:pt-3 flex items-baseline gap-1.5 sm:gap-2 text-softyellow">
+                      <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-softyellow/70 font-medium">
                         Mulai
                       </span>
-                      <span className="text-xs sm:text-base font-semibold tracking-tight text-[#fff6c6]">
+                      <span className="text-xs sm:text-base font-semibold tracking-tight text-softyellow">
                         {formatRupiah(service.price)}
                       </span>
                     </div>

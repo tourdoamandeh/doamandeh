@@ -138,7 +138,7 @@ export function HeroSection({
   )}`;
 
   return (
-    <section className="relative w-full min-h-[100dvh] md:h-screen md:max-h-screen flex flex-col md:flex-row bg-white font-sans text-[#131718] overflow-hidden">
+    <section className="relative w-full min-h-[100dvh] md:h-screen md:max-h-screen flex flex-col md:flex-row bg-white font-sans text-black overflow-hidden">
       {/* Kolom Kiri: Desktop Only */}
       <div className="hidden md:block relative md:w-1/2 md:h-full overflow-hidden group shrink-0">
         <Image
@@ -153,19 +153,19 @@ export function HeroSection({
         <a
           href="#services"
           aria-label="Scroll ke katalog layanan"
-          className="absolute top-4 right-4 md:top-6 md:right-6 z-10 text-[#FFF6C6]/90 hover:text-[#FFF6C6] p-2 hover:scale-110 transition-transform"
+          className="absolute top-4 right-4 md:top-6 md:right-6 z-10 text-softyellow/90 hover:text-softyellow p-2 hover:scale-110 transition-transform"
         >
           <ArrowUpRight className="w-8 h-8 md:w-12 md:h-12 font-light stroke-[1.2]" />
         </a>
         <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 md:bottom-10 md:left-10 max-w-sm z-10">
-          <p className="text-[#FFF6C6] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight drop-shadow-lg whitespace-pre-line">
+          <p className="text-softyellow text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight drop-shadow-lg whitespace-pre-line">
             {currentService.quote}
           </p>
         </div>
       </div>
 
       {/* Kolom Kanan / Kontainer Mobile Utama */}
-      <div className="relative w-full md:w-1/2 min-h-[100dvh] md:min-h-0 md:h-full flex flex-col justify-between bg-[#504139] p-5 sm:p-7 md:p-8 lg:p-10 xl:p-12 overflow-hidden">
+      <div className="relative w-full md:w-1/2 min-h-[100dvh] md:min-h-0 md:h-full flex flex-col justify-between bg-brown p-5 sm:p-7 md:p-8 lg:p-10 xl:p-12 overflow-hidden">
 
         {/* Dropdown Mobile */}
         {menuOpen && (
@@ -187,7 +187,7 @@ export function HeroSection({
         {/* 1. Bagian Atas: Title & Navigasi */}
         <div className="shrink-0 pt-1 md:pt-0">
           <div className="flex items-start justify-between gap-3">
-            <h1 className="text-4xl sm:text-5xl md:text-3xl lg:text-4xl xl:text-5xl font-medium tracking-tight text-[#FFF6C6] leading-[1.05] md:leading-[1.08]">
+            <h1 className="text-4xl sm:text-5xl md:text-3xl lg:text-4xl xl:text-5xl font-medium tracking-tight text-softyellow leading-[1.05] md:leading-[1.08]">
               Doamandeh, <br />
               — Rencanakan <br />
               Perjalanan
@@ -196,17 +196,17 @@ export function HeroSection({
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Buka Menu"
-              className="p-1 text-[#FFF6C6] hover:bg-white/10 transition-colors shrink-0 rounded-none"
+              className="p-1 text-softyellow hover:bg-white/10 transition-colors shrink-0 rounded-none"
             >
               {menuOpen ? <X className="w-7 h-7 stroke-[1.5]" /> : <Menu className="w-7 h-7 stroke-[1.5]" />}
             </button>
           </div>
 
           <nav aria-label="Navigasi Halaman" className="flex flex-wrap items-center gap-4 sm:gap-6 md:gap-7 mt-6 sm:mt-8 md:mt-3 lg:mt-4">
-            <Link href="/" className="text-sm md:text-sm text-[#FFF6C6]/60 hover:text-[#FFF6C6] transition-colors font-medium cursor-pointer">Beranda</Link>
-            <Link href="#about" className="text-sm md:text-sm text-[#FFF6C6]/60 hover:text-[#FFF6C6] transition-colors font-medium cursor-pointer">Tentang Kami</Link>
-            <Link href="#services" className="text-sm md:text-sm text-[#FFF6C6]/60 hover:text-[#FFF6C6] transition-colors font-medium cursor-pointer">Layanan</Link>
-            <Link href="#contact" className="text-sm md:text-sm text-[#FFF6C6]/60 hover:text-[#FFF6C6] transition-colors font-medium cursor-pointer">Hubungi Kami</Link>
+            <Link href="/" className="text-sm md:text-sm text-softyellow/60 hover:text-softyellow transition-colors font-medium cursor-pointer">Beranda</Link>
+            <Link href="#about" className="text-sm md:text-sm text-softyellow/60 hover:text-softyellow transition-colors font-medium cursor-pointer">Tentang Kami</Link>
+            <Link href="#services" className="text-sm md:text-sm text-softyellow/60 hover:text-softyellow transition-colors font-medium cursor-pointer">Layanan</Link>
+            <Link href="#contact" className="text-sm md:text-sm text-softyellow/60 hover:text-softyellow transition-colors font-medium cursor-pointer">Hubungi Kami</Link>
           </nav>
         </div>
 
@@ -218,14 +218,14 @@ export function HeroSection({
             <button
               type="button"
               onClick={prevSlide}
-              className="hidden md:flex p-2 text-[#FFF6C6]/40 hover:text-[#FFF6C6] transition-all hover:scale-125 cursor-pointer shrink-0 select-none items-center justify-center"
+              className="hidden md:flex p-2 text-softyellow/40 hover:text-softyellow transition-all hover:scale-125 cursor-pointer shrink-0 select-none items-center justify-center"
             >
               <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><polygon points="18,3 6,12 18,21" /></svg>
             </button>
 
             {/* Container Foto */}
             <div
-              className="relative w-full md:w-auto h-full max-h-[50vh] md:h-[24vh] lg:h-[28vh] xl:h-[30vh] md:max-h-[230px] lg:max-h-[260px] xl:max-h-[280px] aspect-square md:aspect-[3/4] bg-transparent overflow-hidden shadow-md rounded-none shrink-0 select-none cursor-grab active:cursor-grabbing border-2 border-[#FFF6C6]"
+              className="relative w-full md:w-auto h-full max-h-[50vh] md:h-[24vh] lg:h-[28vh] xl:h-[30vh] md:max-h-[230px] lg:max-h-[260px] xl:max-h-[280px] aspect-square md:aspect-[3/4] bg-transparent overflow-hidden shadow-md rounded-none shrink-0 select-none cursor-grab active:cursor-grabbing border-2 border-softyellow"
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
               onTouchStart={handleTouchStart}
@@ -253,7 +253,7 @@ export function HeroSection({
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); prevSlide(); }}
-                className="md:hidden absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2 text-[#FFF6C6]/80 hover:text-[#FFF6C6] transition-all active:scale-90 cursor-pointer drop-shadow-md"
+                className="md:hidden absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2 text-softyellow/80 hover:text-softyellow transition-all active:scale-90 cursor-pointer drop-shadow-md"
               >
                 <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
                   <polygon points="16,3 4,12 16,21" />
@@ -264,7 +264,7 @@ export function HeroSection({
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); nextSlide(); }}
-                className="md:hidden absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 text-[#FFF6C6]/80 hover:text-[#FFF6C6] transition-all active:scale-90 cursor-pointer drop-shadow-md"
+                className="md:hidden absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 text-softyellow/80 hover:text-softyellow transition-all active:scale-90 cursor-pointer drop-shadow-md"
               >
                 <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
                   <polygon points="8,3 20,12 8,21" />
@@ -276,7 +276,7 @@ export function HeroSection({
             <button
               type="button"
               onClick={nextSlide}
-              className="hidden md:flex p-2 text-[#FFF6C6]/40 hover:text-[#FFF6C6] transition-all hover:scale-125 cursor-pointer shrink-0 select-none items-center justify-center"
+              className="hidden md:flex p-2 text-softyellow/40 hover:text-softyellow transition-all hover:scale-125 cursor-pointer shrink-0 select-none items-center justify-center"
             >
               <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><polygon points="6,3 18,12 6,21" /></svg>
             </button>
@@ -291,8 +291,8 @@ export function HeroSection({
                 onClick={() => setCurrentIndex(idx)}
                 aria-label={`Slide ke layanan ${service.label}`}
                 className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${currentIndex === idx
-                  ? 'w-7 bg-[#FFF6C6] shadow-sm'
-                  : 'w-2 bg-[#FFF6C6]/30 hover:bg-[#FFF6C6]/60'
+                  ? 'w-7 bg-softyellow shadow-sm'
+                  : 'w-2 bg-softyellow/30 hover:bg-softyellow/60'
                   }`}
               />
             ))}
@@ -302,31 +302,31 @@ export function HeroSection({
         {/* 3. Bagian Bawah: Penjelasan */}
         <div className="shrink-0 space-y-3 md:space-y-2 max-w-lg mx-auto md:mx-0 w-full text-left pb-4 md:pb-0">
           <div className="flex items-center justify-start">
-            <span className="text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-[#FFF6C6]/60 font-medium">
+            <span className="text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-softyellow/60 font-medium">
               LAYANAN 0{currentService.id} / 0{services.length} — {currentService.title.toUpperCase()}
             </span>
           </div>
 
-          <p className="text-sm md:text-base text-[#FFF6C6]/85 leading-relaxed font-normal line-clamp-3 md:line-clamp-2 lg:line-clamp-3 transition-all duration-300 text-justify md:text-left">
+          <p className="text-sm md:text-base text-softyellow/85 leading-relaxed font-normal line-clamp-3 md:line-clamp-2 lg:line-clamp-3 transition-all duration-300 text-justify md:text-left">
             {currentService.description}
           </p>
 
           <div className="pt-1 flex items-center justify-start gap-4 md:gap-5 text-xs md:text-sm font-medium">
             <Link
               href={`/category/${currentService.category}`}
-              className="inline-flex items-center gap-1.5 text-[#FFF6C6] hover:opacity-75 transition-opacity"
+              className="inline-flex items-center gap-1.5 text-softyellow hover:opacity-75 transition-opacity"
             >
               <span>Jelajahi {currentService.label}</span>
               <ArrowUpRight className="w-4 h-4" strokeWidth={2} />
             </Link>
 
-            <span className="text-[#FFF6C6]/30">•</span>
+            <span className="text-softyellow/30">•</span>
 
             <a
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-[#FFF6C6]/70 hover:text-[#FFF6C6] transition-colors"
+              className="inline-flex items-center gap-1.5 text-softyellow/70 hover:text-softyellow transition-colors"
             >
               <span>Konsultasi</span>
               <Phone className="w-3.5 h-3.5" strokeWidth={2} />
