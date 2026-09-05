@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { ImageSettingField } from './image-setting-field';
 
 interface SettingsFormProps {
   initialSettings: SiteSettingsInput;
@@ -268,15 +269,37 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               />
             </div>
 
-            {/* Service Slide Quotes */}
+            {/* Hero Main / Background Image */}
+            <div className="pt-2 border-t border-border">
+              <ImageSettingField
+                id="hero_bg_image"
+                label="Foto Utama / Latar Belakang Hero Section"
+                description="Foto utama yang tampil di kolom kiri banner Hero website."
+                value={formData.hero_bg_image || ''}
+                fallbackUrl="/assets/hero-bali.svg"
+                aspectRatio="wide"
+                onChange={(val) => handleChange('hero_bg_image', val)}
+              />
+            </div>
+
+            {/* Service Slide Quotes & Images */}
             <div className="pt-3 border-t border-border space-y-4">
               <h3 className="text-xs font-semibold text-foreground">
-                Kutipan &amp; Narasi Banner per Kategori Layanan
+                Kutipan &amp; Foto Banner per Kategori Layanan
               </h3>
 
               {/* Travel */}
               <div className="p-4 rounded border border-border bg-muted/20 space-y-3">
                 <p className="font-semibold text-foreground text-xs">01. Paket Travel</p>
+                <ImageSettingField
+                  id="hero_slide_travel_img"
+                  label="Foto Slide Kategori Travel"
+                  description="Foto carousel yang tampil saat kategori Travel aktif."
+                  value={formData.hero_slide_travel_img || ''}
+                  fallbackUrl="/assets/service-travel.svg"
+                  aspectRatio="video"
+                  onChange={(val) => handleChange('hero_slide_travel_img', val)}
+                />
                 <div className="space-y-1.5">
                   <Label className="text-[11px] text-muted-foreground">Kutipan Foto</Label>
                   <textarea
@@ -300,6 +323,15 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               {/* Villa */}
               <div className="p-4 rounded border border-border bg-muted/20 space-y-3">
                 <p className="font-semibold text-foreground text-xs">02. Villa Stay</p>
+                <ImageSettingField
+                  id="hero_slide_villa_img"
+                  label="Foto Slide Kategori Villa"
+                  description="Foto carousel yang tampil saat kategori Villa aktif."
+                  value={formData.hero_slide_villa_img || ''}
+                  fallbackUrl="/assets/service-villa.svg"
+                  aspectRatio="video"
+                  onChange={(val) => handleChange('hero_slide_villa_img', val)}
+                />
                 <div className="space-y-1.5">
                   <Label className="text-[11px] text-muted-foreground">Kutipan Foto</Label>
                   <textarea
@@ -323,6 +355,15 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               {/* Surfing */}
               <div className="p-4 rounded border border-border bg-muted/20 space-y-3">
                 <p className="font-semibold text-foreground text-xs">03. Surfing Lesson</p>
+                <ImageSettingField
+                  id="hero_slide_surfing_img"
+                  label="Foto Slide Kategori Surfing"
+                  description="Foto carousel yang tampil saat kategori Surfing aktif."
+                  value={formData.hero_slide_surfing_img || ''}
+                  fallbackUrl="/assets/service-surfing.svg"
+                  aspectRatio="video"
+                  onChange={(val) => handleChange('hero_slide_surfing_img', val)}
+                />
                 <div className="space-y-1.5">
                   <Label className="text-[11px] text-muted-foreground">Kutipan Foto</Label>
                   <textarea
@@ -346,6 +387,15 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               {/* Vehicle */}
               <div className="p-4 rounded border border-border bg-muted/20 space-y-3">
                 <p className="font-semibold text-foreground text-xs">04. Sewa Kendaraan</p>
+                <ImageSettingField
+                  id="hero_slide_vehicle_img"
+                  label="Foto Slide Kategori Sewa Kendaraan"
+                  description="Foto carousel yang tampil saat kategori Sewa Kendaraan aktif."
+                  value={formData.hero_slide_vehicle_img || ''}
+                  fallbackUrl="/assets/service-vehicle.svg"
+                  aspectRatio="video"
+                  onChange={(val) => handleChange('hero_slide_vehicle_img', val)}
+                />
                 <div className="space-y-1.5">
                   <Label className="text-[11px] text-muted-foreground">Kutipan Foto</Label>
                   <textarea
@@ -369,6 +419,15 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               {/* Tattoo */}
               <div className="p-4 rounded border border-border bg-muted/20 space-y-3">
                 <p className="font-semibold text-foreground text-xs">05. Tato Studio</p>
+                <ImageSettingField
+                  id="hero_slide_tattoo_img"
+                  label="Foto Slide Kategori Tato Studio"
+                  description="Foto carousel yang tampil saat kategori Tato aktif."
+                  value={formData.hero_slide_tattoo_img || ''}
+                  fallbackUrl="/assets/service-tattoo.svg"
+                  aspectRatio="video"
+                  onChange={(val) => handleChange('hero_slide_tattoo_img', val)}
+                />
                 <div className="space-y-1.5">
                   <Label className="text-[11px] text-muted-foreground">Kutipan Foto</Label>
                   <textarea
@@ -473,6 +532,33 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 />
               </div>
             </div>
+
+            {/* Foto 1 & Foto 2 Seksi About */}
+            <div className="pt-4 border-t border-border space-y-4">
+              <h3 className="text-xs font-semibold text-foreground">
+                Foto Seksi Tentang Doamandeh
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ImageSettingField
+                  id="about_image_1"
+                  label="[01] Foto Rumah Pohon & Alam Bali"
+                  description="Ditampilkan pada kolom kiri bawah angka statistik."
+                  value={formData.about_image_1 || ''}
+                  fallbackUrl="/assets/about-photo-1.svg"
+                  aspectRatio="portrait"
+                  onChange={(val) => handleChange('about_image_1', val)}
+                />
+                <ImageSettingField
+                  id="about_image_2"
+                  label="[02] Foto Tebing & Tepi Laut Bali"
+                  description="Ditampilkan pada kolom kanan bawah teks paragraf."
+                  value={formData.about_image_2 || ''}
+                  fallbackUrl="/assets/about-photo-2.svg"
+                  aspectRatio="portrait"
+                  onChange={(val) => handleChange('about_image_2', val)}
+                />
+              </div>
+            </div>
           </div>
         </Card>
       )}
@@ -552,6 +638,59 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 onChange={(e) => handleChange('cta_button_text', e.target.value)}
                 className="h-9 text-xs"
               />
+            </div>
+
+            {/* CTA Cards Images */}
+            <div className="pt-4 border-t border-border space-y-4">
+              <h3 className="text-xs font-semibold text-foreground">
+                Foto Kartu Interaktif CTA per Layanan
+              </h3>
+              <p className="text-[11px] text-muted-foreground">
+                Foto latar belakang untuk kartu yang bisa digeser pada seksi Call to Action di bawah landing page.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <ImageSettingField
+                  id="cta_card_travel_img"
+                  label="Kartu Paket Tour & Travel"
+                  value={formData.cta_card_travel_img || ''}
+                  fallbackUrl="/assets/service-travel.jpg"
+                  aspectRatio="portrait"
+                  onChange={(val) => handleChange('cta_card_travel_img', val)}
+                />
+                <ImageSettingField
+                  id="cta_card_vehicle_img"
+                  label="Kartu Sewa Kendaraan"
+                  value={formData.cta_card_vehicle_img || ''}
+                  fallbackUrl="/assets/service-vehicle.jpg"
+                  aspectRatio="portrait"
+                  onChange={(val) => handleChange('cta_card_vehicle_img', val)}
+                />
+                <ImageSettingField
+                  id="cta_card_villa_img"
+                  label="Kartu Villa Private Pool"
+                  value={formData.cta_card_villa_img || ''}
+                  fallbackUrl="/assets/service-villa.jpg"
+                  aspectRatio="portrait"
+                  onChange={(val) => handleChange('cta_card_villa_img', val)}
+                />
+                <ImageSettingField
+                  id="cta_card_tattoo_img"
+                  label="Kartu Professional Tattoo Studio"
+                  value={formData.cta_card_tattoo_img || ''}
+                  fallbackUrl="/assets/service-tattoo.jpg"
+                  aspectRatio="portrait"
+                  onChange={(val) => handleChange('cta_card_tattoo_img', val)}
+                />
+                <ImageSettingField
+                  id="cta_card_surfing_img"
+                  label="Kartu Surfing Lesson Pemula"
+                  value={formData.cta_card_surfing_img || ''}
+                  fallbackUrl="/assets/service-surfing.png"
+                  aspectRatio="portrait"
+                  onChange={(val) => handleChange('cta_card_surfing_img', val)}
+                />
+              </div>
             </div>
           </div>
         </Card>
@@ -726,6 +865,19 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[75px]"
               />
             </div>
+          </div>
+
+          {/* FAQ Side Image */}
+          <div className="pt-2">
+            <ImageSettingField
+              id="faq_image"
+              label="Foto Banner Samping FAQ (Desktop &amp; Mobile)"
+              description="Foto vertikal di sebelah kanan accordion FAQ pada layar desktop dan thumbnail atas pada mobile."
+              value={formData.faq_image || ''}
+              fallbackUrl="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80"
+              aspectRatio="portrait"
+              onChange={(val) => handleChange('faq_image', val)}
+            />
           </div>
 
           <div className="space-y-4 pt-2">

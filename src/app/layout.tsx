@@ -70,6 +70,7 @@ export default function RootLayout({
     <html
       lang="id"
       className={`${futura.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-white text-black font-sans selection:bg-peach selection:text-black">
         {children}

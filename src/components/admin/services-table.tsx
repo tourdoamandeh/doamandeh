@@ -444,7 +444,7 @@ export function ServicesTable({ initialServices }: ServicesTableProps) {
       {serviceToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-sans">
           <div
-            className="w-full max-w-md rounded-lg border border-border bg-white dark:bg-zinc-950 bg-card p-6 text-foreground shadow-2xl"
+            className="w-full max-w-md rounded-lg border border-border bg-card p-6 text-foreground shadow-2xl"
             role="dialog"
           >
             <div className="flex items-start gap-4">

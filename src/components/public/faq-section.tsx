@@ -39,16 +39,21 @@ const DEFAULT_FAQ_DATA: FaqItem[] = [
   },
 ];
 
+const DEFAULT_FAQ_IMAGE =
+  'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80';
+
 interface FaqSectionProps {
   faqTitle?: string;
   faqSubtitle?: string;
   faqJson?: string;
+  faqImage?: string;
 }
 
 export function FaqSection({
   faqTitle = 'Jawaban untuk \nsetiap pertanyaanmu.',
   faqSubtitle = 'Jawaban jelas mengenai proses pemesanan, fasilitas layanan, jadwal, dan semua kebutuhan perjalanan Anda di Bali.',
   faqJson,
+  faqImage,
 }: FaqSectionProps = {}) {
   let list: FaqItem[] = DEFAULT_FAQ_DATA;
   if (faqJson) {
@@ -80,7 +85,7 @@ export function FaqSection({
           </h2>
           <div className="relative w-28 h-36 shrink-0 overflow-hidden border-2 border-softyellow rounded-none">
             <Image
-              src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80"
+              src={faqImage || DEFAULT_FAQ_IMAGE}
               alt="Alam & Budaya Bali"
               fill
               priority
@@ -192,7 +197,7 @@ export function FaqSection({
         {/* Kolom Kanan: Foto Full-Height Desktop (Border 2px border-softyellow) */}
         <div className="relative w-full h-full min-h-[100dvh] overflow-hidden border-l-2 border-softyellow">
           <Image
-            src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80"
+            src={faqImage || DEFAULT_FAQ_IMAGE}
             alt="Tarian Kecak & Alam Bali"
             fill
             sizes="50vw"

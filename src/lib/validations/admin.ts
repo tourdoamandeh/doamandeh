@@ -53,6 +53,12 @@ export const siteSettingsSchema = z.object({
   hero_title: z.string().default('Doamandeh, \n— Rencanakan \nPerjalanan'),
   hero_subtitle: z.string().default('Solusi lengkap kebutuhan aktivitas liburan Anda di Bali: Sewa Motor & Mobil, Tato Artistik, Villa Nyaman, Paket Wisata Tour, hingga Kelas Surfing.'),
   hero_image_url: z.string().optional().default(''),
+  hero_bg_image: z.string().optional().default(''),
+  hero_slide_travel_img: z.string().optional().default(''),
+  hero_slide_villa_img: z.string().optional().default(''),
+  hero_slide_surfing_img: z.string().optional().default(''),
+  hero_slide_vehicle_img: z.string().optional().default(''),
+  hero_slide_tattoo_img: z.string().optional().default(''),
   hero_slide_travel_quote: z.string().default('Biar kami yang merencanakan,\nkamu cukup menikmati\n— momennya.'),
   hero_slide_travel_desc: z.string().default('Temukan Bali yang sebenarnya. Dari pesona pura sakral hingga pantai tersembunyi, paket perjalanan kami dirancang agar kamu bisa bersantai penuh tanpa pusing memikirkan rute atau tiket.'),
   hero_slide_villa_quote: z.string().default('Ruang tenang untuk\nkembali berpulang\n— di tengah surga tropis.'),
@@ -72,6 +78,8 @@ export const siteSettingsSchema = z.object({
   about_stat_1_label: z.string().default('Sepenuh Hati'),
   about_stat_2_val: z.string().default('24/7'),
   about_stat_2_label: z.string().default('Teman Perjalanan'),
+  about_image_1: z.string().optional().default(''),
+  about_image_2: z.string().optional().default(''),
 
   // Services Section
   services_title: z.string().default('Pilih \nPetualanganmu'),
@@ -145,6 +153,7 @@ export const siteSettingsSchema = z.object({
   // FAQ Section
   faq_title: z.string().default('Jawaban untuk \nsetiap pertanyaanmu.'),
   faq_subtitle: z.string().default('Jawaban jelas mengenai proses pemesanan, fasilitas layanan, jadwal, dan semua kebutuhan perjalanan Anda di Bali.'),
+  faq_image: z.string().optional().default(''),
   faq_data: z.string().default(JSON.stringify([
     {
       num: '01',
@@ -178,6 +187,11 @@ export const siteSettingsSchema = z.object({
   cta_title: z.string().default('Solusi lengkap \nliburanmu di Bali.'),
   cta_subtitle: z.string().default('Pilih layanan favoritmu dari Doamandeh untuk pengalaman wisata, akomodasi, serta lifestyle terbaik di Pulau Dewata.'),
   cta_button_text: z.string().default('Pesan Layanan Sekarang'),
+  cta_card_travel_img: z.string().optional().default(''),
+  cta_card_vehicle_img: z.string().optional().default(''),
+  cta_card_villa_img: z.string().optional().default(''),
+  cta_card_tattoo_img: z.string().optional().default(''),
+  cta_card_surfing_img: z.string().optional().default(''),
 
   // Contact & Operations
   contact_phone: z.string().default('+62 812-3456-7890'),

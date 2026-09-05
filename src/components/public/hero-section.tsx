@@ -137,7 +137,30 @@ export function HeroSection({
     setTouchStartX(null);
   };
 
-  const currentService = services[currentIndex];
+  const leftBgImage =
+    settings?.hero_bg_image && settings.hero_bg_image.trim() !== ''
+      ? settings.hero_bg_image
+      : settings?.hero_image_url && settings.hero_image_url.trim() !== ''
+      ? settings.hero_image_url
+      : LEFT_BACKGROUND_IMAGE;
+
+  const dynamicServices = React.useMemo(() => {
+    return services.map((s) => {
+      let customImg = s.carouselImage;
+      if (s.category === 'travel' && settings?.hero_slide_travel_img) customImg = settings.hero_slide_travel_img;
+      if (s.category === 'villa' && settings?.hero_slide_villa_img) customImg = settings.hero_slide_villa_img;
+      if (s.category === 'surfing-lesson' && settings?.hero_slide_surfing_img) customImg = settings.hero_slide_surfing_img;
+      if (s.category === 'vehicle-rental' && settings?.hero_slide_vehicle_img) customImg = settings.hero_slide_vehicle_img;
+      if (s.category === 'tattoo' && settings?.hero_slide_tattoo_img) customImg = settings.hero_slide_tattoo_img;
+
+      return {
+        ...s,
+        carouselImage: customImg,
+      };
+    });
+  }, [settings]);
+
+  const currentService = dynamicServices[currentIndex] || services[0];
 
   const currentQuote =
     currentService.category === 'travel' && settings?.hero_slide_travel_quote ? settings.hero_slide_travel_quote :
@@ -165,7 +188,7 @@ export function HeroSection({
       {/* Kolom Kiri: Desktop Only */}
       <div className="hidden md:block relative md:w-1/2 md:h-full overflow-hidden group shrink-0">
         <Image
-          src={LEFT_BACKGROUND_IMAGE}
+          src={leftBgImage}
           alt="Bali Paradise Landscape"
           fill
           priority

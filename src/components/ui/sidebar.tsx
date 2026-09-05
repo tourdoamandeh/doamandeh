@@ -111,7 +111,7 @@ export const SidebarProvider = React.forwardRef<
       <SidebarContext.Provider value={contextValue}>
         <div
           className={cn(
-            'flex min-h-screen w-full bg-[#FAFAF9] text-[#171717]',
+            'flex min-h-screen w-full bg-background text-foreground',
             className
           )}
           ref={ref}
@@ -266,7 +266,7 @@ export const SidebarInset = React.forwardRef<
       ref={ref}
       data-slot="sidebar-inset"
       className={cn(
-        'relative flex min-h-screen flex-1 min-w-0 flex-col bg-[#FAFAF9] overflow-x-hidden',
+        'relative flex min-h-screen flex-1 min-w-0 flex-col bg-background',
         className
       )}
       {...props}

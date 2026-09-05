@@ -139,7 +139,7 @@ export default async function AboutPage() {
               <FadeIn direction="up" delay={0.25} className="lg:col-span-4 h-full">
                 <div className="relative w-full h-[480px] sm:h-[580px] lg:h-full min-h-[480px] border-2 border-softyellow overflow-hidden bg-brown rounded-none shadow-none">
                   <Image
-                    src="/assets/hero-bali.svg"
+                    src={siteSettings.hero_bg_image || '/assets/hero-bali.svg'}
                     alt="Keindahan Alam & Wisata Bali"
                     fill
                     priority
@@ -379,7 +379,7 @@ export default async function AboutPage() {
               <div className="relative border-2 border-softyellow p-10 md:p-20 text-center flex flex-col items-center justify-center rounded-none overflow-hidden min-h-[420px]">
                 {/* Background Image */}
                 <Image
-                  src="/assets/hero-bali.jpg"
+                  src={siteSettings.hero_bg_image || '/assets/hero-bali.jpg'}
                   alt="Liburan Impian Bali Doamandeh"
                   fill
                   className="object-cover"

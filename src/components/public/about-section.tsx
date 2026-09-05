@@ -11,6 +11,8 @@ interface AboutSectionProps {
   stat1Label?: string;
   stat2Val?: string;
   stat2Label?: string;
+  aboutImage1?: string;
+  aboutImage2?: string;
 }
 
 export function AboutSection({
@@ -21,6 +23,8 @@ export function AboutSection({
   stat1Label = 'Sepenuh Hati',
   stat2Val = '24/7',
   stat2Label = 'Teman Perjalanan',
+  aboutImage1,
+  aboutImage2,
 }: AboutSectionProps = {}) {
   return (
     <section
@@ -84,7 +88,7 @@ export function AboutSection({
             <div className="space-y-4 pt-2">
               <div className="relative aspect-[3/4] sm:aspect-[3/2] w-full bg-softblue overflow-hidden border-2 border-softyellow shadow-none rounded-none">
                 <Image
-                  src="/assets/about-photo-1.svg"
+                  src={aboutImage1 || '/assets/about-photo-1.svg'}
                   alt="Rumah Pohon & Alam Bali - Doamandeh"
                   fill
                   sizes="(max-width: 768px) 100vw, 500px"
@@ -110,7 +114,7 @@ export function AboutSection({
             <div className="space-y-4">
               <div className="relative aspect-[3/4] sm:aspect-[4/3] w-full sm:w-4/5 bg-softblue overflow-hidden border-2 border-softyellow shadow-none rounded-none">
                 <Image
-                  src="/assets/about-photo-2.svg"
+                  src={aboutImage2 || '/assets/about-photo-2.svg'}
                   alt="Tebing & Laut Bali - Doamandeh"
                   fill
                   sizes="(max-width: 768px) 100vw, 400px"

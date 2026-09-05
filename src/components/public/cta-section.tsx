@@ -11,6 +11,13 @@ interface CtaSectionProps {
   ctaSubtitle?: string;
   ctaButtonText?: string;
   whatsappNumber?: string;
+  cardImages?: {
+    travel?: string;
+    vehicle?: string;
+    villa?: string;
+    tattoo?: string;
+    surfing?: string;
+  };
 }
 
 interface ServiceCard {
@@ -88,7 +95,31 @@ export function CtaSection({
   ctaSubtitle = 'Pilih layanan favoritmu dari Doamandeh untuk pengalaman wisata, akomodasi, serta lifestyle terbaik di Pulau Dewata.',
   ctaButtonText = 'Pesan Layanan Sekarang',
   whatsappNumber = '+62 812-3456-7890',
+  cardImages,
 }: CtaSectionProps = {}) {
+  const services: ServiceCard[] = [
+    {
+      ...SERVICES_DATA[0],
+      imageUrl: cardImages?.travel || SERVICES_DATA[0].imageUrl,
+    },
+    {
+      ...SERVICES_DATA[1],
+      imageUrl: cardImages?.vehicle || SERVICES_DATA[1].imageUrl,
+    },
+    {
+      ...SERVICES_DATA[2],
+      imageUrl: cardImages?.villa || SERVICES_DATA[2].imageUrl,
+    },
+    {
+      ...SERVICES_DATA[3],
+      imageUrl: cardImages?.tattoo || SERVICES_DATA[3].imageUrl,
+    },
+    {
+      ...SERVICES_DATA[4],
+      imageUrl: cardImages?.surfing || SERVICES_DATA[4].imageUrl,
+    },
+  ];
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -100,12 +131,12 @@ export function CtaSection({
   )}`;
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % SERVICES_DATA.length);
+    setCurrentIndex((prev) => (prev + 1) % services.length);
   };
 
   const prevSlide = () => {
     setCurrentIndex(
-      (prev) => (prev - 1 + SERVICES_DATA.length) % SERVICES_DATA.length
+      (prev) => (prev - 1 + services.length) % services.length
     );
   };
 
@@ -134,7 +165,7 @@ export function CtaSection({
     setDragOffset({ x: 0, y: 0 });
   };
 
-  const activeService = SERVICES_DATA[currentIndex];
+  const activeService = services[currentIndex] || services[0];
   const activeWaUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(
     activeService.waText
   )}`;
@@ -178,8 +209,8 @@ export function CtaSection({
 
             {/* Tumpukan Kartu Sharp 90° Border-2 */}
             <div className="relative w-full max-w-[300px] sm:max-w-[330px] md:max-w-[350px] h-[440px] sm:h-[470px] mx-auto select-none touch-none flex items-center justify-center">
-              {SERVICES_DATA.map((service, index) => {
-                const len = SERVICES_DATA.length;
+              {services.map((service, index) => {
+                const len = services.length;
                 const isCurrent = index === currentIndex;
                 const isNext = index === (currentIndex + 1) % len;
                 const isPrev = index === (currentIndex - 1 + len) % len;
@@ -300,7 +331,7 @@ export function CtaSection({
 
               {/* Bar Indicator Minimalis Sharp */}
               <div className="flex items-center gap-1.5">
-                {SERVICES_DATA.map((_, idx) => (
+                {services.map((_, idx) => (
                   <button
                     key={idx}
                     type="button"

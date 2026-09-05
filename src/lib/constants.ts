@@ -133,3 +133,24 @@ export function getServiceImageUrl(service?: {
   }
   return getServiceFallbackImage(service?.category);
 }
+
+/**
+ * Daftar preset gambar situs resmi untuk Hero, About, FAQ, dan CTA
+ */
+export const SITE_IMAGE_PRESETS = [
+  { label: 'Hero Bali (Default SVG)', url: '/assets/hero-bali.svg' },
+  { label: 'Hero Bali (JPG Photo)', url: '/assets/hero-bali.jpg' },
+  { label: 'About Foto 1 Rumah Pohon (SVG)', url: '/assets/about-photo-1.svg' },
+  { label: 'About Foto 2 Tebing Laut (SVG)', url: '/assets/about-photo-2.svg' },
+  { label: 'Paket Tour (Foto JPG)', url: '/assets/service-travel.jpg' },
+  { label: 'Sewa Kendaraan (Foto JPG)', url: '/assets/service-vehicle.jpg' },
+  { label: 'Villa Stay (Foto JPG)', url: '/assets/service-villa.jpg' },
+  { label: 'Tattoo Studio (Foto JPG)', url: '/assets/service-tattoo.jpg' },
+  { label: 'Surfing Lesson (Foto PNG)', url: '/assets/service-surfing.png' },
+  { label: 'Vector Tour (SVG)', url: '/assets/service-travel.svg' },
+  { label: 'Vector Villa (SVG)', url: '/assets/service-villa.svg' },
+  { label: 'Vector Surfing (SVG)', url: '/assets/service-surfing.svg' },
+  { label: 'Vector Kendaraan (SVG)', url: '/assets/service-vehicle.svg' },
+  { label: 'Vector Tattoo (SVG)', url: '/assets/service-tattoo.svg' },
+];
+

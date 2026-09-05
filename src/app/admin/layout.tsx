@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AdminTheme } from '@/components/admin/admin-theme';
+import { AdminThemeProvider } from '@/components/admin/admin-theme';
 
 export const metadata: Metadata = {
   title: 'Admin CMS | Doamandeh Tours & Travel',
@@ -16,9 +16,10 @@ export default function AdminRootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans">
-      <AdminTheme />
-      {children}
-    </div>
+    <AdminThemeProvider>
+      <div className="min-h-screen bg-background text-foreground font-sans">
+        {children}
+      </div>
+    </AdminThemeProvider>
   );
 }

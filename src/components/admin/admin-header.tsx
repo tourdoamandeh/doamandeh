@@ -13,6 +13,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { ExternalLink } from 'lucide-react';
+import { AdminThemeToggle } from '@/components/admin/admin-theme-toggle';
 
 const PATH_TITLES: Record<string, string> = {
   '/admin': 'Dashboard Overview',
@@ -26,7 +27,7 @@ export function AdminHeader() {
   const currentTitle = PATH_TITLES[pathname] || 'Operasional CMS';
 
   return (
-    <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-4 sm:px-6 transition-[width,height] ease-linear font-sans">
+    <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-card/95 backdrop-blur-sm px-4 sm:px-6 transition-[width,height] ease-linear font-sans shadow-xs">
       <div className="flex items-center gap-3">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="h-4" />
@@ -47,7 +48,9 @@ export function AdminHeader() {
         </Breadcrumb>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <AdminThemeToggle />
+        <Separator orientation="vertical" className="h-4" />
         <Link
           href="/"
           target="_blank"

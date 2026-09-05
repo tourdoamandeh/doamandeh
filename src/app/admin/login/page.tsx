@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Loader2, AlertCircle } from 'lucide-react';
+import { AdminThemeToggle } from '@/components/admin/admin-theme-toggle';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -41,7 +42,10 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-12 text-foreground font-sans">
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-background px-4 py-12 text-foreground font-sans">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+        <AdminThemeToggle />
+      </div>
       <div className="w-full max-w-sm space-y-6">
         {/* Brand Logo Header */}
         <div className="flex flex-col items-center text-center space-y-2">

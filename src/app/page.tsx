@@ -82,6 +82,8 @@ export default async function HomePage() {
           stat1Label={siteSettings.about_stat_1_label}
           stat2Val={siteSettings.about_stat_2_val}
           stat2Label={siteSettings.about_stat_2_label}
+          aboutImage1={siteSettings.about_image_1}
+          aboutImage2={siteSettings.about_image_2}
         />
 
         <ServicesSection
@@ -99,6 +101,7 @@ export default async function HomePage() {
           faqTitle={siteSettings.faq_title}
           faqSubtitle={siteSettings.faq_subtitle}
           faqJson={siteSettings.faq_data}
+          faqImage={siteSettings.faq_image}
         />
 
         <CtaSection
@@ -107,6 +110,13 @@ export default async function HomePage() {
           ctaTitle={siteSettings.cta_title}
           ctaSubtitle={siteSettings.cta_subtitle}
           ctaButtonText={siteSettings.cta_button_text}
+          cardImages={{
+            travel: siteSettings.cta_card_travel_img,
+            vehicle: siteSettings.cta_card_vehicle_img,
+            villa: siteSettings.cta_card_villa_img,
+            tattoo: siteSettings.cta_card_tattoo_img,
+            surfing: siteSettings.cta_card_surfing_img,
+          }}
         />
       </main>
 

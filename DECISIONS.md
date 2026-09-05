@@ -192,3 +192,22 @@
   3. **Pemasangan Dropdown Filter Waktu (`select.tsx`)**:
      - Menginstal komponen primitif resmi `Select` shadcn via CLI (`bunx --bun shadcn@latest add select`).
      - Mengintegrasikan filter rentang waktu interaktif pada `OverviewCharts` (`7d` Seminggu Terakhir, `30d` Sebulan Terakhir, dan `6m` 6 Bulan Terakhir) dengan kalkulasi agregasi harian/bulanan dinamis dan penyesuaian interval X-Axis otomatis.
+
+## DEC-016: Dual Theme Isolation & Scoped Dark Mode for Admin CMS
+- **Date**: 2026-09-05
+- **Status**: Accepted
+- **Context**:
+  - Pengguna meminta penambahan fitur dark mode eksklusif untuk Admin CMS (`/admin`), dibuat pada git branch terpisah `feat/admin-dark-mode`, menggunakan komponen resmi shadcn (DropdownMenu untuk opsi: Terang, Gelap, Sistem).
+  - Terdapat persyaratan ketat isolasi tema: website publik (`/`, `/about`, `/contact`, `/services/*`, `/category/*`) tidak boleh terpengaruh oleh dark mode sama sekali dan harus 100% mempertahankan palet brand resmi Krem (`#FFF6C6`) dan Cokelat (`#504139`).
+- **Decision**:
+  1. **Scoped Dark Mode Tokens**:
+     - Mendaftarkan CSS tokens dark mode di `src/app/globals.css` secara scoped hanya di bawah selector `[data-theme="admin"].dark`, `[data-theme="admin"][data-admin-mode="dark"]`, dan `html[data-theme="admin"].dark`.
+     - Menggunakan palet obsidian & stone-950 (`#09090b` background, `#121215` card/popover, `#27272a` border, `#f4f4f5` foreground, `#14b8a6` primary teal, dan badge status berlatar belakang transparan).
+  2. **AdminThemeProvider & Zero-Leakage Lifecycle (`admin-theme.tsx`)**:
+     - Mengelola state tema (`light | dark | system`), mendeteksi preferensi sistem secara reaktif via `window.matchMedia('(prefers-color-scheme: dark)')`, dan menyimpan pilihan di `localStorage` (`admin-theme-preference`).
+     - Menerapkan script pre-paint inline di `src/app/admin/layout.tsx` untuk mencegah Flash of Unstyled Content (FOUC).
+     - Menjamin **Zero Theme Leakage**: saat berpindah dari halaman `/admin` ke website publik, cleanup function pada `AdminThemeProvider` seketika mencabut atribut `data-theme`, `data-admin-mode`, dan class `.dark` dari `document.documentElement`.
+  3. **Komponen shadcn DropdownMenu (`admin-theme-toggle.tsx`)**:
+     - Menginstal `@base-ui/react/menu` via `bunx --bun shadcn@latest add dropdown-menu`.
+     - Membuat `AdminThemeToggle` dengan trigger tombol ikon Sun/Moon yang responsif, menyajikan opsi "Terang", "Gelap", dan "Sistem" dengan visual checkmark aktif.
+     - Memasang toggle di header operasional admin (`AdminHeader`) dan pojok atas halaman login (`AdminLoginPage`).
