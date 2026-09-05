@@ -235,6 +235,45 @@
 - [2026-09-05] Sidebar Smooth Transition & Chart Time-Range Filter: Menyelesaikan bug UI sidebar patah-patah/stutter dengan stabilisasi DOM node di `app-sidebar.tsx` dan penambahan `debounce={150}` pada `ResponsiveContainer` Recharts. Menginstal primitif `select.tsx` dari shadcn CLI dan mengintegrasikan filter dropdown rentang waktu (Seminggu Terakhir, Sebulan Terakhir, 6 Bulan Terakhir) pada grafik Tren Aktivitas Reservasi. Build lulus 100% (13 routes).
 - [2026-09-05] Admin Sidebar Layout & Visual Restoration: Mengembalikan layout bersih, rapi, dan proporsional pada `app-sidebar.tsx`. Menghilangkan ruang kosong tinggi `h-14` saat collapsed, memulihkan padding dan perataan icon di tengah (`size-8`), merapikan kartu profil dan tombol keluar, serta mengeliminasi warning React controlled state `openProp`. Build lulus 100% (13 routes).
 - [2026-09-05] Admin CMS Drawer & Calendar Date Picker Refactor (Phase 14): Menginstal komponen resmi `drawer`, `calendar` (`react-day-picker 10` & `date-fns 4`), dan `popover` via shadcn CLI. Mengubah form katalog layanan (`service-form-dialog.tsx`) dan form reservasi manual (`booking-form-dialog.tsx`) menjadi modern Right Slide-out Drawer (`swipeDirection="right"`). Menggantikan input tanggal native HTML menjadi Popover Calendar interaktif pada form booking. Mengonversi modal detail booking pada `bookings-table.tsx` menjadi Drawer yang rapi. Build lulus 100% (13 routes).
+- [2026-09-05] Public Website DESIGN.md v2 Overhaul (Phase 15):
+  - [x] Update Theme Tokens: Palet warna v2 didaftarkan di `globals.css` (`paper: #FAF9F4`, `sun: #FFF3C4`, `ink: #26241F`, `ocean: #0F5D66`, `foam: #ECEFEB`, `line: #E2DFD4`) dan `--radius: 0rem` (sudut siku 0px mutlak). Tema scoped `[data-theme="admin"]` dipertahankan utuh 100%. Tipografi geometric `Jost` dengan fallback Futura dipasang di `layout.tsx`.
+  - [x] Instalasi Komponen Base shadcn via CLI: `textarea`, `aspect-ratio`, `accordion`, `avatar`, `sheet` diinstal tanpa menyentuh atau memodifikasi file primitives di `src/components/ui/**`.
+  - [x] Standardisasi Stroke Global: Semua stroke 2px diubah menjadi 1px (`border`, `border-line`, `border-ink`), seluruh bingkai foto diubah ke 1px, shadow dihapus (`shadow-none`), dan seluruh icon Lucide menggunakan `strokeWidth={1.5}`.
+  - [x] Bangun `/services` Sesuai Spec: Header split dengan tag `// LAYANAN`, judul 7xl, counter jumlah paket, dan daftar layanan editorial index list full-width (`[01] [Nama Layanan] [deskripsi 1 baris] [FROM Rp X] [ArrowUpRight]`) dengan hover `bg-sun`, serta filter kategori horizontal ribbon.
+  - [x] Bangun `/services/[id]` Detail Page: Breadcrumb shadcn, header split 12 kolom (col-8: tag category `// ...` + title + description; col-4: sticky Card "FROM Rp X / unit" + tombol primary & WhatsApp), visual gallery grid 12 (foto utama col-span-8, 2 foto stack col-span-4), 2-col content (deskripsi/fasilitas/durasi dengan separator & sticky booking form di kanan), dan related services horizontal rows (bukan card grid).
+  - [x] Revisi `/about`: Sticky split (kiri sticky tag `// TENTANG` + title + button; kanan narasi font-light + foto berbingkai 1px), stats row 4 angka dalam 1 baris dipisahkan `border-l border-line`, dan prinsip kerja bernomor (`01` s/d `04`).
+  - [x] Revisi `/contact`: Split 12 (col-5: "Let's Talk" + index list channel WhatsApp, Email, Instagram, Office dengan hover `bg-sun`; col-7: contact form di atas `bg-foam` dengan `Label`, `Input`, `Textarea`, `Button`), serta Google Maps iframe dalam container 16/9 berbingkai 1px.
+  - [x] Konsolidasi Halaman & Seksi About ke Beranda: Seksi About di beranda (`src/components/public/about-section.tsx`) ditingkatkan mengadopsi layout editorial v2 (sticky split dengan kolom kanan sticky yang mengikuti scroll tanpa `overflow-hidden`, 4 stats row, dan 4 prinsip kerja). Rute `/about` dialihkan otomatis ke `/#about`.
+  - [x] Penyelarasan Urutan Menu Navigasi (Beranda, Compact Navbar, Footer):
+    - Menyeragamkan seluruh menu navigasi publik menjadi 6 item terurut:
+      1. Beranda (`/`)
+      2. Tentang Kami (`/#about`)
+      3. Katalog Layanan (`/services`)
+      4. Ulasan & Testimoni (`/#testimonials`)
+      5. Tanya Jawab (FAQ) (`/#faq`)
+      6. Hubungi Kami (`/contact`)
+    - Diterapkan secara identik pada:
+      - Drawer menu Hero Beranda ([`hero-section.tsx`](file:///e:/codingan/doamandeh/src/components/public/hero-section.tsx))
+      - Floating Compact Navbar subpage ([`public-header.tsx`](file:///e:/codingan/doamandeh/src/components/public/public-header.tsx))
+      - Footbar / Footer ([`public-footer.tsx`](file:///e:/codingan/doamandeh/src/components/public/public-footer.tsx))
+  - [x] Pembersihan Navbar & Drawer Menjadi Murni List Navigasi:
+    - Menghapus kotak aksen editorial dan tombol aksi ganda dari drawer Beranda ([`hero-section.tsx`](file:///e:/codingan/doamandeh/src/components/public/hero-section.tsx)) dan Compact Navbar ([`public-header.tsx`](file:///e:/codingan/doamandeh/src/components/public/public-header.tsx)).
+    - Kontainer navbar dan drawer kini murni hanya memuat 6 tautan menu navigasi:
+      1. Beranda
+      2. Tentang Kami
+      3. Katalog Layanan
+      4. Ulasan & Testimoni
+      5. Tanya Jawab (FAQ)
+      6. Hubungi Kami
+  - [x] Penghapusan Logo Kotak "D" di Navbar:
+    - Menghapus kotak logo huruf "D" pada header drawer Beranda ([`hero-section.tsx`](file:///e:/codingan/doamandeh/src/components/public/hero-section.tsx)) dan Compact Navbar ([`public-header.tsx`](file:///e:/codingan/doamandeh/src/components/public/public-header.tsx)).
+    - Hanya menyisakan tipografi teks nama brand "Doamandeh" yang bersih dan proporsional.
+
+
+
+
+
+
 
 
 

@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
           </div>
           <div>
             <h1 className="text-xl font-semibold tracking-tight text-foreground">
-              Doamandeh Admin
+              Do&apos;amandeh Admin
             </h1>
             <p className="text-xs text-muted-foreground mt-0.5">
               Operations &amp; Content Management System
@@ -136,7 +136,7 @@ export default function AdminLoginPage() {
         </Card>
 
         <p className="text-center text-[11px] text-muted-foreground">
-          Doamandeh Tours &amp; Travel © {new Date().getFullYear()}
+          Do&apos;amandeh Tours &amp; Travel © {new Date().getFullYear()}
         </p>
       </div>
     </div>

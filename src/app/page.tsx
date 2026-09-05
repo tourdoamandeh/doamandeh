@@ -3,7 +3,6 @@ import { createClient } from '@/lib/supabase/server';
 import { getSiteSettingsAction } from '@/lib/actions/admin/settings';
 import { DEFAULT_SITE_SETTINGS } from '@/lib/validations/admin';
 import { Service } from '@/types/database';
-import { PublicHeader } from '@/components/public/public-header';
 import { PublicFooter } from '@/components/public/public-footer';
 import { HeroSection } from '@/components/public/hero-section';
 import { ConnectionBanner } from '@/components/public/connection-banner';
@@ -14,16 +13,16 @@ import { FaqSection } from '@/components/public/faq-section';
 import { CtaSection } from '@/components/public/cta-section';
 
 export const metadata: Metadata = {
-  title: 'Doamandeh Tours & Travel | Editorial Travel & Lifestyle Bali',
+  title: "Do'amandeh Tours & Travel | Editorial Travel & Lifestyle Bali",
   description:
     'Layanan wisata & lifestyle eksklusif di Bali: Sewa Motor & Mobil matic, Professional Tattoo Studio, Villa Private Pool, Paket Tour Travel, dan Surfing Lesson.',
   openGraph: {
-    title: 'Doamandeh Tours & Travel | Partner Liburan & Lifestyle di Bali',
+    title: "Do'amandeh Tours & Travel | Partner Liburan & Lifestyle di Bali",
     description:
       'Solusi aktivitas wisata lengkap di Bali: Sewa Motor & Mobil, Tattoo Studio higienis, Villa nyaman, Paket Tour, dan Kelas Surfing.',
     type: 'website',
     locale: 'id_ID',
-    siteName: 'Doamandeh Tours & Travel',
+    siteName: "Do'amandeh Tours & Travel",
   },
 };
 
@@ -59,8 +58,7 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-tissue text-black selection:bg-peach selection:text-black">
-
+    <div className="min-h-screen flex flex-col bg-paper text-ink selection:bg-sun selection:text-ink">
       <main className="flex-1">
         <HeroSection
           heroTitle={siteSettings.hero_title}
@@ -77,23 +75,55 @@ export default async function HomePage() {
         <AboutSection
           aboutTagline={siteSettings.about_tagline}
           aboutTitle={siteSettings.about_title}
+          aboutSubtitle={siteSettings.about_subtitle}
           aboutText={siteSettings.about_text}
+          aboutSecondaryText={siteSettings.about_secondary_text}
+          aboutBtnText={siteSettings.about_btn_text}
           stat1Val={siteSettings.about_stat_1_val}
           stat1Label={siteSettings.about_stat_1_label}
           stat2Val={siteSettings.about_stat_2_val}
           stat2Label={siteSettings.about_stat_2_label}
+          stat3Val={siteSettings.about_stat_3_val}
+          stat3Label={siteSettings.about_stat_3_label}
+          stat4Val={siteSettings.about_stat_4_val}
+          stat4Label={siteSettings.about_stat_4_label}
           aboutImage1={siteSettings.about_image_1}
           aboutImage2={siteSettings.about_image_2}
+          whatsappNumber={siteSettings.contact_whatsapp}
+          principles={[
+            {
+              num: '01',
+              title: siteSettings.about_principle_1_title,
+              desc: siteSettings.about_principle_1_desc,
+            },
+            {
+              num: '02',
+              title: siteSettings.about_principle_2_title,
+              desc: siteSettings.about_principle_2_desc,
+            },
+            {
+              num: '03',
+              title: siteSettings.about_principle_3_title,
+              desc: siteSettings.about_principle_3_desc,
+            },
+            {
+              num: '04',
+              title: siteSettings.about_principle_4_title,
+              desc: siteSettings.about_principle_4_desc,
+            },
+          ]}
         />
 
         <ServicesSection
           services={services}
           servicesTitle={siteSettings.services_title}
           servicesSubtitle={siteSettings.services_subtitle}
+          servicesBtnText={siteSettings.services_btn_text}
         />
 
         <TestimonialsSection
           testimonialsTitle={siteSettings.testimonials_title}
+          testimonialsCtaText={siteSettings.testimonials_cta_text}
           testimonialsJson={siteSettings.testimonials_data}
         />
 

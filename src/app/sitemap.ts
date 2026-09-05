@@ -21,6 +21,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/services`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.95,
+    },
+    {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
@@ -33,13 +39,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
   ];
-
-  const categoryPages: MetadataRoute.Sitemap = CATEGORIES.map((slug) => ({
-    url: `${baseUrl}/category/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily',
-    priority: 0.9,
-  }));
 
   let servicePages: MetadataRoute.Sitemap = [];
 
@@ -62,5 +61,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Return base static and category pages if DB is offline during build
   }
 
-  return [...staticPages, ...categoryPages, ...servicePages];
+  return [...staticPages, ...servicePages];
 }

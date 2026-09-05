@@ -101,7 +101,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
       location: 'Indonesia',
       serviceCategory: 'Paket Tour',
       rating: 5,
-      comment: 'Pengalaman liburan yang sangat berkesan bersama tim Doamandeh.',
+      comment: "Pengalaman liburan yang sangat berkesan bersama tim Do'amandeh.",
       date: 'September 2026',
       image: '/assets/hero-bali.svg',
     };
@@ -143,7 +143,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
   }
 
   function handleReset() {
-    if (confirm('Kembalikan seluruh teks pengaturan ke konfigurasi bawaan Doamandeh?')) {
+    if (confirm("Kembalikan seluruh teks pengaturan ke konfigurasi bawaan Do'amandeh?")) {
       setFormData(DEFAULT_SITE_SETTINGS);
       setStatus({
         type: 'success',
@@ -233,14 +233,60 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
         <Card className="bg-card border-border shadow-none rounded-lg p-6 space-y-5">
           <div className="border-b border-border pb-3">
             <h2 className="text-sm font-semibold text-foreground">
-              Hero Section &amp; Kutipan Layanan
+              Identitas Brand &amp; Hero Section
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Judul utama hero dan narasi kutipan per kategori yang berganti otomatis di banner landing page.
+              Atur nama brand, tagline, judul utama hero, subjudul, dan narasi kutipan layanan yang tampil di landing page.
             </p>
           </div>
 
           <div className="space-y-4">
+            {/* Brand Identity */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded border border-border bg-muted/20">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium">Nama Brand</Label>
+                <Input
+                  type="text"
+                  value={formData.brand_name || "Do'amandeh"}
+                  onChange={(e) => handleChange('brand_name', e.target.value)}
+                  placeholder="Do'amandeh"
+                  className="h-8 text-xs font-medium"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium">Tagline Brand</Label>
+                <Input
+                  type="text"
+                  value={formData.brand_tagline || 'Tours & Travel Bali'}
+                  onChange={(e) => handleChange('brand_tagline', e.target.value)}
+                  placeholder="Tours & Travel Bali"
+                  className="h-8 text-xs"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium">Teks Tombol CTA Header</Label>
+                <Input
+                  type="text"
+                  value={formData.header_cta_text || 'Konsultasi Cepat'}
+                  onChange={(e) => handleChange('header_cta_text', e.target.value)}
+                  placeholder="Konsultasi Cepat"
+                  className="h-8 text-xs"
+                />
+              </div>
+            </div>
+
+            {/* Hero Section Texts */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium">Tagline Kecil di Atas Judul Hero</Label>
+              <Input
+                type="text"
+                value={formData.hero_tagline || "// DO'AMANDEH TOURS & TRAVEL BALI"}
+                onChange={(e) => handleChange('hero_tagline', e.target.value)}
+                placeholder="// DO'AMANDEH TOURS & TRAVEL BALI"
+                className="h-9 text-xs font-mono"
+              />
+            </div>
+
             <div className="space-y-1.5">
               <Label className="text-xs font-medium">
                 Judul Hero Utama (Gunakan Enter untuk baris baru) *
@@ -250,14 +296,14 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 required
                 value={formData.hero_title}
                 onChange={(e) => handleChange('hero_title', e.target.value)}
-                placeholder="Doamandeh, \n— Rencanakan \nPerjalanan"
+                placeholder="Do'amandeh, \n— Rencanakan \nPerjalanan"
                 className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[96px]"
               />
             </div>
 
             <div className="space-y-1.5">
               <Label className="text-xs font-medium">
-                Subjudul / Tagline Hero *
+                Subjudul / Deskripsi Hero *
               </Label>
               <textarea
                 rows={3}
@@ -266,6 +312,17 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 onChange={(e) => handleChange('hero_subtitle', e.target.value)}
                 placeholder="Solusi lengkap kebutuhan aktivitas liburan Anda di Bali..."
                 className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[75px]"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium">Teks Tombol CTA Hero</Label>
+              <Input
+                type="text"
+                value={formData.hero_cta_btn_text || 'Lihat Layanan Kami'}
+                onChange={(e) => handleChange('hero_cta_btn_text', e.target.value)}
+                placeholder="Lihat Layanan Kami"
+                className="h-9 text-xs"
               />
             </div>
 
@@ -457,92 +514,249 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
         <Card className="bg-card border-border shadow-none rounded-lg p-6 space-y-5">
           <div className="border-b border-border pb-3">
             <h2 className="text-sm font-semibold text-foreground">
-              Seksi Tentang Doamandeh &amp; Statistik
+              Seksi Tentang Do&apos;amandeh, Statistik &amp; Prinsip Pelayanan
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Atur headline, paragraf narasi bisnis, serta angka statistik di seksi About.
+              Atur headline, paragraf narasi bisnis, 4 angka statistik, 4 prinsip standar pelayanan, dan foto editorial seksi About.
             </p>
           </div>
 
           <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label className="text-xs font-medium">Tagline Atas</Label>
-              <Input
-                type="text"
-                value={formData.about_tagline}
-                onChange={(e) => handleChange('about_tagline', e.target.value)}
-                className="h-9 text-xs"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium">Tagline Atas</Label>
+                <Input
+                  type="text"
+                  value={formData.about_tagline}
+                  onChange={(e) => handleChange('about_tagline', e.target.value)}
+                  placeholder="// TENTANG DO'AMANDEH"
+                  className="h-9 text-xs font-mono"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium">Subjudul Editorial</Label>
+                <Input
+                  type="text"
+                  value={formData.about_subtitle || '// BALI TOURS, STAYS & LIFESTYLE CURATION'}
+                  onChange={(e) => handleChange('about_subtitle', e.target.value)}
+                  placeholder="// BALI TOURS, STAYS & LIFESTYLE CURATION"
+                  className="h-9 text-xs font-mono"
+                />
+              </div>
             </div>
 
             <div className="space-y-1.5">
               <Label className="text-xs font-medium">Judul Headline Tentang Kami</Label>
               <textarea
-                rows={4}
+                rows={3}
                 value={formData.about_title}
                 onChange={(e) => handleChange('about_title', e.target.value)}
-                className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[96px]"
+                className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[80px]"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium">Paragraf Penjelasan Profil Bisnis</Label>
-              <textarea
-                rows={6}
-                value={formData.about_text}
-                onChange={(e) => handleChange('about_text', e.target.value)}
-                className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[140px]"
+              <Label className="text-xs font-medium">Teks Tombol CTA Konsultasi</Label>
+              <Input
+                type="text"
+                value={formData.about_btn_text || 'Konsultasi Liburan'}
+                onChange={(e) => handleChange('about_btn_text', e.target.value)}
+                placeholder="Konsultasi Liburan"
+                className="h-9 text-xs"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4 pt-2">
-              <div className="p-3.5 rounded border border-border bg-muted/20 space-y-2">
-                <p className="font-semibold text-xs text-foreground">Statistik 1</p>
-                <Input
-                  type="text"
-                  placeholder="Nilai (e.g. 100%)"
-                  value={formData.about_stat_1_val}
-                  onChange={(e) => handleChange('about_stat_1_val', e.target.value)}
-                  className="h-8 text-xs font-mono tabular-nums"
-                />
-                <Input
-                  type="text"
-                  placeholder="Label (e.g. Sepenuh Hati)"
-                  value={formData.about_stat_1_label}
-                  onChange={(e) => handleChange('about_stat_1_label', e.target.value)}
-                  className="h-8 text-xs"
-                />
-              </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium">Paragraf Penjelasan Utama (Sticky Kanan)</Label>
+              <textarea
+                rows={4}
+                value={formData.about_text}
+                onChange={(e) => handleChange('about_text', e.target.value)}
+                className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[100px]"
+              />
+            </div>
 
-              <div className="p-3.5 rounded border border-border bg-muted/20 space-y-2">
-                <p className="font-semibold text-xs text-foreground">Statistik 2</p>
-                <Input
-                  type="text"
-                  placeholder="Nilai (e.g. 24/7)"
-                  value={formData.about_stat_2_val}
-                  onChange={(e) => handleChange('about_stat_2_val', e.target.value)}
-                  className="h-8 text-xs font-mono tabular-nums"
-                />
-                <Input
-                  type="text"
-                  placeholder="Label (e.g. Teman Perjalanan)"
-                  value={formData.about_stat_2_label}
-                  onChange={(e) => handleChange('about_stat_2_label', e.target.value)}
-                  className="h-8 text-xs"
-                />
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium">Paragraf Penjelasan Tambahan / Sekunder</Label>
+              <textarea
+                rows={3}
+                value={formData.about_secondary_text || 'Dengan berfokus pada transparansi tarif, keramahan komunikasi lokal yang cepat, dan kualitas unit yang terinspeksi setiap saat, kami memastikan liburan santai Anda di Pulau Dewata berlangsung tenang dari awal penjemputan hingga kepulangan.'}
+                onChange={(e) => handleChange('about_secondary_text', e.target.value)}
+                className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[80px]"
+              />
+            </div>
+
+            {/* 4 Statistik Angka Besar */}
+            <div className="pt-3 border-t border-border space-y-2">
+              <h3 className="text-xs font-semibold text-foreground">4 Statistik Angka Besar</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="p-3 rounded border border-border bg-muted/20 space-y-1.5">
+                  <p className="font-semibold text-xs text-foreground">Statistik 1</p>
+                  <Input
+                    type="text"
+                    placeholder="Nilai (e.g. 100%)"
+                    value={formData.about_stat_1_val}
+                    onChange={(e) => handleChange('about_stat_1_val', e.target.value)}
+                    className="h-8 text-xs font-mono tabular-nums"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Label (e.g. Sepenuh Hati)"
+                    value={formData.about_stat_1_label}
+                    onChange={(e) => handleChange('about_stat_1_label', e.target.value)}
+                    className="h-8 text-xs"
+                  />
+                </div>
+
+                <div className="p-3 rounded border border-border bg-muted/20 space-y-1.5">
+                  <p className="font-semibold text-xs text-foreground">Statistik 2</p>
+                  <Input
+                    type="text"
+                    placeholder="Nilai (e.g. 99.4%)"
+                    value={formData.about_stat_2_val}
+                    onChange={(e) => handleChange('about_stat_2_val', e.target.value)}
+                    className="h-8 text-xs font-mono tabular-nums"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Label (e.g. Tingkat Kepuasan)"
+                    value={formData.about_stat_2_label}
+                    onChange={(e) => handleChange('about_stat_2_label', e.target.value)}
+                    className="h-8 text-xs"
+                  />
+                </div>
+
+                <div className="p-3 rounded border border-border bg-muted/20 space-y-1.5">
+                  <p className="font-semibold text-xs text-foreground">Statistik 3</p>
+                  <Input
+                    type="text"
+                    placeholder="Nilai (e.g. 50+)"
+                    value={formData.about_stat_3_val || '50+'}
+                    onChange={(e) => handleChange('about_stat_3_val', e.target.value)}
+                    className="h-8 text-xs font-mono tabular-nums"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Label (e.g. Armada & Fasilitas)"
+                    value={formData.about_stat_3_label || 'Armada & Fasilitas Aktif'}
+                    onChange={(e) => handleChange('about_stat_3_label', e.target.value)}
+                    className="h-8 text-xs"
+                  />
+                </div>
+
+                <div className="p-3 rounded border border-border bg-muted/20 space-y-1.5">
+                  <p className="font-semibold text-xs text-foreground">Statistik 4</p>
+                  <Input
+                    type="text"
+                    placeholder="Nilai (e.g. 24/7)"
+                    value={formData.about_stat_4_val || '24/7'}
+                    onChange={(e) => handleChange('about_stat_4_val', e.target.value)}
+                    className="h-8 text-xs font-mono tabular-nums"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Label (e.g. Dukungan Staf Lokal)"
+                    value={formData.about_stat_4_label || 'Dukungan Staf Lokal'}
+                    onChange={(e) => handleChange('about_stat_4_label', e.target.value)}
+                    className="h-8 text-xs"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 4 Prinsip Standar Pelayanan (01 s/d 04) */}
+            <div className="pt-3 border-t border-border space-y-3">
+              <h3 className="text-xs font-semibold text-foreground">4 Prinsip Standar Pelayanan Kami (01 s/d 04)</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* Prinsip 1 */}
+                <div className="p-3.5 rounded border border-border bg-muted/20 space-y-2">
+                  <p className="font-semibold text-xs text-foreground font-mono">[01] Prinsip Pertama</p>
+                  <Input
+                    type="text"
+                    value={formData.about_principle_1_title || 'Kurasi Mandiri Tanpa Pihak Ketiga'}
+                    onChange={(e) => handleChange('about_principle_1_title', e.target.value)}
+                    placeholder="Judul Prinsip 01"
+                    className="h-8 text-xs font-medium"
+                  />
+                  <textarea
+                    rows={3}
+                    value={formData.about_principle_1_desc || 'Setiap armada kendaraan, villa mitra privat, jarum studio tato steril, dan papan selancar kami inspeksi langsung demi menjamin higienitas, kebersihan, dan standar keamanan tertinggi.'}
+                    onChange={(e) => handleChange('about_principle_1_desc', e.target.value)}
+                    placeholder="Deskripsi ringkas..."
+                    className="w-full rounded border border-border bg-background px-3 py-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[64px]"
+                  />
+                </div>
+
+                {/* Prinsip 2 */}
+                <div className="p-3.5 rounded border border-border bg-muted/20 space-y-2">
+                  <p className="font-semibold text-xs text-foreground font-mono">[02] Prinsip Kedua</p>
+                  <Input
+                    type="text"
+                    value={formData.about_principle_2_title || 'Responsivitas Nyata Tanpa Bot Kaku'}
+                    onChange={(e) => handleChange('about_principle_2_title', e.target.value)}
+                    placeholder="Judul Prinsip 02"
+                    className="h-8 text-xs font-medium"
+                  />
+                  <textarea
+                    rows={3}
+                    value={formData.about_principle_2_desc || 'Anda terhubung langsung dengan tim lokal berpengalaman di Canggu dan Denpasar yang memahami rute, cuaca, dan kondisi lapangan secara real-time—bukan balasan bot otomatis.'}
+                    onChange={(e) => handleChange('about_principle_2_desc', e.target.value)}
+                    placeholder="Deskripsi ringkas..."
+                    className="w-full rounded border border-border bg-background px-3 py-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[64px]"
+                  />
+                </div>
+
+                {/* Prinsip 3 */}
+                <div className="p-3.5 rounded border border-border bg-muted/20 space-y-2">
+                  <p className="font-semibold text-xs text-foreground font-mono">[03] Prinsip Ketiga</p>
+                  <Input
+                    type="text"
+                    value={formData.about_principle_3_title || 'Transparansi Tarif Tanpa Biaya Tersembunyi'}
+                    onChange={(e) => handleChange('about_principle_3_title', e.target.value)}
+                    placeholder="Judul Prinsip 03"
+                    className="h-8 text-xs font-medium"
+                  />
+                  <textarea
+                    rows={3}
+                    value={formData.about_principle_3_desc || 'Tarif yang tercantum di katalog adalah biaya pasti. Tanpa biaya tambahan helm, jas hujan, atau mark-up tersembunyi yang merepotkan liburan Anda.'}
+                    onChange={(e) => handleChange('about_principle_3_desc', e.target.value)}
+                    placeholder="Deskripsi ringkas..."
+                    className="w-full rounded border border-border bg-background px-3 py-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[64px]"
+                  />
+                </div>
+
+                {/* Prinsip 4 */}
+                <div className="p-3.5 rounded border border-border bg-muted/20 space-y-2">
+                  <p className="font-semibold text-xs text-foreground font-mono">[04] Prinsip Keempat</p>
+                  <Input
+                    type="text"
+                    value={formData.about_principle_4_title || 'Fleksibilitas Penjemputan & Jadwal Liburan'}
+                    onChange={(e) => handleChange('about_principle_4_title', e.target.value)}
+                    placeholder="Judul Prinsip 04"
+                    className="h-8 text-xs font-medium"
+                  />
+                  <textarea
+                    rows={3}
+                    value={formData.about_principle_4_desc || 'Kami menyesuaikan ritme santaimu. Gratis pengantaran armada ke hotel/villa di area Canggu, Seminyak, Kuta, maupun koordinasi meeting point yang mudah dijangkau.'}
+                    onChange={(e) => handleChange('about_principle_4_desc', e.target.value)}
+                    placeholder="Deskripsi ringkas..."
+                    className="w-full rounded border border-border bg-background px-3 py-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[64px]"
+                  />
+                </div>
               </div>
             </div>
 
             {/* Foto 1 & Foto 2 Seksi About */}
-            <div className="pt-4 border-t border-border space-y-4">
+            <div className="pt-3 border-t border-border space-y-3">
               <h3 className="text-xs font-semibold text-foreground">
-                Foto Seksi Tentang Doamandeh
+                Foto Editorial Seksi Tentang Do&apos;amandeh
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ImageSettingField
                   id="about_image_1"
-                  label="[01] Foto Rumah Pohon & Alam Bali"
-                  description="Ditampilkan pada kolom kiri bawah angka statistik."
+                  label="[01] Foto Editorial Utama"
+                  description="Ditampilkan pada kotak foto di bawah paragraf penjelasan profil."
                   value={formData.about_image_1 || ''}
                   fallbackUrl="/assets/about-photo-1.svg"
                   aspectRatio="portrait"
@@ -550,8 +764,8 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 />
                 <ImageSettingField
                   id="about_image_2"
-                  label="[02] Foto Tebing & Tepi Laut Bali"
-                  description="Ditampilkan pada kolom kanan bawah teks paragraf."
+                  label="[02] Foto Sekunder (Galeri Cadangan)"
+                  description="Dapat digunakan sebagai aset pendukung visual."
                   value={formData.about_image_2 || ''}
                   fallbackUrl="/assets/about-photo-2.svg"
                   aspectRatio="portrait"
@@ -596,6 +810,104 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 onChange={(e) => handleChange('services_subtitle', e.target.value)}
                 className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[96px]"
               />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium">Teks Tombol Kartu Layanan</Label>
+              <Input
+                type="text"
+                value={formData.services_btn_text || 'Lihat keseruan lainnya'}
+                onChange={(e) => handleChange('services_btn_text', e.target.value)}
+                placeholder="Lihat keseruan lainnya"
+                className="h-9 text-xs"
+              />
+            </div>
+
+            <h3 className="text-xs font-semibold text-foreground pt-4 border-t border-border">
+              Halaman Katalog Lengkap (/services)
+            </h3>
+            <p className="text-[11px] text-muted-foreground -mt-2">
+              Atur teks header dan banner visual lanskap di halaman katalog /services.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium">Tagline Halaman /services</Label>
+                <Input
+                  type="text"
+                  value={formData.services_page_tagline || '// LAYANAN'}
+                  onChange={(e) => handleChange('services_page_tagline', e.target.value)}
+                  placeholder="// LAYANAN"
+                  className="h-9 text-xs font-mono"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium">Judul Halaman /services</Label>
+                <Input
+                  type="text"
+                  value={formData.services_page_title || 'Services'}
+                  onChange={(e) => handleChange('services_page_title', e.target.value)}
+                  placeholder="Services"
+                  className="h-9 text-xs font-medium"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium">Deskripsi Header Halaman /services</Label>
+              <textarea
+                rows={3}
+                value={formData.services_page_description || 'Koleksi pengalaman, mobilitas privat, hunian villa, seni tato higienis, dan kelas selancar yang siap diatur untuk liburanmu di Bali.'}
+                onChange={(e) => handleChange('services_page_description', e.target.value)}
+                className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[75px]"
+              />
+            </div>
+
+            {/* Banner Lanskap /services */}
+            <div className="p-4 rounded border border-border bg-muted/20 space-y-3">
+              <h4 className="text-xs font-semibold text-foreground">
+                Banner Lanskap Halaman /services
+              </h4>
+              <ImageSettingField
+                id="services_banner_image"
+                label="Foto Banner Lanskap Layanan"
+                description="Foto lanskap sinematik lebar yang tampil di atas katalog /services."
+                value={formData.services_banner_image || ''}
+                fallbackUrl="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1600&q=80"
+                aspectRatio="video"
+                onChange={(val) => handleChange('services_banner_image', val)}
+              />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-[11px] text-muted-foreground">Tagline Banner</Label>
+                  <Input
+                    type="text"
+                    value={formData.services_banner_tagline || '// BALI EXPERIENCES & STAYS'}
+                    onChange={(e) => handleChange('services_banner_tagline', e.target.value)}
+                    className="h-8 text-xs font-mono"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-[11px] text-muted-foreground">Judul Utama Banner</Label>
+                  <Input
+                    type="text"
+                    value={formData.services_banner_title || 'Eksplorasi Bali dengan Layanan Terbaik & Terpercaya'}
+                    onChange={(e) => handleChange('services_banner_title', e.target.value)}
+                    className="h-8 text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-[11px] text-muted-foreground">Subjudul / Penjelasan Banner</Label>
+                <textarea
+                  rows={2}
+                  value={formData.services_banner_subtitle || 'Pilihan lengkap sewa motor & mobil matic, private villa, studio tato higienis, tour Nusa Penida, dan kelas selancar.'}
+                  onChange={(e) => handleChange('services_banner_subtitle', e.target.value)}
+                  className="w-full rounded border border-border bg-background px-3 py-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[60px]"
+                />
+              </div>
             </div>
 
             <h3 className="text-xs font-semibold text-foreground pt-4 border-t border-border">
@@ -719,14 +1031,26 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
             </Button>
           </div>
 
-          <div className="space-y-1.5">
-            <Label className="text-xs font-medium">Judul Seksi Testimoni</Label>
-            <Input
-              type="text"
-              value={formData.testimonials_title}
-              onChange={(e) => handleChange('testimonials_title', e.target.value)}
-              className="h-9 text-xs"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium">Judul Seksi Testimoni</Label>
+              <Input
+                type="text"
+                value={formData.testimonials_title}
+                onChange={(e) => handleChange('testimonials_title', e.target.value)}
+                className="h-9 text-xs"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium">Teks Tombol CTA Testimoni</Label>
+              <Input
+                type="text"
+                value={formData.testimonials_cta_text || 'Bagikan Ceritamu'}
+                onChange={(e) => handleChange('testimonials_cta_text', e.target.value)}
+                placeholder="Bagikan Ceritamu"
+                className="h-9 text-xs"
+              />
+            </div>
           </div>
 
           <div className="space-y-4 pt-2">
@@ -964,6 +1288,34 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
             )}
           </div>
 
+          <div className="space-y-3 pb-3 border-b border-border">
+            <h3 className="text-xs font-semibold text-foreground">
+              Header Halaman Kontak (/contact)
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium">Judul Halaman Kontak</Label>
+                <Input
+                  type="text"
+                  value={formData.contact_title || "Let's Talk"}
+                  onChange={(e) => handleChange('contact_title', e.target.value)}
+                  placeholder="Let's Talk"
+                  className="h-9 text-xs"
+                />
+              </div>
+              <div className="sm:col-span-2 space-y-1.5">
+                <Label className="text-xs font-medium">Subjudul / Deskripsi Kontak</Label>
+                <Input
+                  type="text"
+                  value={formData.contact_subtitle || 'Punya pertanyaan ketersediaan armada, konsultasi desain tato, ketersediaan villa privat, atau rencana tour kustom di Bali? Hubungi saluran resmi kami kapan saja.'}
+                  onChange={(e) => handleChange('contact_subtitle', e.target.value)}
+                  placeholder="Punya pertanyaan ketersediaan armada..."
+                  className="h-9 text-xs"
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label className="text-xs font-medium">
@@ -1046,6 +1398,22 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               />
             </div>
 
+            <div className="sm:col-span-2 space-y-1.5">
+              <Label className="text-xs font-medium">
+                URL Iframe Embed Google Maps
+              </Label>
+              <Input
+                type="text"
+                value={formData.contact_map_url || ''}
+                onChange={(e) => handleChange('contact_map_url', e.target.value)}
+                placeholder="https://www.google.com/maps/embed?..."
+                className="h-9 text-xs font-mono"
+              />
+              <p className="text-[11px] text-muted-foreground">
+                Salin link &lsquo;src&rsquo; dari embed peta Google Maps untuk menampilkan peta lokasi interaktif.
+              </p>
+            </div>
+
             <div className="sm:col-span-2 pt-4 border-t border-border space-y-4">
               <h3 className="text-xs font-semibold text-foreground">Jam Operasional &amp; Footer Brand</h3>
 
@@ -1107,7 +1475,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="space-y-1.5">
               <Label className="text-xs font-medium">Instagram URL</Label>
               <Input
@@ -1132,6 +1500,16 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 type="text"
                 value={formData.sosmed_tiktok}
                 onChange={(e) => handleChange('sosmed_tiktok', e.target.value)}
+                className="h-9 text-xs"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium">YouTube Channel URL</Label>
+              <Input
+                type="text"
+                value={formData.sosmed_youtube || ''}
+                onChange={(e) => handleChange('sosmed_youtube', e.target.value)}
+                placeholder="https://youtube.com/@doamandeh"
                 className="h-9 text-xs"
               />
             </div>

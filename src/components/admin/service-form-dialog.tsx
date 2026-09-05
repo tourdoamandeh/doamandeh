@@ -353,7 +353,7 @@ export function ServiceFormDialog({
               {isEditing ? 'Edit Layanan' : 'Tambah Layanan Baru'}
             </DrawerTitle>
             <DrawerDescription className="text-xs text-muted-foreground mt-0.5">
-              Isi informasi katalog layanan operasional Doamandeh.
+              Isi informasi katalog layanan operasional Do&apos;amandeh.
             </DrawerDescription>
           </div>
           <button

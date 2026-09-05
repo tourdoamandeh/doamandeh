@@ -177,7 +177,7 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
     const cleanPhone = rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : rawPhone;
     const serviceName = booking.service?.title || 'Layanan Wisata';
     const text = encodeURIComponent(
-      `Halo ${booking.customer_name}, kami dari Doamandeh Tours & Travel ingin mengonfirmasi pesanan Anda untuk ${serviceName} pada tanggal ${booking.booking_date}. Mohon konfirmasi ketersediaan Anda. Terima kasih!`
+      `Halo ${booking.customer_name}, kami dari Do'amandeh Tours & Travel ingin mengonfirmasi pesanan Anda untuk ${serviceName} pada tanggal ${booking.booking_date}. Mohon konfirmasi ketersediaan Anda. Terima kasih!`
     );
     return `https://wa.me/${cleanPhone}?text=${text}`;
   }

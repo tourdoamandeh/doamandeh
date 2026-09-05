@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight, Menu, X, Phone } from 'lucide-react';
 import { ServiceCategory } from '@/types/database';
 
@@ -21,13 +22,13 @@ const services: ServiceSlide[] = [
   {
     id: 1,
     category: 'travel',
-    label: 'Travel',
-    tag: 'Paket Travel',
+    label: 'Tour',
+    tag: 'Paket Tour',
     title: 'Paket Tour Wisata Bali',
     quote: 'Biar kami yang merencanakan,\nkamu cukup menikmati\n— momennya.',
     description:
       'Temukan Bali yang sebenarnya. Dari pesona pura sakral hingga pantai tersembunyi, paket perjalanan kami dirancang agar kamu bisa bersantai penuh tanpa pusing memikirkan rute atau tiket.',
-    carouselImage: '/assets/service-travel.svg',
+    carouselImage: '/assets/service-travel.jpg',
   },
   {
     id: 2,
@@ -37,30 +38,30 @@ const services: ServiceSlide[] = [
     title: 'Villa & Private Pool Stay',
     quote: 'Ruang tenang untuk\nkembali berpulang\n— di tengah surga tropis.',
     description:
-      'Setelah seharian menjelajah, rebahkan diri di villa eksklusif pilihan Doamandeh. Nikmati privasi penuh, kolam renang pribadi, dan suasana tenang yang membuatmu merasa seperti di rumah sendiri.',
-    carouselImage: '/assets/service-villa.svg',
+      "Setelah seharian menjelajah, rebahkan diri di villa eksklusif pilihan Do'amandeh. Nikmati privasi penuh, kolam renang pribadi, dan suasana tenang yang membuatmu merasa seperti di rumah sendiri.",
+    carouselImage: '/assets/service-villa.jpg',
   },
   {
     id: 3,
     category: 'surfing-lesson',
-    label: 'Surfing Lesson',
+    label: 'Surfing',
     tag: 'Surfing Lesson',
     title: 'Surfing Lesson Bali',
     quote: 'Taklukkan ombak,\nbebaskan jiwa\n— di pantai Bali.',
     description:
       'Belum pernah menyentuh papan selancar? Tidak masalah. Instruktur ramah kami siap membantumu berdiri dan menunggangi ombak pertamamu dengan aman, seru, dan penuh tawa.',
-    carouselImage: '/assets/service-surfing.svg',
+    carouselImage: '/assets/service-surfing.png',
   },
   {
     id: 4,
     category: 'vehicle-rental',
-    label: 'Sewa Kendaraan',
+    label: 'Rental',
     tag: 'Sewa Kendaraan',
     title: 'Sewa Kendaraan Motor & Mobil',
     quote: 'Jelajahi setiap sudutnya,\ntemukan ceritamu sendiri\n— di Bali.',
     description:
       'Tinggalkan jadwal yang kaku. Dengan pilihan motor matic dan mobil pribadi kami yang terawat rapi, kamu bebas menentukan sendiri ke mana angin Bali akan membawamu hari ini.',
-    carouselImage: '/assets/service-vehicle.svg',
+    carouselImage: '/assets/service-vehicle.jpg',
   },
   {
     id: 5,
@@ -71,11 +72,12 @@ const services: ServiceSlide[] = [
     quote: 'Bawa pulang kenangan\nyang tak akan pernah pudar\n— bersama seniman terbaik.',
     description:
       'Ceritakan perjalananmu lewat seni tubuh custom di studio higienis kami. Dikerjakan oleh seniman lokal Bali dengan standar kebersihan internasional yang ketat.',
-    carouselImage: '/assets/service-tattoo.svg',
+    carouselImage: '/assets/service-tattoo.jpg',
   },
 ];
 
-const LEFT_BACKGROUND_IMAGE = '/assets/hero-bali.svg';
+const LEFT_BACKGROUND_IMAGE = '/assets/hero-bali.jpg';
+const SLIDE_DURATION = 5000; // 5 detik per slide auto-advance
 
 import { SiteSettingsInput } from '@/lib/validations/admin';
 
@@ -97,19 +99,40 @@ export function HeroSection({
   const [isPaused, setIsPaused] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
-  const nextSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev === services.length - 1 ? 0 : prev + 1));
+  const dynamicServices = React.useMemo(() => {
+    return services.map((s) => {
+      let customImg = s.carouselImage;
+      if (s.category === 'travel' && settings?.hero_slide_travel_img) customImg = settings.hero_slide_travel_img;
+      if (s.category === 'villa' && settings?.hero_slide_villa_img) customImg = settings.hero_slide_villa_img;
+      if (s.category === 'surfing-lesson' && settings?.hero_slide_surfing_img) customImg = settings.hero_slide_surfing_img;
+      if (s.category === 'vehicle-rental' && settings?.hero_slide_vehicle_img) customImg = settings.hero_slide_vehicle_img;
+      if (s.category === 'tattoo' && settings?.hero_slide_tattoo_img) customImg = settings.hero_slide_tattoo_img;
+
+      return {
+        ...s,
+        carouselImage: customImg,
+      };
+    });
+  }, [settings]);
+
+  const goToSlide = useCallback((index: number) => {
+    setCurrentIndex(index);
   }, []);
+
+  const nextSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev === dynamicServices.length - 1 ? 0 : prev + 1));
+  }, [dynamicServices.length]);
 
   const prevSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev === 0 ? services.length - 1 : prev - 1));
-  }, []);
+    setCurrentIndex((prev) => (prev === 0 ? dynamicServices.length - 1 : prev - 1));
+  }, [dynamicServices.length]);
 
+  // Auto-advance timer (ganti slide otomatis tiap 5 detik di latar belakang)
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
       nextSlide();
-    }, 10000);
+    }, SLIDE_DURATION);
     return () => clearInterval(interval);
   }, [isPaused, nextSlide]);
 
@@ -121,6 +144,36 @@ export function HeroSection({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [nextSlide, prevSlide]);
+
+  // Smooth auto-scroll saat mendarat dengan hash pada URL
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const targetId = window.location.hash.replace('#', '');
+      const element = document.getElementById(targetId);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 200);
+      }
+    }
+  }, []);
+
+  // Smooth scroll handler untuk menu navigasi internal
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    setMenuOpen(false);
+    document.body.style.overflow = '';
+    if (href.startsWith('/#') || href.startsWith('#')) {
+      const targetId = href.replace(/^\/?#/, '');
+      const element = document.getElementById(targetId);
+      if (element) {
+        e.preventDefault();
+        setTimeout(() => {
+          const y = element.getBoundingClientRect().top + window.scrollY - 30;
+          window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        }, 50);
+      }
+    }
+  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsPaused(true);
@@ -144,21 +197,6 @@ export function HeroSection({
       ? settings.hero_image_url
       : LEFT_BACKGROUND_IMAGE;
 
-  const dynamicServices = React.useMemo(() => {
-    return services.map((s) => {
-      let customImg = s.carouselImage;
-      if (s.category === 'travel' && settings?.hero_slide_travel_img) customImg = settings.hero_slide_travel_img;
-      if (s.category === 'villa' && settings?.hero_slide_villa_img) customImg = settings.hero_slide_villa_img;
-      if (s.category === 'surfing-lesson' && settings?.hero_slide_surfing_img) customImg = settings.hero_slide_surfing_img;
-      if (s.category === 'vehicle-rental' && settings?.hero_slide_vehicle_img) customImg = settings.hero_slide_vehicle_img;
-      if (s.category === 'tattoo' && settings?.hero_slide_tattoo_img) customImg = settings.hero_slide_tattoo_img;
-
-      return {
-        ...s,
-        carouselImage: customImg,
-      };
-    });
-  }, [settings]);
 
   const currentService = dynamicServices[currentIndex] || services[0];
 
@@ -180,7 +218,7 @@ export function HeroSection({
 
   const cleanWa = whatsappNumber.replace(/[^0-9]/g, '');
   const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(
-    'Halo Doamandeh, saya butuh teman ngobrol untuk merencanakan liburan.'
+    "Halo Do'amandeh, saya butuh teman ngobrol untuk merencanakan liburan."
   )}`;
 
   return (
@@ -213,168 +251,209 @@ export function HeroSection({
       {/* Kolom Kanan / Kontainer Mobile Utama */}
       <div className="relative w-full md:w-1/2 min-h-[100dvh] md:min-h-0 md:h-full flex flex-col justify-between bg-brown p-5 sm:p-7 md:p-8 lg:p-10 xl:p-12 overflow-hidden">
 
-        {/* Dropdown Mobile */}
-        {menuOpen && (
-          <div className="absolute top-16 right-5 z-30 bg-softwhite border-2 border-softyellow rounded-none shadow-none p-5 w-60 space-y-3 animate-fadeIn">
-            <p className="text-[10px] uppercase tracking-widest text-brown font-bold mb-2">
-              Menu Navigasi
-            </p>
-            <Link href="/" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-black hover:text-brown transition-colors">Beranda</Link>
-            <Link href="#services" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-black hover:text-brown transition-colors">Layanan</Link>
-            <Link href="#about" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-black hover:text-brown transition-colors">Tentang Kami</Link>
-            <Link href="#contact" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-black hover:text-brown transition-colors">Hubungi Kami</Link>
-            <a href={waUrl} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brown pt-2 border-t border-brown/20">
-              <Phone className="w-3.5 h-3.5" />
-              <span>WhatsApp Admin</span>
-            </a>
-          </div>
-        )}
+        {/* Animated Editorial Hamburger Drawer */}
+        <AnimatePresence>
+          {menuOpen && (
+            <>
+              {/* Backdrop Overlay */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setMenuOpen(false)}
+                className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
+              />
 
-        {/* 1. Bagian Atas: Title & Navigasi */}
+              {/* Drawer Content — Murni Daftar Navigasi */}
+              <motion.div
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+                className="fixed top-0 right-0 h-full w-full sm:w-[360px] bg-ink border-l border-line z-50 p-6 sm:p-8 flex flex-col justify-start rounded-none shadow-none text-paper overflow-y-auto"
+              >
+                {/* Top Header Bar */}
+                <div className="flex items-center justify-between pb-5 border-b border-line/30 mb-2 shrink-0">
+                  <span className="font-medium uppercase tracking-[0.2em] text-xs sm:text-sm text-paper">
+                    {settings?.brand_name || "Do'amandeh"}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => setMenuOpen(false)}
+                    aria-label="Tutup Menu"
+                    className="p-1 border border-line/60 text-paper hover:bg-sun hover:text-ink transition-colors rounded-none cursor-pointer flex items-center justify-center"
+                  >
+                    <X className="size-3.5" strokeWidth={1.5} />
+                  </button>
+                </div>
+
+                {/* Nav Links Murni (Hanya List) */}
+                <nav className="flex flex-col">
+                  {[
+                    { href: '/', label: 'Beranda' },
+                    { href: '/#about', label: 'Tentang Kami' },
+                    { href: '/services', label: 'Katalog Layanan' },
+                    { href: '/#testimonials', label: 'Ulasan & Testimoni' },
+                    { href: '/#faq', label: 'Tanya Jawab (FAQ)' },
+                    { href: '/contact', label: 'Hubungi Kami' },
+                  ].map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item.href)}
+                      className="py-4 border-b border-line/20 hover:border-sun flex items-center justify-between text-sm sm:text-base font-medium tracking-wide text-paper/90 hover:text-sun hover:translate-x-1 transition-all"
+                    >
+                      <span>{item.label}</span>
+                      <ArrowUpRight className="size-3.5 opacity-40 hover:opacity-100 transition-opacity" strokeWidth={1.5} />
+                    </Link>
+                  ))}
+                </nav>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* 1. Bagian Atas: Tagline, Title, Subtitle & Hamburger Button */}
         <div className="shrink-0 pt-1 md:pt-0">
-          <div className="flex items-start justify-between gap-3">
-            <h1 className="text-4xl sm:text-5xl md:text-3xl lg:text-4xl xl:text-5xl font-medium tracking-tight text-softyellow leading-[1.05] md:leading-[1.08] whitespace-pre-line">
-              {heroTitle || 'Doamandeh, \n— Rencanakan \nPerjalanan'}
-            </h1>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-semibold text-softyellow/70 mb-2">
+                {settings?.hero_tagline || "// DO'AMANDEH TOURS & TRAVEL BALI"}
+              </p>
+              <h1 className="text-3xl sm:text-4xl md:text-3xl lg:text-4xl xl:text-[2.75rem] font-medium tracking-tight text-softyellow leading-[1.05] md:leading-[1.08] whitespace-pre-line">
+                {heroTitle || "Do'amandeh, \n— Rencanakan \nPerjalanan"}
+              </h1>
+              <p className="text-xs sm:text-sm text-softyellow/80 font-light leading-relaxed max-w-md mt-2.5 sm:mt-3">
+                {heroSubtitle || 'Layanan wisata, rental kendaraan matic, villa privat, tato higienis & surfing terlengkap untuk liburan berkesan di Pulau Dewata.'}
+              </p>
+            </div>
+
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Buka Menu"
-              className="p-1 text-softyellow hover:bg-white/10 transition-colors shrink-0 rounded-none cursor-pointer"
+              className="p-2 border border-line text-softyellow hover:bg-sun hover:text-ink transition-colors shrink-0 rounded-none cursor-pointer mt-1"
             >
-              {menuOpen ? <X className="w-7 h-7 stroke-[1.5]" /> : <Menu className="w-7 h-7 stroke-[1.5]" />}
+              <Menu className="w-6 h-6" strokeWidth={1.5} />
             </button>
           </div>
-
-          <nav aria-label="Navigasi Halaman" className="flex flex-wrap items-center gap-4 sm:gap-6 md:gap-7 mt-6 sm:mt-8 md:mt-3 lg:mt-4">
-            <Link href="/" className="text-sm md:text-sm text-softyellow/60 hover:text-softyellow transition-colors font-medium cursor-pointer">Beranda</Link>
-            <Link href="#about" className="text-sm md:text-sm text-softyellow/60 hover:text-softyellow transition-colors font-medium cursor-pointer">Tentang Kami</Link>
-            <Link href="#services" className="text-sm md:text-sm text-softyellow/60 hover:text-softyellow transition-colors font-medium cursor-pointer">Layanan</Link>
-            <Link href="#contact" className="text-sm md:text-sm text-softyellow/60 hover:text-softyellow transition-colors font-medium cursor-pointer">Hubungi Kami</Link>
-          </nav>
         </div>
 
-        {/* 2. Bagian Tengah: Foto Carousel */}
-        <div className="flex-1 min-h-0 flex flex-col items-center justify-center my-6 sm:my-8 md:my-2 lg:my-3">
-          <div className="flex items-center justify-center gap-0 md:gap-6 w-full h-full md:h-auto relative">
+        {/* 2. Bagian Tengah: Focus Slice Carousel (Responsive Mobile & Desktop - Siku Tajam Sesuai DESIGN.md) */}
+        <div
+          className="flex-1 min-h-[280px] sm:min-h-[340px] md:min-h-[360px] max-h-[460px] my-3 sm:my-4 md:my-3 lg:my-4 flex flex-col justify-center select-none"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="flex flex-row items-stretch gap-1.5 sm:gap-2 md:gap-2.5 w-full h-[280px] sm:h-[340px] md:h-[360px] lg:h-[400px]">
+            {dynamicServices.map((service, idx) => {
+              const isActive = currentIndex === idx;
 
-            {/* Panah Kiri Desktop */}
-            <button
-              type="button"
-              onClick={prevSlide}
-              className="hidden md:flex p-2 text-softyellow/40 hover:text-softyellow transition-all hover:scale-125 cursor-pointer shrink-0 select-none items-center justify-center"
-            >
-              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><polygon points="18,3 6,12 18,21" /></svg>
-            </button>
-
-            {/* Container Foto */}
-            <div
-              className="relative w-full md:w-auto h-full max-h-[50vh] md:h-[24vh] lg:h-[28vh] xl:h-[30vh] md:max-h-[230px] lg:max-h-[260px] xl:max-h-[280px] aspect-square md:aspect-[3/4] bg-transparent overflow-hidden shadow-md rounded-none shrink-0 select-none cursor-grab active:cursor-grabbing border-2 border-softyellow"
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
-              <div
-                className="flex h-full w-full transition-transform duration-700 ease-in-out will-change-transform"
-                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-              >
-                {services.map((service) => (
-                  <div key={service.id} className="relative w-full h-full shrink-0 rounded-none overflow-hidden">
-                    <Image
-                      src={service.carouselImage}
-                      alt={service.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 300px"
-                      priority={service.id === 1}
-                      className="object-cover w-full h-full rounded-none"
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {/* Panah Kiri Mobile */}
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); prevSlide(); }}
-                className="md:hidden absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2 text-softyellow/80 hover:text-softyellow transition-all active:scale-90 cursor-pointer drop-shadow-md"
-              >
-                <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
-                  <polygon points="16,3 4,12 16,21" />
-                </svg>
-              </button>
-
-              {/* Panah Kanan Mobile */}
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); nextSlide(); }}
-                className="md:hidden absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 text-softyellow/80 hover:text-softyellow transition-all active:scale-90 cursor-pointer drop-shadow-md"
-              >
-                <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
-                  <polygon points="8,3 20,12 8,21" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Panah Kanan Desktop */}
-            <button
-              type="button"
-              onClick={nextSlide}
-              className="hidden md:flex p-2 text-softyellow/40 hover:text-softyellow transition-all hover:scale-125 cursor-pointer shrink-0 select-none items-center justify-center"
-            >
-              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><polygon points="6,3 18,12 6,21" /></svg>
-            </button>
-          </div>
-
-          {/* Indikator Dots / Baris Slide di Bawah Foto */}
-          <div className="flex items-center justify-center gap-2 mt-3 mb-1">
-            {services.map((service, idx) => (
-              <button
-                key={service.id}
-                type="button"
-                onClick={() => setCurrentIndex(idx)}
-                aria-label={`Slide ke layanan ${service.label}`}
-                className={`h-1.5 rounded-none transition-all duration-300 cursor-pointer ${currentIndex === idx
-                  ? 'w-7 bg-softyellow'
-                  : 'w-2 bg-softyellow/30 hover:bg-softyellow/60'
+              return (
+                <div
+                  key={service.id}
+                  onClick={() => goToSlide(idx)}
+                  onMouseEnter={() => goToSlide(idx)}
+                  className={`relative overflow-hidden cursor-pointer rounded-none border transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                    isActive
+                      ? 'flex-[4.5] sm:flex-[4] lg:flex-[4.5] border-line'
+                      : 'flex-1 min-w-[20px] xs:min-w-[24px] sm:min-w-[32px] md:min-w-[42px] border-line/30 hover:border-sun/60'
                   }`}
-              />
-            ))}
+                >
+                  {/* Background Image */}
+                  <Image
+                    src={service.carouselImage}
+                    alt={service.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 550px"
+                    priority={idx === 0}
+                    className={`object-cover rounded-none transition-transform duration-700 ease-out ${
+                      isActive ? 'scale-105' : 'scale-100'
+                    }`}
+                  />
+
+                  {/* Gradient Shading */}
+                  <div
+                    className={`absolute inset-0 transition-opacity duration-500 pointer-events-none ${
+                      isActive
+                        ? 'bg-gradient-to-t from-black/90 via-black/35 to-black/20 opacity-100'
+                        : 'bg-black/60 hover:bg-black/35 opacity-100'
+                    }`}
+                  />
+
+                  {/* Konten Slice Aktif */}
+                  {isActive ? (
+                    <div className="absolute inset-0 p-3 sm:p-4 md:p-5 flex flex-col justify-between z-10">
+                      {/* Top Badge Overlay */}
+                      <div className="flex items-center justify-between">
+                        <span className="px-2 py-0.5 text-[9px] sm:text-[10px] font-mono uppercase tracking-widest bg-ink/80 text-sun border border-line/30 rounded-none shadow-none">
+                          [0{service.id}/0{dynamicServices.length}] // {service.tag.toUpperCase()}
+                        </span>
+                      </div>
+
+                      {/* Bottom Title & Action Button */}
+                      <div className="flex items-end justify-between gap-2 sm:gap-3 pt-3 sm:pt-4">
+                        <div className="min-w-0 pr-1 sm:pr-2">
+                          <h3 className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl font-semibold tracking-tight text-softyellow leading-tight line-clamp-1 sm:line-clamp-2">
+                            {service.title}
+                          </h3>
+                          <p className="text-[10px] sm:text-xs text-softyellow/80 font-light line-clamp-1 sm:line-clamp-2 mt-0.5 sm:mt-1 max-w-sm">
+                            {service.description}
+                          </p>
+                        </div>
+
+                        <Link
+                          href={`/services?category=${service.category}`}
+                          aria-label={`Jelajahi ${service.label}`}
+                          className="size-8 sm:size-9 md:size-10 bg-sun text-ink hover:bg-paper hover:text-ink transition-colors rounded-none flex items-center justify-center shrink-0 border border-line/50 cursor-pointer shadow-none"
+                        >
+                          <ArrowUpRight className="size-4" strokeWidth={1.5} />
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Konten Slice Tidak Aktif (Strip Vertikal Bersih) */
+                    <div className="absolute inset-0 flex flex-col items-center justify-between py-3 sm:py-4 z-10 pointer-events-none">
+                      <span className="text-[8px] xs:text-[9px] font-mono text-softyellow/50 tracking-wider">
+                        0{service.id}
+                      </span>
+                      <span className="text-[9px] sm:text-[11px] font-mono uppercase tracking-[0.12em] sm:tracking-[0.2em] text-softyellow/75 [writing-mode:vertical-rl] rotate-180">
+                        {service.label}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* 3. Bagian Bawah: Penjelasan */}
-        <div className="shrink-0 space-y-3 md:space-y-2 max-w-lg mx-auto md:mx-0 w-full text-left pb-4 md:pb-0">
-          <div className="flex items-center justify-start">
-            <span className="text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-softyellow/60 font-medium">
-              LAYANAN 0{currentService.id} / 0{services.length} — {currentService.title.toUpperCase()}
-            </span>
-          </div>
-
-          <p className="text-sm md:text-base text-softyellow/85 leading-relaxed font-normal line-clamp-3 md:line-clamp-2 lg:line-clamp-3 transition-all duration-300 text-justify md:text-left">
-            {currentDescription}
-          </p>
-
-          <div className="pt-1 flex items-center justify-start gap-4 md:gap-5 text-xs md:text-sm font-medium">
-            <Link
-              href={`/category/${currentService.category}`}
-              className="inline-flex items-center gap-1.5 text-softyellow hover:opacity-75 transition-opacity"
-            >
-              <span>Jelajahi {currentService.label}</span>
-              <ArrowUpRight className="w-4 h-4" strokeWidth={2} />
-            </Link>
-
-            <span className="text-softyellow/30">•</span>
-
+        {/* 3. Bagian Bawah: Bar Minimalis Tanpa Duplikasi Teks & Tanpa Indikator (Leluasa & Bersih) */}
+        <div className="shrink-0 pt-2 pb-1 md:pb-0 flex items-center justify-between gap-3 border-t border-line/20">
+          <div className="flex items-center gap-3 sm:gap-4 text-xs font-mono tracking-wider">
             <a
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-softyellow/70 hover:text-softyellow transition-colors"
+              className="inline-flex items-center gap-1.5 sm:gap-2 text-softyellow/80 hover:text-softyellow transition-colors"
             >
-              <span>Konsultasi</span>
-              <Phone className="w-3.5 h-3.5" strokeWidth={2} />
+              <Phone className="size-3.5" strokeWidth={1.5} />
+              <span>Konsultasi WhatsApp</span>
             </a>
+
+            <span className="text-softyellow/30">•</span>
+
+            <Link
+              href="/services"
+              className="inline-flex items-center gap-1.5 text-softyellow/80 hover:text-softyellow transition-colors"
+            >
+              <span>Semua Layanan</span>
+              <ArrowUpRight className="size-3.5" strokeWidth={1.5} />
+            </Link>
           </div>
         </div>
       </div>

@@ -71,7 +71,7 @@ export async function createPublicBookingAction(
     // 2. Fetch service details
     const { data: service, error: serviceError } = await supabase
       .from('services')
-      .select('id, title, price, unit, is_active')
+      .select('id, title, category, price, unit, is_active')
       .eq('id', serviceId)
       .single();
 
@@ -90,12 +90,13 @@ export async function createPublicBookingAction(
     }
 
     // 3. Calculate duration and total price
+    const isNightUnit = service.category === 'villa' || /malam|night/i.test(service.unit || '');
     let durationDays = 1;
     if (endDate && endDate !== startDate) {
       const startMs = new Date(startDate).getTime();
       const endMs = new Date(endDate).getTime();
       const diff = Math.round((endMs - startMs) / (1000 * 60 * 60 * 24));
-      durationDays = Math.max(1, diff + 1);
+      durationDays = isNightUnit ? Math.max(1, diff) : Math.max(1, diff + 1);
     }
 
     const totalPrice = Number(service.price) * durationDays;
@@ -103,9 +104,10 @@ export async function createPublicBookingAction(
     // Compose notes with date range info if multi-day
     let formattedNotes = notes?.trim() || '';
     if (endDate && endDate !== startDate) {
-      const periodLabel = `[Periode: ${startDate} s/d ${endDate} (${durationDays} hari)]`;
+      const unitLabel = isNightUnit ? 'malam' : 'hari';
+      const periodLabel = `[Periode: ${startDate} s/d ${endDate} (${durationDays} ${unitLabel})]`;
       formattedNotes = formattedNotes
-        ? `${periodLabel} ${formattedNotes}`
+        ? `${periodLabel}\n${formattedNotes}`
         : periodLabel;
     }
 

@@ -76,7 +76,7 @@ export const SERVICE_FALLBACK_IMAGES: Record<ServiceCategory, string> = {
 
 /**
  * Daftar preset gambar brand resmi dari folder public/assets.
- * Memudahkan admin CMS memilih foto resmi Doamandeh tanpa perlu upload manual.
+ * Memudahkan admin CMS memilih foto resmi Do'amandeh tanpa perlu upload manual.
  */
 export const SERVICE_PRESET_IMAGES: Record<
   ServiceCategory,

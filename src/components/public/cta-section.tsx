@@ -39,9 +39,9 @@ const SERVICES_DATA: ServiceCard[] = [
     badgeText: 'Mulai Rp 500rb',
     rating: '4.9',
     description:
-      'Jelajahi keindahan destinasi terbaik Bali seharian penuh tanpa pusing rute. Pesan paket tour impianmu bersama Doamandeh sekarang!',
+      "Jelajahi keindahan destinasi terbaik Bali seharian penuh tanpa pusing rute. Pesan paket tour impianmu bersama Do'amandeh sekarang!",
     imageUrl: '/assets/service-travel.jpg',
-    waText: 'Halo Doamandeh, saya ingin pesan Paket Tour & Travel di Bali.',
+    waText: "Halo Do'amandeh, saya ingin pesan Paket Tour & Travel di Bali.",
   },
   {
     id: 'sewa-kendaraan',
@@ -52,7 +52,7 @@ const SERVICES_DATA: ServiceCard[] = [
     description:
       'Nikmati kebebasan keliling Pulau Bali dengan armada kendaraan matic bersih, terawat, dan gratis antar-jemput. Sewa kendaraanmu hari ini!',
     imageUrl: '/assets/service-vehicle.jpg',
-    waText: 'Halo Doamandeh, saya ingin sewa kendaraan (motor/mobil) di Bali.',
+    waText: "Halo Do'amandeh, saya ingin sewa kendaraan (motor/mobil) di Bali.",
   },
   {
     id: 'villa-stay',
@@ -63,7 +63,7 @@ const SERVICES_DATA: ServiceCard[] = [
     description:
       'Bersantai penuh di villa eksklusif private pool berfasilitas lengkap & housekeeping harian. Booking tempat menginap terbaikmu sekarang!',
     imageUrl: '/assets/service-villa.jpg',
-    waText: 'Halo Doamandeh, saya ingin booking Villa Private Pool di Bali.',
+    waText: "Halo Do'amandeh, saya ingin booking Villa Private Pool di Bali.",
   },
   {
     id: 'tattoo-studio',
@@ -74,7 +74,7 @@ const SERVICES_DATA: ServiceCard[] = [
     description:
       'Abadikan kenangan liburan di Bali dengan tato custom dari artist profesional. Jarum sekali pakai & standar medis higienis. Konsultasikan tatomu!',
     imageUrl: '/assets/service-tattoo.jpg',
-    waText: 'Halo Doamandeh, saya ingin konsultasi & booking di Tattoo Studio.',
+    waText: "Halo Do'amandeh, saya ingin konsultasi & booking di Tattoo Studio.",
   },
   {
     id: 'surfing-lesson',
@@ -85,14 +85,14 @@ const SERVICES_DATA: ServiceCard[] = [
     description:
       'Taklukkan ombak pertamamu dengan aman & fun bareng instruktur lokal berpengalaman 1-on-1. Daftarkan dirimu untuk kelas surfing sekarang!',
     imageUrl: '/assets/service-surfing.png',
-    waText: 'Halo Doamandeh, saya tertarik ikut Surfing Lesson di Bali.',
+    waText: "Halo Do'amandeh, saya tertarik ikut Surfing Lesson di Bali.",
   },
 ];
 
 export function CtaSection({
-  ctaTagline = '// LAYANAN UNGGULAN DOAMANDEH',
+  ctaTagline = "// LAYANAN UNGGULAN DO'AMANDEH",
   ctaTitle = 'Solusi lengkap \nliburanmu di Bali.',
-  ctaSubtitle = 'Pilih layanan favoritmu dari Doamandeh untuk pengalaman wisata, akomodasi, serta lifestyle terbaik di Pulau Dewata.',
+  ctaSubtitle = "Pilih layanan favoritmu dari Do'amandeh untuk pengalaman wisata, akomodasi, serta lifestyle terbaik di Pulau Dewata.",
   ctaButtonText = 'Pesan Layanan Sekarang',
   whatsappNumber = '+62 812-3456-7890',
   cardImages,
@@ -127,7 +127,7 @@ export function CtaSection({
 
   const cleanWa = whatsappNumber.replace(/[^0-9]/g, '');
   const mainWaUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(
-    'Halo Doamandeh Tours & Travel, saya ingin berkonsultasi mengenai layanan wisata & liburan di Bali.'
+    "Halo Do'amandeh Tours & Travel, saya ingin berkonsultasi mengenai layanan wisata & liburan di Bali."
   )}`;
 
   const nextSlide = () => {
@@ -196,10 +196,10 @@ export function CtaSection({
                 href={mainWaUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 bg-brown text-softyellow px-6 py-3.5 text-xs md:text-sm font-medium tracking-wider uppercase hover:bg-black rounded-none border-2 border-brown hover:border-black transition-colors cursor-pointer shadow-none"
+                className="inline-flex items-center gap-3 bg-brown text-softyellow px-6 py-3.5 text-xs md:text-sm font-medium tracking-wider uppercase hover:bg-black rounded-none border border-brown hover:border-black transition-colors cursor-pointer shadow-none"
               >
                 <span>{ctaButtonText}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
               </a>
             </div>
           </FadeIn>
@@ -207,7 +207,7 @@ export function CtaSection({
           {/* Kolom Kanan: Tumpukan Kartu Foto (Sudut Tajam 0px DESIGN.md) */}
           <FadeIn direction="up" delay={0.15} className="md:col-span-6 lg:col-span-7 flex flex-col items-center justify-center py-4">
 
-            {/* Tumpukan Kartu Sharp 90° Border-2 */}
+            {/* Tumpukan Kartu Sharp 90° Border-1 */}
             <div className="relative w-full max-w-[300px] sm:max-w-[330px] md:max-w-[350px] h-[440px] sm:h-[470px] mx-auto select-none touch-none flex items-center justify-center">
               {services.map((service, index) => {
                 const len = services.length;
@@ -263,7 +263,7 @@ export function CtaSection({
                       opacity: opacity,
                       transition: isDragging && isCurrent ? 'none' : 'all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1)',
                     }}
-                    className={`absolute inset-0 w-full h-full rounded-none overflow-hidden border-2 border-softyellow shadow-none flex flex-col justify-between p-6 bg-brown ${
+                    className={`absolute inset-0 w-full h-full rounded-none overflow-hidden border border-line shadow-none flex flex-col justify-between p-6 bg-brown ${
                       isCurrent ? 'cursor-grab active:cursor-grabbing' : 'pointer-events-none'
                     }`}
                   >
@@ -282,7 +282,7 @@ export function CtaSection({
 
                     {/* Card Top: Category Badge & Title Overlay */}
                     <div className="relative z-10 flex flex-col items-center gap-2 text-center pt-2">
-                      <span className="px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-brown/80 text-softyellow border-2 border-softyellow rounded-none">
+                      <span className="px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-brown/80 text-softyellow border border-line rounded-none">
                         {service.category}
                       </span>
                       <h3 className="text-2xl sm:text-3xl font-medium text-softyellow tracking-tight leading-tight mt-1">

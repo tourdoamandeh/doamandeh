@@ -35,7 +35,7 @@ export function AdminHeader() {
           <BreadcrumbList className="text-xs">
             <BreadcrumbItem className="hidden sm:inline-flex">
               <BreadcrumbLink href="/admin" className="text-muted-foreground hover:text-foreground">
-                Doamandeh Admin
+                Do&apos;amandeh Admin
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="hidden sm:inline-flex" />

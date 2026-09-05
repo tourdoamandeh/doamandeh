@@ -1,6 +1,10 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Phone, Mail, MapPin, Heart, ArrowUpRight } from 'lucide-react';
 import { SiteSettingsInput, DEFAULT_SITE_SETTINGS } from '@/lib/validations/admin';
+import { BackToTop } from './back-to-top';
 
 const CATEGORIES = [
   { slug: 'vehicle-rental', label: 'Sewa Kendaraan', num: '01' },
@@ -32,37 +36,66 @@ function FacebookIcon({ className = 'h-4 w-4' }: { className?: string }) {
   );
 }
 
+function TikTokIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.85.12V9.41a6.33 6.33 0 0 0-.85-.06 6.33 6.33 0 0 0-6.34 6.34 6.33 6.33 0 0 0 6.34 6.34 6.33 6.33 0 0 0 6.33-6.34V8.75a8.28 8.28 0 0 0 4.84 1.55V6.85a4.85 4.85 0 0 1-1.06-.16z" />
+    </svg>
+  );
+}
+
+function YoutubeIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
+
 export function PublicFooter({ settings }: PublicFooterProps) {
+  const pathname = usePathname();
   const currentSettings = { ...DEFAULT_SITE_SETTINGS, ...settings };
   const cleanWaNumber = (currentSettings.contact_whatsapp || '+62 812-3456-7890').replace(/[^0-9]/g, '');
   const waUrl = `https://wa.me/${cleanWaNumber}?text=${encodeURIComponent(
-    'Halo Doamandeh, saya ingin konsultasi layanan wisata.'
+    "Halo Do'amandeh, saya ingin konsultasi layanan wisata."
   )}`;
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    document.body.style.overflow = '';
+    if (href.startsWith('/#') || href.startsWith('#')) {
+      const targetId = href.replace(/^\/?#/, '');
+      if (pathname === '/') {
+        e.preventDefault();
+        const element = document.getElementById(targetId);
+        if (element) {
+          const y = element.getBoundingClientRect().top + window.scrollY - 30;
+          window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        }
+      } else {
+        sessionStorage.setItem('scroll_target', targetId);
+      }
+    }
+  };
+
   return (
-    <footer className="bg-brown text-softyellow font-sans">
+    <footer className="bg-ink text-paper font-sans border-t border-line">
       <div className="max-w-[1400px] mx-auto">
 
-        {/* Main Footer Grid without Grid Line Dividers */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 p-8 sm:p-12 lg:p-16 border-b border-white/15">
+        {/* Main Footer Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 p-8 sm:p-12 lg:p-16 border-b border-line/20">
 
           {/* 1. Brand & Description */}
           <div className="flex flex-col justify-between h-full">
             <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-14 w-14 bg-softyellow text-brown flex items-center justify-center text-3xl font-light tracking-tighter">
-                  D.
-                </div>
-                <div>
-                  <span className="text-xl uppercase tracking-widest font-bold block leading-none text-softyellow">
-                    Doamandeh
-                  </span>
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-softyellow/60 block mt-1.5">
-                    Tours &amp; Travel Bali
-                  </span>
-                </div>
+              <div className="mb-6">
+                <span className="text-2xl uppercase tracking-widest font-bold block leading-none text-paper">
+                  {currentSettings.brand_name || "Do'amandeh"}
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.25em] text-paper/60 block mt-2">
+                  {currentSettings.brand_tagline || 'Tours & Travel Bali'}
+                </span>
               </div>
-              <p className="text-sm leading-relaxed text-softyellow/80 font-light pr-4">
+              <p className="text-sm leading-relaxed text-paper/80 font-light pr-4">
                 {currentSettings.footer_brand_desc || 'Partner liburan dan lifestyle eksklusif di Bali. Menyediakan sewa motor, mobil, studio tato higienis, villa estetik, paket tour seru, dan kelas selancar.'}
               </p>
             </div>
@@ -74,10 +107,10 @@ export function PublicFooter({ settings }: PublicFooterProps) {
                   href={currentSettings.sosmed_instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-11 w-11 border border-softyellow/30 text-softyellow flex items-center justify-center hover:bg-softyellow hover:text-brown transition-colors rounded-none"
-                  aria-label="Instagram Doamandeh"
+                  className="size-10 border border-line/40 text-paper flex items-center justify-center hover:bg-sun hover:text-ink transition-colors rounded-none"
+                  aria-label="Instagram Do'amandeh"
                 >
-                  <InstagramIcon className="h-5 w-5" />
+                  <InstagramIcon className="size-4" />
                 </a>
               )}
               {currentSettings.sosmed_facebook && (
@@ -85,10 +118,10 @@ export function PublicFooter({ settings }: PublicFooterProps) {
                   href={currentSettings.sosmed_facebook}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-11 w-11 border border-softyellow/30 text-softyellow flex items-center justify-center hover:bg-softyellow hover:text-brown transition-colors rounded-none"
-                  aria-label="Facebook Doamandeh"
+                  className="size-10 border border-line/40 text-paper flex items-center justify-center hover:bg-sun hover:text-ink transition-colors rounded-none"
+                  aria-label="Facebook Do'amandeh"
                 >
-                  <FacebookIcon className="h-5 w-5" />
+                  <FacebookIcon className="size-4" />
                 </a>
               )}
               {currentSettings.sosmed_tiktok && (
@@ -96,10 +129,21 @@ export function PublicFooter({ settings }: PublicFooterProps) {
                   href={currentSettings.sosmed_tiktok}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-11 w-11 border border-softyellow/30 text-softyellow flex items-center justify-center hover:bg-softyellow hover:text-brown transition-colors rounded-none text-xs font-bold"
-                  aria-label="TikTok Doamandeh"
+                  className="size-10 border border-line/40 text-paper flex items-center justify-center hover:bg-sun hover:text-ink transition-colors rounded-none"
+                  aria-label="TikTok Do'amandeh"
                 >
-                  TT
+                  <TikTokIcon className="size-4" />
+                </a>
+              )}
+              {currentSettings.sosmed_youtube && (
+                <a
+                  href={currentSettings.sosmed_youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="size-10 border border-line/40 text-paper flex items-center justify-center hover:bg-sun hover:text-ink transition-colors rounded-none"
+                  aria-label="YouTube Do'amandeh"
+                >
+                  <YoutubeIcon className="size-4" />
                 </a>
               )}
             </div>
@@ -107,31 +151,32 @@ export function PublicFooter({ settings }: PublicFooterProps) {
 
           {/* 2. Navigation & Services */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest border-b border-softyellow/20 pb-4 mb-6 text-softyellow">
+            <h4 className="text-xs font-bold uppercase tracking-widest border-b border-line/20 pb-4 mb-6 text-paper">
               Layanan &amp; Halaman
             </h4>
             <ul className="space-y-4 text-sm font-light">
-              <li>
-                <Link href="/" className="flex items-center justify-between text-softyellow/80 hover:text-softyellow hover:underline underline-offset-4 decoration-[1.5px]">
-                  <span>Beranda</span>
-                  <ArrowUpRight className="h-3 w-3 opacity-50" />
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="flex items-center justify-between text-softyellow/80 hover:text-softyellow hover:underline underline-offset-4 decoration-[1.5px]">
-                  <span>Tentang Kami</span>
-                  <ArrowUpRight className="h-3 w-3 opacity-50" />
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="flex items-center justify-between text-softyellow/80 hover:text-softyellow hover:underline underline-offset-4 decoration-[1.5px]">
-                  <span>Hubungi Kami</span>
-                  <ArrowUpRight className="h-3 w-3 opacity-50" />
-                </Link>
-              </li>
+              {[
+                { href: '/', label: 'Beranda' },
+                { href: '/#about', label: 'Tentang Kami' },
+                { href: '/services', label: 'Katalog Layanan' },
+                { href: '/#testimonials', label: 'Ulasan & Testimoni' },
+                { href: '/#faq', label: 'Tanya Jawab (FAQ)' },
+                { href: '/contact', label: 'Hubungi Kami' },
+              ].map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={(e) => handleNavClick(e, item.href)}
+                    className="flex items-center justify-between text-paper/80 hover:text-sun hover:underline underline-offset-4 decoration-1"
+                  >
+                    <span>{item.label}</span>
+                    <ArrowUpRight className="size-3 opacity-50" strokeWidth={1.5} />
+                  </Link>
+                </li>
+              ))}
 
               <li className="pt-4 pb-1">
-                <span className="text-[10px] uppercase tracking-[0.2em] font-medium text-softyellow/50">
+                <span className="text-[10px] uppercase tracking-[0.2em] font-medium text-paper/50">
                   Kategori
                 </span>
               </li>
@@ -139,8 +184,8 @@ export function PublicFooter({ settings }: PublicFooterProps) {
               {CATEGORIES.map((cat) => (
                 <li key={cat.slug}>
                   <Link
-                    href={`/category/${cat.slug}`}
-                    className="flex items-center justify-between text-softyellow/80 hover:text-softyellow hover:underline underline-offset-4 decoration-[1.5px]"
+                    href={`/services?category=${cat.slug}`}
+                    className="flex items-center justify-between text-paper/80 hover:text-sun hover:underline underline-offset-4 decoration-1"
                   >
                     <span>{cat.label}</span>
                     <span className="text-[10px] uppercase tracking-widest opacity-50">{cat.num}</span>
@@ -152,31 +197,31 @@ export function PublicFooter({ settings }: PublicFooterProps) {
 
           {/* 3. Contact Information */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest border-b border-softyellow/20 pb-4 mb-6 text-softyellow">
+            <h4 className="text-xs font-bold uppercase tracking-widest border-b border-line/20 pb-4 mb-6 text-paper">
               Kontak &amp; Reservasi
             </h4>
             <ul className="space-y-5 text-sm font-light">
               <li className="flex items-start gap-4">
-                <MapPin className="h-4 w-4 shrink-0 mt-0.5 opacity-70 stroke-[1.5]" />
-                <span className="leading-relaxed text-softyellow/80">{currentSettings.contact_address}</span>
+                <MapPin className="size-4 shrink-0 mt-0.5 opacity-70" strokeWidth={1.5} />
+                <span className="leading-relaxed text-paper/80">{currentSettings.contact_address}</span>
               </li>
               <li className="flex items-center gap-4">
-                <Phone className="h-4 w-4 shrink-0 opacity-70 stroke-[1.5]" />
+                <Phone className="size-4 shrink-0 opacity-70" strokeWidth={1.5} />
                 <a
                   href={waUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-medium text-softyellow hover:underline underline-offset-4 decoration-[1.5px]"
+                  className="font-medium text-paper hover:text-sun hover:underline underline-offset-4 decoration-1"
                 >
                   {currentSettings.contact_whatsapp}
                 </a>
               </li>
               {currentSettings.contact_email && (
                 <li className="flex items-center gap-4">
-                  <Mail className="h-4 w-4 shrink-0 opacity-70 stroke-[1.5]" />
+                  <Mail className="size-4 shrink-0 opacity-70" strokeWidth={1.5} />
                   <a
                     href={`mailto:${currentSettings.contact_email}`}
-                    className="hover:underline underline-offset-4 decoration-[1.5px] text-softyellow/80"
+                    className="hover:underline underline-offset-4 decoration-1 text-paper/80 hover:text-sun"
                   >
                     {currentSettings.contact_email}
                   </a>
@@ -185,49 +230,40 @@ export function PublicFooter({ settings }: PublicFooterProps) {
             </ul>
           </div>
 
-          {/* 4. Business Hours & Admin */}
+          {/* 4. Business Hours */}
           <div className="flex flex-col justify-between">
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-widest border-b border-softyellow/20 pb-4 mb-6 text-softyellow">
+              <h4 className="text-xs font-bold uppercase tracking-widest border-b border-line/20 pb-4 mb-6 text-paper">
                 Jam Operasional
               </h4>
 
               {/* Box Flat Krem Kontras Terang */}
-              <div className="bg-softyellow text-brown p-6 space-y-2 shadow-none rounded-none border border-softyellow/20">
-                <p className="text-lg font-bold tracking-tight uppercase text-brown">
+              <div className="bg-foam text-ink p-6 space-y-2 shadow-none rounded-none border border-line">
+                <p className="text-lg font-medium tracking-tight uppercase text-ink">
                   {currentSettings.operating_hours_title || 'Buka Setiap Hari'}
                 </p>
-                <p className="text-sm text-brown/80 font-light">{currentSettings.operating_hours_time || '08:00 - 22:00 WITA'}</p>
-                <div className="w-full h-[1px] bg-brown/20 my-3"></div>
-                <p className="text-[10px] uppercase tracking-widest font-bold text-brown flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-brown block"></span>
+                <p className="text-sm text-ink/80 font-light">{currentSettings.operating_hours_time || '08:00 - 22:00 WITA'}</p>
+                <div className="w-full h-px bg-line my-3"></div>
+                <p className="text-[10px] uppercase tracking-widest font-bold text-ocean flex items-center gap-2">
+                  <span className="size-1.5 bg-ocean block"></span>
                   {currentSettings.operating_hours_note || 'Reservasi Server 24/7'}
                 </p>
               </div>
-            </div>
-
-            <div className="mt-8 lg:mt-0">
-              <Link
-                href="/admin/login"
-                className="inline-flex items-center justify-between w-full border border-softyellow/30 bg-transparent text-softyellow px-6 py-4 hover:bg-softyellow hover:text-brown transition-colors uppercase text-[10px] tracking-widest font-bold rounded-none group"
-              >
-                <span>Portal Administrator</span>
-                <ArrowUpRight className="h-4 w-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </Link>
             </div>
           </div>
 
         </div>
 
         {/* Bottom Copyright Bar */}
-        <div className="p-6 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-widest font-medium text-softyellow/50">
-          <p>© {new Date().getFullYear()} DOAMANDEH TOURS AND TRAVEL.</p>
+        <div className="p-6 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-widest font-medium text-paper/50">
+          <p>© {new Date().getFullYear()} DO&apos;AMANDEH TOURS AND TRAVEL.</p>
           <p className="flex items-center gap-2">
-            DESIGNED WITH <Heart className="h-3 w-3 text-softyellow fill-white" /> FOR BALI
+            DESIGNED WITH <Heart className="size-3 text-sun fill-sun" strokeWidth={1.5} /> FOR BALI
           </p>
         </div>
 
       </div>
+      <BackToTop />
     </footer>
   );
 }

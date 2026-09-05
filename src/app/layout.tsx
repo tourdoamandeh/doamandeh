@@ -1,6 +1,14 @@
 import type { Metadata, Viewport } from 'next';
-import { League_Spartan } from 'next/font/google';
+import { Jost, League_Spartan } from 'next/font/google';
 import './globals.css';
+
+const jost = Jost({
+  weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-jost',
+  display: 'swap',
+  fallback: ['Futura', 'Futura-Bold', 'Century Gothic', 'sans-serif'],
+});
 
 const futura = League_Spartan({
   weight: ['300', '400', '500', '600', '700', '800'],
@@ -11,7 +19,7 @@ const futura = League_Spartan({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#FFFFFF',
+  themeColor: '#FAF9F4',
   width: 'device-width',
   initialScale: 1,
 };
@@ -19,13 +27,13 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://doamandeh.com'),
   title: {
-    default: 'Doamandeh Tours & Travel | Editorial Geometric Minimalist Bali',
-    template: '%s | Doamandeh Tours & Travel',
+    default: "Do'amandeh Tours & Travel | Editorial Geometric Minimalist Bali",
+    template: "%s | Do'amandeh Tours & Travel",
   },
   description:
     'Layanan wisata & lifestyle eksklusif di Bali: Sewa Motor & Mobil matic, Professional Tattoo Studio, Villa Private Pool, Paket Tour Travel, dan Surfing Lesson.',
   keywords: [
-    'Doamandeh',
+    "Do'amandeh",
     'Sewa Motor Bali',
     'Sewa Mobil Bali',
     'Tattoo Studio Bali',
@@ -35,16 +43,16 @@ export const metadata: Metadata = {
     'Surfing Lesson Bali',
     'Wisata Canggu',
   ],
-  authors: [{ name: 'Doamandeh Tours and Travel' }],
-  creator: 'Doamandeh Tours and Travel',
+  authors: [{ name: "Do'amandeh Tours and Travel" }],
+  creator: "Do'amandeh Tours and Travel",
   icons: {
     icon: '/favicon.ico',
   },
   openGraph: {
-    title: 'Doamandeh Tours & Travel | Partner Liburan & Lifestyle di Bali',
+    title: "Do'amandeh Tours & Travel | Partner Liburan & Lifestyle di Bali",
     description:
       'Layanan wisata lengkap di Bali: Sewa Motor & Mobil, Tato Studio higienis, Villa nyaman, Paket Tour, dan Kelas Surfing.',
-    siteName: 'Doamandeh Tours & Travel',
+    siteName: "Do'amandeh Tours & Travel",
     locale: 'id_ID',
     type: 'website',
   },
@@ -61,6 +69,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { HashScrollHandler } from '@/components/public/hash-scroll-handler';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -69,10 +79,12 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${futura.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
+      className={`${jost.variable} ${futura.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-white text-black font-sans selection:bg-peach selection:text-black">
+      <body className="min-h-full flex flex-col bg-paper text-ink font-sans selection:bg-sun selection:text-ink">
+        <HashScrollHandler />
         {children}
       </body>
     </html>

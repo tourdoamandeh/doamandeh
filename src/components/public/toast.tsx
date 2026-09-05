@@ -83,31 +83,25 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={t.id}
             role={t.type === 'error' ? 'alert' : 'status'}
-            className={`pointer-events-auto flex items-start gap-3 p-4 rounded-2xl border shadow-2xl backdrop-blur-xl transition-all duration-300 animate-in slide-in-from-bottom-3 fade-in ${
-              t.type === 'success'
-                ? 'bg-zinc-900/95 border-emerald-500/40 text-white shadow-emerald-950/40'
-                : t.type === 'error'
-                ? 'bg-zinc-900/95 border-red-500/40 text-white shadow-red-950/40'
-                : 'bg-zinc-900/95 border-amber-500/40 text-white shadow-amber-950/40'
-            }`}
+            className={`pointer-events-auto flex items-start gap-3 p-4 rounded-none border border-line bg-ink text-paper shadow-none transition-all duration-300 animate-in slide-in-from-bottom-3 fade-in`}
           >
             <div className="shrink-0 mt-0.5">
-              {t.type === 'success' && <CheckCircle2 className="h-5 w-5 text-emerald-400" />}
-              {t.type === 'error' && <AlertCircle className="h-5 w-5 text-red-400" />}
-              {t.type === 'info' && <Info className="h-5 w-5 text-amber-400" />}
+              {t.type === 'success' && <CheckCircle2 className="h-4 w-4 text-emerald-400" strokeWidth={1.5} />}
+              {t.type === 'error' && <AlertCircle className="h-4 w-4 text-red-400" strokeWidth={1.5} />}
+              {t.type === 'info' && <Info className="h-4 w-4 text-sun" strokeWidth={1.5} />}
             </div>
 
             <div className="flex-1 text-xs">
-              <p className="font-bold text-white tracking-tight">{t.title}</p>
-              {t.message && <p className="text-zinc-400 mt-0.5 leading-relaxed">{t.message}</p>}
+              <p className="font-medium text-paper tracking-tight uppercase">{t.title}</p>
+              {t.message && <p className="text-paper/70 mt-0.5 leading-relaxed">{t.message}</p>}
             </div>
 
             <button
               onClick={() => removeToast(t.id)}
               aria-label="Tutup notifikasi"
-              className="shrink-0 text-zinc-500 hover:text-white transition-colors p-1 rounded-lg hover:bg-zinc-800"
+              className="shrink-0 text-paper/50 hover:text-paper transition-colors p-1 rounded-none hover:bg-paper/10"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-3.5 w-3.5" strokeWidth={1.5} />
             </button>
           </div>
         ))}

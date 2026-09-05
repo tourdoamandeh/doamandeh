@@ -78,7 +78,7 @@ function AdminNavContent({ userEmail, adminName }: AdminNavProps) {
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-teal-700 font-mono text-xs font-bold text-white">
             D
           </div>
-          <span className="font-mono text-sm font-semibold tracking-tight">DOAMANDEH</span>
+          <span className="font-mono text-sm font-semibold tracking-tight">DO&apos;AMANDEH</span>
           <span className="text-[10px] font-mono uppercase bg-stone-800 text-stone-400 px-1.5 py-0.5 rounded">OPS</span>
         </div>
         <button
@@ -99,7 +99,7 @@ function AdminNavContent({ userEmail, adminName }: AdminNavProps) {
               D
             </div>
             <div>
-              <span className="font-mono text-xs font-bold tracking-wider text-white">DOAMANDEH</span>
+              <span className="font-mono text-xs font-bold tracking-wider text-white">DO&apos;AMANDEH</span>
               <span className="block text-[10px] text-stone-400 font-mono tracking-tight">OPERATIONS</span>
             </div>
           </div>

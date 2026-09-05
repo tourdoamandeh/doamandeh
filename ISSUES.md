@@ -11,6 +11,15 @@
 
 ## Completed Items
 
+- [x] **Redesain Menyeluruh Website Publik Mengacu ke DESIGN.md v2 (Editorial Geometric Minimalist)**
+  - Mengganti palet lama (brown + soft blue + cream) dengan token komplementer baru: `paper` (`#FAF9F4`), `sun` (`#FFF3C4`), `ink` (`#26241F`), `ocean` (`#0F5D66`), `foam` (`#ECEFEB`), dan `line` (`#E2DFD4`) tanpa menyentuh tema admin `[data-theme="admin"]`.
+  - Menerapkan `--radius: 0rem` (`rounded-none` mutlak), menghapus seluruh shadow (`shadow-none`), mengganti seluruh border 2px ke 1px (`border-line`), serta menyetel icon Lucide ke `strokeWidth={1.5}`.
+  - Membangun halaman `/services` sebagai index list editorial full-width dengan hover `bg-sun` dan navigasi filter ribbon.
+  - Membangun halaman detail `/services/[id]` dengan breadcrumb shadcn, header 12 kolom split, visual gallery (8+4 stack), 2 kolom content split dengan sticky booking form, dan related services horizontal rows bergaris tipis.
+  - Merevisi `/about` menjadi sticky split dengan 4 stats dalam 1 baris dipisah `border-l border-line`, serta daftar nilai bernomor `01-04`.
+  - Merevisi `/contact` menjadi split 12 kolom dengan index list channel dan formulir di atas `bg-foam`.
+  - Menyelaraskan `/category/[slug]` dan seluruh seksi landing page (`hero`, `about`, `services`, `testimonials`, `faq`, `cta`) ke standar 1px flat geometric.
+
 - [x] **Perbaikan Pemotongan Teks pada Formulir Pengaturan CMS & Admin (`/admin/settings`)**
   - Mengatasi teks yang terpotong vertikal dan horizontal pada formulir CMS dan modal dialog:
     - Seluruh kutipan foto (`hero_slide_*_quote`) dan deskripsi banner kategori pada seksi Hero ditingkatkan dari `rows={2}` ke `rows={4}` dengan `min-h-[92px]`, sehingga teks kutipan 3-4 baris (misal *"Biar kami yang merencanakan..."*) tampil utuh tanpa terpotong di tepi bawah.

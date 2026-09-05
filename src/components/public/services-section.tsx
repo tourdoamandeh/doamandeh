@@ -12,12 +12,14 @@ interface ServicesSectionProps {
   services: Service[];
   servicesTitle?: string;
   servicesSubtitle?: string;
+  servicesBtnText?: string;
 }
 
 export function ServicesSection({
   services,
   servicesTitle = 'Pilih \nPetualanganmu',
-  servicesSubtitle = 'Mulai dari kamu mendarat sampai waktunya pulang, biarkan Doamandeh yang urus detailnya. Kami siapkan pilihan aktivitas dan fasilitas terbaik supaya liburanmu di Bali terasa santai, seru, dan pastinya bebas ribet.',
+  servicesSubtitle = "Mulai dari kamu mendarat sampai waktunya pulang, biarkan Do'amandeh yang urus detailnya. Kami siapkan pilihan aktivitas dan fasilitas terbaik supaya liburanmu di Bali terasa santai, seru, dan pastinya bebas ribet.",
+  servicesBtnText = 'Lihat keseruan lainnya',
 }: ServicesSectionProps) {
   // State untuk melacak item yang sedang di-hover (default null: semua ketutup)
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -103,7 +105,7 @@ export function ServicesSection({
                 href="/services"
                 className="inline-flex items-center gap-3 px-6 sm:px-7 py-3 sm:py-3.5 bg-softyellow text-brown rounded-none hover:bg-softyellow/90 hover:text-brown transition-colors text-[10px] sm:text-xs uppercase tracking-widest font-bold shadow-none border border-softyellow"
               >
-                <span>Lihat keseruan lainnya</span>
+                <span>{servicesBtnText}</span>
                 <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </Link>
             </div>
@@ -125,7 +127,7 @@ export function ServicesSection({
                     {/* Header Layanan: Judul 2 Baris & Panah Pojok */}
                     <div className="flex justify-between items-start gap-2 sm:gap-3">
                       <h3 className="text-xl sm:text-3xl md:text-[2.25rem] font-semibold leading-[0.95] tracking-tight uppercase text-softyellow w-4/5">
-                        <Link href={`/category/${service.category}`} className="block">
+                        <Link href={`/services?category=${service.category}`} className="block">
                           <span>{service.line1}</span>
                           <br />
                           <span>{service.line2}</span>
@@ -133,11 +135,11 @@ export function ServicesSection({
                       </h3>
 
                       <Link
-                        href={`/category/${service.category}`}
+                        href={`/services?category=${service.category}`}
                         className="text-softyellow shrink-0"
                         aria-label={`Detail ${service.line1} ${service.line2}`}
                       >
-                        <ArrowUpRight className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2]" />
+                        <ArrowUpRight className="w-5 h-5 sm:w-7 sm:h-7" strokeWidth={1.5} />
                       </Link>
                     </div>
 
@@ -154,7 +156,7 @@ export function ServicesSection({
                         }`}
                     >
                       <div className="overflow-hidden">
-                        <div className="relative w-full aspect-[3/4] max-h-[220px] sm:max-h-[300px] bg-softblue rounded-none overflow-hidden border-2 border-softyellow shadow-none">
+                        <div className="relative w-full h-[220px] sm:h-[260px] bg-softblue rounded-none overflow-hidden border border-line shadow-none">
                           <Image
                             src={service.image_url}
                             alt={`${service.line1} ${service.line2}`}

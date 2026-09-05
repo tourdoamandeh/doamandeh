@@ -1,74 +1,79 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { Service, ServiceCategory } from '@/types/database';
-import { getServiceImageUrl } from '@/lib/constants';
+import { getServiceImageUrl, formatRupiah } from '@/lib/constants';
+import { getSiteSettingsAction } from '@/lib/actions/admin/settings';
+import { DEFAULT_SITE_SETTINGS } from '@/lib/validations/admin';
 import { PublicHeader } from '@/components/public/public-header';
 import { PublicFooter } from '@/components/public/public-footer';
 import { BookingForm } from '@/components/public/booking-form';
 import { ToastProvider } from '@/components/public/toast';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import {
-  Car,
-  Palette,
-  Home,
-  Compass,
-  Waves,
-  ArrowLeft,
-  CheckCircle2,
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import {
+  ArrowUpRight,
   Phone,
   Clock,
-  Sparkles,
+  MapPin,
+  CheckCircle2,
+  ShieldCheck,
+  Compass,
   AlertCircle,
 } from 'lucide-react';
-
-const CATEGORY_INFO: Record<
-  ServiceCategory,
-  { label: string; icon: React.ComponentType<{ className?: string }>; description: string; bgColor: string }
-> = {
-  'vehicle-rental': {
-    label: 'Sewa Kendaraan',
-    icon: Car,
-    description: 'Sewa motor & mobil bersih, terawat, dan siap pakai untuk keliling Bali.',
-    bgColor: 'bg-lightblue',
-  },
-  'tattoo': {
-    label: 'Tato Studio',
-    icon: Palette,
-    description: 'Studio tato steril, higienis, dan dikerjakan oleh artist profesional.',
-    bgColor: 'bg-peach',
-  },
-  'villa': {
-    label: 'Villa & Stay',
-    icon: Home,
-    description: 'Akomodasi villa eksklusif dengan kenyamanan maksimal untuk liburan Anda.',
-    bgColor: 'bg-yellow',
-  },
-  'travel': {
-    label: 'Paket Travel',
-    icon: Compass,
-    description: 'Paket perjalanan wisata terarah mengelilingi spot terbaik di Bali.',
-    bgColor: 'bg-softpink',
-  },
-  'surfing-lesson': {
-    label: 'Surfing Lesson',
-    icon: Waves,
-    description: 'Belajar selancar aman dan seru dipandu instruktur bersertifikat.',
-    bgColor: 'bg-lightblue',
-  },
-};
-
-function formatRupiah(amount: number): string {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
 
 interface ServiceDetailPageProps {
   params: Promise<{ id: string }>;
 }
+
+const CATEGORY_META: Record<
+  ServiceCategory,
+  { label: string; tag: string; defaultMeetingPoint: string; galleryImages: [string, string] }
+> = {
+  'vehicle-rental': {
+    label: 'Sewa Kendaraan',
+    tag: '// SEWA KENDARAAN',
+    defaultMeetingPoint: 'Antar-jemput gratis ke Villa / Hotel area Canggu, Seminyak, Kerobokan & Bandara Ngurah Rai',
+    galleryImages: ['/assets/service-vehicle.jpg', '/assets/hero-bali.svg'],
+  },
+  tattoo: {
+    label: 'Tato Studio',
+    tag: '// TATO STUDIO',
+    defaultMeetingPoint: "Studio Do'amandeh Canggu, Jl. Pantai Batu Bolong, Badung, Bali",
+    galleryImages: ['/assets/service-tattoo.jpg', '/assets/testimonial-tattoo.svg'],
+  },
+  villa: {
+    label: 'Villa Stay',
+    tag: '// VILLA & STAY',
+    defaultMeetingPoint: 'Private Villa Complex Canggu / Pererenan (Alamat & pinpoint dikirim via WhatsApp saat konfirmasi)',
+    galleryImages: ['/assets/service-villa.jpg', '/assets/hero-bali.svg'],
+  },
+  travel: {
+    label: 'Tour & Trip',
+    tag: '// PAKET TOUR',
+    defaultMeetingPoint: 'Lobby Hotel / Villa penjemputan seluruh area Bali Selatan (Kuta, Seminyak, Canggu, Sanur, Ubud)',
+    galleryImages: ['/assets/service-travel.jpg', '/assets/testimonial-tour.svg'],
+  },
+  'surfing-lesson': {
+    label: 'Surfing Lesson',
+    tag: '// SURFING LESSON',
+    defaultMeetingPoint: "Do'amandeh Surf Camp, Pantai Batu Bolong / Pantai Berawa Canggu",
+    galleryImages: ['/assets/service-surfing.png', '/assets/hero-bali.svg'],
+  },
+};
 
 export async function generateMetadata({ params }: ServiceDetailPageProps): Promise<Metadata> {
   const { id } = await params;
@@ -83,256 +88,430 @@ export async function generateMetadata({ params }: ServiceDetailPageProps): Prom
 
     if (!service) {
       return {
-        title: 'Layanan Tidak Ditemukan',
+        title: "Layanan Tidak Ditemukan | Do'amandeh",
       };
     }
 
     return {
-      title: `${service.title} | Doamandeh Tours & Travel`,
+      title: `${service.title} | Do'amandeh Tours & Travel Bali`,
       description:
         service.description ||
-        'Pesan layanan wisata & lifestyle Bali online bersama Doamandeh Tours and Travel.',
+        "Pesan layanan wisata & lifestyle Bali online bersama Do'amandeh Tours and Travel.",
       openGraph: {
-        title: `${service.title} | Doamandeh Bali`,
+        title: `${service.title} | Do'amandeh Bali`,
         description: service.description || undefined,
       },
     };
   } catch {
     return {
-      title: 'Detail Layanan Wisata',
+      title: "Katalog Layanan | Do'amandeh Bali",
     };
   }
 }
 
 export default async function ServiceDetailPage({ params }: ServiceDetailPageProps) {
   const { id } = await params;
-  const supabase = await createClient();
 
-  // Fetch service detail
-  const { data: serviceData, error: serviceError } = await supabase
-    .from('services')
-    .select('*')
-    .eq('id', id)
-    .single();
+  const settingsResult = await getSiteSettingsAction();
+  const siteSettings = settingsResult.success && settingsResult.data
+    ? settingsResult.data
+    : DEFAULT_SITE_SETTINGS;
 
-  if (serviceError || !serviceData) {
+  let service: Service | null = null;
+  let relatedServices: Service[] = [];
+
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('services')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (!error && data) {
+      service = data as Service;
+
+      const { data: relatedData } = await supabase
+        .from('services')
+        .select('*')
+        .eq('category', service.category)
+        .neq('id', id)
+        .eq('is_active', true)
+        .limit(4);
+
+      if (relatedData) {
+        relatedServices = relatedData as Service[];
+      }
+    }
+  } catch {
+    // Database connection fallback
+  }
+
+  if (!service) {
     notFound();
   }
 
-  const service = serviceData as Service;
-  const categoryInfo = CATEGORY_INFO[service.category] || {
+  const categoryMeta = CATEGORY_META[service.category] || {
     label: service.category,
-    icon: Compass,
-    description: 'Layanan wisata terpercaya dari Doamandeh.',
-    bgColor: 'bg-lightblue',
+    tag: `// ${service.category.toUpperCase()}`,
+    defaultMeetingPoint: "Konfirmasi via WhatsApp tim Do'amandeh",
+    galleryImages: ['/assets/service-travel.jpg', '/assets/hero-bali.svg'],
   };
-  const CategoryIcon = categoryInfo.icon;
 
-  // Fetch related services in the same category
-  const { data: relatedData } = await supabase
-    .from('services')
-    .select('*')
-    .eq('category', service.category)
-    .neq('id', service.id)
-    .eq('is_active', true)
-    .limit(3);
+  const cleanWa = (siteSettings.contact_whatsapp || '+62 812-3456-7890').replace(/[^0-9]/g, '');
+  const waDirectUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(
+    `Halo Do'amandeh, saya ingin konsultasi langsung untuk layanan: ${service.title}`
+  )}`;
 
-  const relatedServices = (relatedData as Service[]) || [];
+  const mainImageUrl = getServiceImageUrl(service);
 
   return (
-    <div className="min-h-screen flex flex-col bg-tissue text-black selection:bg-peach selection:text-black">
-      <PublicHeader />
+    <div className="min-h-screen flex flex-col bg-paper text-ink font-sans selection:bg-sun selection:text-ink">
+      <PublicHeader
+        whatsappNumber={siteSettings.contact_whatsapp}
+        brandName={siteSettings.brand_name}
+        brandTagline={siteSettings.brand_tagline}
+      />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        {/* Accessible Breadcrumb & Back */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-base font-sans text-black/70 mb-8 flex-wrap">
-          <Link
-            href="/"
-            className="flex items-center gap-1 hover:text-black hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black rounded-md"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            <span>Beranda</span>
-          </Link>
-          <span aria-hidden="true">/</span>
-          <Link
-            href={`/category/${service.category}`}
-            className="hover:text-black hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black rounded-md"
-          >
-            {categoryInfo.label}
-          </Link>
-          <span aria-hidden="true">/</span>
-          <span className="text-black font-sans truncate max-w-xs" aria-current="page">
-            {service.title}
-          </span>
-        </nav>
-
-        {/* Inactive Notice Banner */}
-        {!service.is_active && (
-          <div
-            role="alert"
-            className="mb-8 p-5 rounded-[24px] bg-yellow border-none text-black flex items-start gap-3 shadow-sm"
-          >
-            <AlertCircle className="w-5 h-5 text-black shrink-0 mt-0.5" aria-hidden="true" />
-            <div>
-              <h3 className="font-sans text-lg">Layanan Sedang Tidak Aktif</h3>
-              <p className="text-xs text-black/80 mt-0.5 font-sans">
-                Layanan ini sedang dalam pembaruan ketersediaan. Anda tetap dapat bertanya ketersediaan via WhatsApp kami.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Main Content Layout: 2 Columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* Left Column: Service Details */}
-          <div className="lg:col-span-7 space-y-8">
-            {/* Service Main Image Header */}
-            <div className="relative h-72 sm:h-96 w-full rounded-[36px] overflow-hidden shadow-sm border-none bg-black/5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={getServiceImageUrl(service)}
-                alt={service.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            <div>
-              {/* Category Badge & Duration */}
-              <div className="flex flex-wrap items-center gap-2 mb-4 font-sans">
-                <Link
-                  href={`/category/${service.category}`}
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm bg-lightblue text-black shadow-sm hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
+      <main className="flex-1 max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 py-8 sm:py-12 w-full">
+        {/* 1. BREADCRUMB (shadcn) DI ATAS */}
+        <div className="pb-8">
+          <Breadcrumb>
+            <BreadcrumbList className="text-xs uppercase tracking-widest font-mono text-ink/60">
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/" className="hover:text-ink transition-colors">
+                  Beranda
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="text-ink/40">/</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  href={`/services?category=${service.category}`}
+                  className="hover:text-ink transition-colors"
                 >
-                  <CategoryIcon className="h-4 w-4" aria-hidden="true" />
-                  <span>{categoryInfo.label}</span>
-                </Link>
+                  {categoryMeta.label}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="text-ink/40">/</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbPage className="text-ink font-medium truncate max-w-xs sm:max-w-md">
+                  {service.title}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
 
-                {service.duration && (
-                  <span className="inline-flex items-center gap-1 px-4 py-1.5 rounded-full text-sm bg-yellow text-black shadow-sm">
-                    <Clock className="h-3.5 w-3.5 text-black" aria-hidden="true" />
-                    <span>{service.duration}</span>
-                  </span>
-                )}
+        {/* 2. HEADER SPLIT 12 KOLOM (DESIGN.md v2) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 pb-10 border-b border-line items-start">
+          {/* col-8: tag category + judul besar + deskripsi */}
+          <div className="lg:col-span-8">
+            <p className="text-xs uppercase tracking-widest font-mono text-ocean mb-3">
+              {categoryMeta.tag}
+            </p>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-ink leading-[1.05] mb-5">
+              {service.title}
+            </h1>
+            <p className="text-base sm:text-lg text-ink/80 font-light leading-relaxed max-w-2xl">
+              {service.description ||
+                "Layanan wisata berkualitas tinggi dari Do'amandeh Tours & Travel yang disiapkan dengan standar kepuasan, kebersihan, dan kenyamanan terbaik di Bali."}
+            </p>
 
-                {service.is_active && (
-                  <span className="inline-flex items-center gap-1 px-4 py-1.5 rounded-full text-sm bg-softpink text-black shadow-sm">
-                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                    Siap Dipesan
-                  </span>
-                )}
-              </div>
-
-              {/* Title */}
-              <h1 className="font-sans text-4xl sm:text-6xl text-black leading-tight mb-4">
-                {service.title}
-              </h1>
-
-              {/* Price Banner */}
-              <div className="inline-flex items-baseline gap-3 p-5 rounded-[24px] bg-yellow shadow-sm mb-6 border-none">
-                <span className="font-sans italic text-xs text-black/70">Harga Layanan:</span>
-                <span className="font-sans text-3xl sm:text-4xl font-normal text-black">
-                  {formatRupiah(service.price)}
-                </span>
-                {service.unit && (
-                  <span className="font-sans text-sm text-black">
-                    /{service.unit.replace(/^per\s+/i, '')}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Description Section */}
-            <div className="rounded-[32px] border-none bg-[#FBFBFB] p-8 sm:p-10 space-y-5 shadow-sm">
-              <h2 className="font-sans text-2xl text-black flex items-center gap-2 border-b border-gray-100 pb-3">
-                <Sparkles className="h-5 w-5 text-black" aria-hidden="true" />
-                Deskripsi & Ketentuan Layanan
-              </h2>
-              <p className="text-sm text-black/90 leading-relaxed whitespace-pre-line font-sans font-normal">
-                {service.description ||
-                  'Layanan berkualitas tinggi dari Doamandeh Tours and Travel yang siap melengkapi kenyamanan dan keseruan aktivitas Anda di Bali.'}
-              </p>
-
-              {/* Value Inclusions */}
-              <div className="pt-6 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-sans">
-                <div className="flex items-center gap-2 text-black">
-                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" aria-hidden="true" />
-                  <span>Pelayanan ramah & profesional</span>
-                </div>
-                <div className="flex items-center gap-2 text-black">
-                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" aria-hidden="true" />
-                  <span>Jaminan kualitas & kenyamanan</span>
-                </div>
-                <div className="flex items-center gap-2 text-black">
-                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" aria-hidden="true" />
-                  <span>Konfirmasi pemesanan cepat via WA</span>
-                </div>
-                <div className="flex items-center gap-2 text-black">
-                  <CheckCircle2 className="h-4 w-4 text-black shrink-0" aria-hidden="true" />
-                  <span>Harga transparan tanpa hidden fee</span>
-                </div>
-              </div>
-            </div>
-
-            {/* WhatsApp Direct Help Banner */}
-            <div className="rounded-[32px] border-none bg-peach p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
-              <div>
-                <h3 className="font-sans text-2xl text-black flex items-center gap-2">
-                  <Phone className="h-5 w-5 text-black" aria-hidden="true" />
-                  Ada Pertanyaan Khusus?
-                </h3>
-                <p className="text-xs text-black/80 mt-1 font-sans">
-                  Konsultasikan jadwal, kebutuhan khusus, atau permintaan kustom langsung dengan tim kami.
-                </p>
-              </div>
-              <a
-                href={`https://wa.me/6281234567890?text=${encodeURIComponent(
-                  `Halo Doamandeh, saya ingin bertanya tentang layanan: ${service.title}`
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Chat WhatsApp seputar layanan ${service.title}`}
-                className="shrink-0 rounded-full bg-black text-tissue px-6 py-3 font-sans text-lg hover:bg-black/90 transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
+            <div className="flex flex-wrap items-center gap-3 mt-6">
+              <Badge
+                variant="outline"
+                className="rounded-none border-line bg-foam text-ink text-[11px] uppercase tracking-widest font-mono py-1 px-3"
               >
-                Chat WhatsApp
-              </a>
+                {categoryMeta.label}
+              </Badge>
+              {service.duration && (
+                <span className="text-xs text-ink/70 font-mono flex items-center gap-1.5">
+                  <Clock className="size-3.5 text-ocean" strokeWidth={1.5} />
+                  {service.duration}
+                </span>
+              )}
+              {service.is_active ? (
+                <span className="text-xs text-ocean font-mono flex items-center gap-1.5">
+                  <CheckCircle2 className="size-3.5" strokeWidth={1.5} />
+                  Unit Siap Dipesan
+                </span>
+              ) : (
+                <span className="text-xs text-red-600 font-mono flex items-center gap-1.5">
+                  <AlertCircle className="size-3.5" strokeWidth={1.5} />
+                  Ketersediaan Terbatas
+                </span>
+              )}
             </div>
-
-            {/* Related Services in Category */}
-            {relatedServices.length > 0 && (
-              <div className="space-y-4 pt-4">
-                <h2 className="font-sans text-2xl text-black">
-                  Layanan Lainnya di Kategori {categoryInfo.label}
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {relatedServices.map((rel) => (
-                    <Link
-                      key={rel.id}
-                      href={`/services/${rel.id}`}
-                      className="group rounded-[24px] border-none bg-tissue p-6 shadow-sm hover:bg-lightblue transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
-                    >
-                      <h4 className="font-sans text-xl text-black group-hover:underline line-clamp-1 mb-1">
-                        {rel.title}
-                      </h4>
-                      <p className="font-sans text-lg text-black">
-                        {formatRupiah(rel.price)}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Right Column: Sticky Booking Form with Toast Context */}
+          {/* col-4: Card sticky (border-line, rounded-none, shadow-none) */}
+          <div className="lg:col-span-4">
+            <Card className="border border-line rounded-none shadow-none bg-foam p-6 lg:p-7 space-y-4">
+              <div>
+                <span className="text-[10px] uppercase tracking-widest font-mono text-ink/50 block">
+                  FROM
+                </span>
+                <div className="flex items-baseline gap-2 mt-1">
+                  <span className="text-3xl sm:text-4xl font-medium text-ink font-mono tracking-tight">
+                    {formatRupiah(service.price)}
+                  </span>
+                  {service.unit && (
+                    <span className="text-xs text-ink/60 font-light">
+                      /{service.unit.replace(/^per\s+/i, '')}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <Separator className="bg-line" />
+
+              <div className="space-y-2.5 pt-1">
+                <a
+                  href="#booking-section"
+                  className="w-full block text-center bg-ink text-paper hover:bg-ocean transition-colors font-medium uppercase tracking-widest text-xs py-3.5 px-4 rounded-none border-0"
+                >
+                  Pesan Sekarang
+                </a>
+                <a
+                  href={waDirectUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 border border-line bg-paper text-ink hover:bg-sun hover:border-line transition-colors font-medium uppercase tracking-widest text-xs py-3.5 px-4 rounded-none"
+                >
+                  <Phone className="size-3.5" strokeWidth={1.5} />
+                  <span>WhatsApp Tanya Dulu</span>
+                </a>
+              </div>
+            </Card>
+          </div>
+        </div>
+
+        {/* 3. GALERI: GRID 12 (DESIGN.md v2)
+            Foto utama col-span-8, 2 foto col-span-4 stack.
+            Semua foto border border-line, rounded-none, AspectRatio 4/3 & 1/1. */}
+        <div className="py-10 border-b border-line">
+          <p className="text-[10px] uppercase tracking-widest font-mono text-ocean mb-4">
+            // DOKUMENTASI VISUAL
+          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+            {/* Foto Utama col-span-8 */}
+            <div className="lg:col-span-8">
+              <AspectRatio ratio={16 / 10} className="border border-line rounded-none overflow-hidden relative bg-foam">
+                <Image
+                  src={mainImageUrl}
+                  alt={service.title}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 66vw"
+                  className="object-cover"
+                />
+              </AspectRatio>
+            </div>
+
+            {/* 2 Foto col-span-4 stack */}
+            <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-4">
+              <div className="w-full">
+                <AspectRatio ratio={16 / 10} className="border border-line rounded-none overflow-hidden relative bg-foam">
+                  <Image
+                    src={categoryMeta.galleryImages[0]}
+                    alt={`${service.title} preview 1`}
+                    fill
+                    sizes="(max-width: 1024px) 50vw, 33vw"
+                    className="object-cover"
+                  />
+                </AspectRatio>
+              </div>
+              <div className="w-full">
+                <AspectRatio ratio={16 / 10} className="border border-line rounded-none overflow-hidden relative bg-foam">
+                  <Image
+                    src={categoryMeta.galleryImages[1]}
+                    alt={`${service.title} preview 2`}
+                    fill
+                    sizes="(max-width: 1024px) 50vw, 33vw"
+                    className="object-cover"
+                  />
+                </AspectRatio>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 4. KONTEN 2 KOLOM (DESIGN.md v2)
+            Kiri: section "Deskripsi / Termasuk / Durasi / Meeting point" dipisah Separator
+            Kanan: Card form booking sticky */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 py-12 items-start" id="booking-section">
+          {/* Kolom Kiri: Detail & Informasi Section */}
+          <div className="lg:col-span-7 space-y-10">
+            {/* 4.1 Deskripsi */}
+            <div>
+              <p className="text-xs uppercase tracking-widest font-mono text-ocean mb-2">
+                // DESKRIPSI LAYANAN
+              </p>
+              <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-ink mb-4">
+                Tentang Aktivitas / Fasilitas Ini
+              </h2>
+              <p className="text-sm sm:text-base text-ink/80 font-light leading-relaxed whitespace-pre-line">
+                {service.description ||
+                  'Layanan kami dipersiapkan untuk memastikan Anda mendapatkan pengalaman liburan terbaik tanpa rasa khawatir. Seluruh perlengkapan dicek berkala dan dipandu oleh staf ramah berwawasan lokal Bali.'}
+              </p>
+            </div>
+
+            <Separator className="bg-line" />
+
+            {/* 4.2 Termasuk & Keuntungan */}
+            <div>
+              <p className="text-xs uppercase tracking-widest font-mono text-ocean mb-2">
+                // FASILITAS &amp; JAMINAN
+              </p>
+              <h2 className="text-2xl font-medium tracking-tight text-ink mb-4">
+                Yang Anda Dapatkan
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="border border-line p-3.5 bg-foam flex items-start gap-2.5">
+                  <CheckCircle2 className="size-4 text-ocean shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <span className="text-ink font-light">Unit / Fasilitas terawat prima dengan inspeksi berkala</span>
+                </div>
+                <div className="border border-line p-3.5 bg-foam flex items-start gap-2.5">
+                  <CheckCircle2 className="size-4 text-ocean shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <span className="text-ink font-light">Bantuan &amp; pendampingan operasional lokal 24/7</span>
+                </div>
+                <div className="border border-line p-3.5 bg-foam flex items-start gap-2.5">
+                  <CheckCircle2 className="size-4 text-ocean shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <span className="text-ink font-light">Transparansi harga tanpa biaya tersembunyi</span>
+                </div>
+                <div className="border border-line p-3.5 bg-foam flex items-start gap-2.5">
+                  <CheckCircle2 className="size-4 text-ocean shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <span className="text-ink font-light">Konfirmasi dan koordinasi langsung via WhatsApp</span>
+                </div>
+              </div>
+            </div>
+
+            <Separator className="bg-line" />
+
+            {/* 4.3 Durasi & Jadwal */}
+            <div>
+              <p className="text-xs uppercase tracking-widest font-mono text-ocean mb-2">
+                // DURASI &amp; WAKTU
+              </p>
+              <h2 className="text-2xl font-medium tracking-tight text-ink mb-4">
+                Informasi Waktu Pelaksanaan
+              </h2>
+              <div className="border border-line p-5 bg-foam flex items-start gap-3">
+                <Clock className="size-4 text-ocean shrink-0 mt-0.5" strokeWidth={1.5} />
+                <div className="text-xs text-ink leading-relaxed">
+                  <p className="font-medium text-ink mb-1">
+                    Durasi Standar: {service.duration || 'Fleksibel per hari / sesi'}
+                  </p>
+                  <p className="text-ink/75 font-light">
+                    Jadwal dapat disesuaikan dengan rencana perjalanan Anda. Tim kami siap mengatur penyesuaian jam mulai untuk kenyamanan maksimal.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <Separator className="bg-line" />
+
+            {/* 4.4 Titik Kumpul / Meeting Point */}
+            <div>
+              <p className="text-xs uppercase tracking-widest font-mono text-ocean mb-2">
+                // TITIK TEMU &amp; LOKASI
+              </p>
+              <h2 className="text-2xl font-medium tracking-tight text-ink mb-4">
+                Meeting Point &amp; Area Layanan
+              </h2>
+              <div className="border border-line p-5 bg-foam flex items-start gap-3">
+                <MapPin className="size-4 text-ocean shrink-0 mt-0.5" strokeWidth={1.5} />
+                <div className="text-xs text-ink leading-relaxed">
+                  <p className="font-medium text-ink mb-1">
+                    Area Operasional Do'amandeh Bali
+                  </p>
+                  <p className="text-ink/75 font-light">
+                    {categoryMeta.defaultMeetingPoint}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Kolom Kanan: Card Form Booking Sticky */}
           <div className="lg:col-span-5 lg:sticky lg:top-24">
             <ToastProvider>
               <BookingForm service={service} />
             </ToastProvider>
           </div>
         </div>
+
+        {/* 5. RELATED SERVICES: ROW HORIZONTAL KECIL (FOTO + NAMA + HARGA) (DESIGN.md v2)
+            Border-t/b border-line, BUKAN card grid. */}
+        {relatedServices.length > 0 && (
+          <div className="pt-12 pb-8 border-t border-line">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-[10px] uppercase tracking-widest font-mono text-ocean mb-1">
+                  // LAYANAN TERKAIT
+                </p>
+                <h3 className="text-xl sm:text-2xl font-medium tracking-tight text-ink">
+                  Pilihan Lain di Kategori {categoryMeta.label}
+                </h3>
+              </div>
+              <Link
+                href={`/services?category=${service.category}`}
+                className="text-xs uppercase tracking-widest font-mono text-ocean hover:underline flex items-center gap-1"
+              >
+                <span>Lihat Semua</span>
+                <ArrowUpRight className="size-3.5" strokeWidth={1.5} />
+              </Link>
+            </div>
+
+            <div className="border-t border-b border-line divide-y divide-line">
+              {relatedServices.map((rel) => (
+                <Link
+                  key={rel.id}
+                  href={`/services/${rel.id}`}
+                  className="group flex items-center justify-between gap-4 py-4 px-3 sm:px-4 hover:bg-sun transition-colors duration-150"
+                >
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="size-14 relative border border-line overflow-hidden rounded-none bg-foam shrink-0">
+                      <Image
+                        src={getServiceImageUrl(rel)}
+                        alt={rel.title}
+                        fill
+                        sizes="56px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-sm sm:text-base font-medium text-ink tracking-tight group-hover:text-ink truncate">
+                        {rel.title}
+                      </h4>
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-ink/50 block mt-0.5">
+                        {rel.duration ? `// ${rel.duration}` : '// Bali Experience'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 shrink-0">
+                    <div className="text-right">
+                      <span className="text-[9px] uppercase tracking-widest text-ink/40 block font-mono">
+                        FROM
+                      </span>
+                      <span className="text-sm sm:text-base font-medium text-ink font-mono">
+                        {formatRupiah(rel.price)}
+                      </span>
+                    </div>
+                    <ArrowUpRight
+                      className="size-4 text-ink/40 group-hover:text-ink group-hover:translate-x-0.5 transition-transform"
+                      strokeWidth={1.5}
+                    />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </main>
 
-      <PublicFooter />
+      <PublicFooter settings={siteSettings} />
     </div>
   );
 }

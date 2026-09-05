@@ -83,7 +83,7 @@ export function AppSidebar({ userEmail, adminName, ...props }: AppSidebarProps) 
           <SidebarHeader className="border-b border-sidebar-border px-4 py-3.5">
             <div className="flex flex-col text-left leading-tight">
               <span className="truncate font-semibold text-sidebar-foreground text-sm tracking-tight">
-                Doamandeh
+                Do&apos;amandeh
               </span>
               <span className="truncate text-[11px] text-muted-foreground mt-0.5">
                 Admin Operations

@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { AdminThemeProvider } from '@/components/admin/admin-theme';
 
 export const metadata: Metadata = {
-  title: 'Admin CMS | Doamandeh Tours & Travel',
-  description: 'Panel Pengelolaan Doamandeh Tours and Travel',
+  title: "Admin CMS | Do'amandeh Tours & Travel",
+  description: "Panel Pengelolaan Do'amandeh Tours and Travel",
   robots: {
     index: false,
     follow: false,

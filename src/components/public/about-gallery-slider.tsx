@@ -35,7 +35,7 @@ export function AboutGallerySlider() {
     <div className="flex flex-col gap-3">
       {/* 2 Side-by-Side Thumbnails */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="relative aspect-[4/3] w-full border-2 border-softyellow overflow-hidden rounded-none bg-brown group">
+        <div className="relative aspect-[4/3] w-full border border-line overflow-hidden rounded-none bg-brown group">
           <AnimatePresence mode="wait">
             <motion.div
               key={firstImg.id}
@@ -58,7 +58,7 @@ export function AboutGallerySlider() {
           </div>
         </div>
 
-        <div className="relative aspect-[4/3] w-full border-2 border-softyellow overflow-hidden rounded-none bg-brown group">
+        <div className="relative aspect-[4/3] w-full border border-line overflow-hidden rounded-none bg-brown group">
           <AnimatePresence mode="wait">
             <motion.div
               key={secondImg.id}

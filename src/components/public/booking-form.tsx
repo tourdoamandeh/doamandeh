@@ -1,28 +1,49 @@
 'use client';
 
 import { useState, useTransition, useId } from 'react';
-import { Service } from '@/types/database';
+import { Service, ServiceCategory } from '@/types/database';
 import {
   createPublicBookingAction,
   BookingResponseData,
 } from '@/lib/actions/public/booking';
 import { useToast } from './toast';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { format, startOfDay } from 'date-fns';
+import { id as idLocale } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 import {
   Calendar as CalendarIcon,
   User,
   Mail,
   Phone,
-  FileText,
-  Loader2,
+  MapPin,
+  Clock,
+  Users,
+  ShieldCheck,
   CheckCircle2,
   AlertCircle,
   MessageCircle,
   RefreshCw,
-  ShieldCheck,
   Copy,
   Check,
-  Clock,
   ArrowUpRight,
+  Loader2,
 } from 'lucide-react';
 
 interface BookingFormProps {
@@ -41,18 +62,106 @@ function formatDateIndo(dateStr: string): string {
   if (!dateStr) return '';
   const [y, m, d] = dateStr.split('-');
   const dateObj = new Date(Number(y), Number(m) - 1, Number(d));
+  if (isNaN(dateObj.getTime())) return dateStr;
   return new Intl.DateTimeFormat('id-ID', {
+    weekday: 'long',
     day: 'numeric',
     month: 'short',
     year: 'numeric',
   }).format(dateObj);
 }
 
+// Reusable DatePicker with shadcn Calendar + Popover
+function BookingDatePicker({
+  id,
+  label,
+  value,
+  onChange,
+  minDate,
+  placeholder = 'Pilih tanggal...',
+  error,
+  disabled,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (dateStr: string) => void;
+  minDate?: Date;
+  placeholder?: string;
+  error?: string;
+  disabled?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const selectedDate = value ? new Date(value + 'T00:00:00') : undefined;
+
+  return (
+    <div className="space-y-1.5">
+      <Label htmlFor={id} className="block text-xs uppercase tracking-wider font-medium text-ink">
+        {label} <span className="text-red-500" aria-hidden="true">*</span>
+      </Label>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger
+          render={
+            <Button
+              id={id}
+              type="button"
+              variant="outline"
+              disabled={disabled}
+              className={cn(
+                'w-full justify-start text-left font-normal h-10 text-xs rounded-none border-line bg-paper text-ink shadow-none hover:bg-foam hover:border-line focus-visible:ring-1 focus-visible:ring-ocean',
+                !value && 'text-ink/40'
+              )}
+            >
+              <CalendarIcon className="mr-2.5 size-4 shrink-0 text-ink/50" />
+              {selectedDate && !isNaN(selectedDate.getTime()) ? (
+                <span className="font-mono text-ink font-medium">
+                  {format(selectedDate, 'EEEE, d MMM yyyy', { locale: idLocale })}
+                </span>
+              ) : (
+                <span>{placeholder}</span>
+              )}
+            </Button>
+          }
+        />
+        <PopoverContent
+          className="w-auto p-0 z-50 bg-paper border border-line rounded-none shadow-xl text-ink"
+          align="start"
+        >
+          <Calendar
+            mode="single"
+            locale={idLocale}
+            selected={selectedDate}
+            disabled={minDate ? { before: minDate } : { before: startOfDay(new Date()) }}
+            onSelect={(date) => {
+              if (date) {
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const d = String(date.getDate()).padStart(2, '0');
+                onChange(`${y}-${m}-${d}`);
+                setOpen(false);
+              }
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+      {error && (
+        <p role="alert" className="text-[11px] text-red-600 mt-1 flex items-center gap-1 font-mono">
+          <AlertCircle className="size-3" strokeWidth={1.5} />
+          <span>{error}</span>
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function BookingForm({ service }: BookingFormProps) {
   const { success: showToastSuccess, error: showToastError, info: showToastInfo } = useToast();
   const [isPending, startTransition] = useTransition();
 
-  // Unique IDs for Accessibility
+  const category: ServiceCategory = service.category;
+  const isMultiDay = category === 'vehicle-rental' || category === 'villa';
+
+  // Accessibility IDs
   const nameId = useId();
   const emailId = useId();
   const phoneId = useId();
@@ -60,16 +169,40 @@ export function BookingForm({ service }: BookingFormProps) {
   const endDateId = useId();
   const notesId = useId();
 
-  // Form input states
+  // Common customer fields
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+
+  // Date states
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [isMultiDay, setIsMultiDay] = useState(
-    service.category === 'vehicle-rental' || service.category === 'villa'
-  );
-  const [notes, setNotes] = useState('');
+
+  // Category specific fields
+  // 1. Vehicle Rental
+  const [pickupLocation, setPickupLocation] = useState('');
+  const [pickupTime, setPickupTime] = useState('');
+
+  // 2. Villa Stay
+  const [guestCount, setGuestCount] = useState('2 Tamu');
+  const [arrivalTime, setArrivalTime] = useState('');
+
+  // 3. Travel / Tour
+  const [participantCount, setParticipantCount] = useState('2');
+  const [pickupHotel, setPickupHotel] = useState('');
+
+  // 4. Tattoo Studio
+  const [placementSize, setPlacementSize] = useState('');
+  const [tattooStyle, setTattooStyle] = useState('');
+  const [designIdea, setDesignIdea] = useState('');
+
+  // 5. Surfing Lesson
+  const [sessionTime, setSessionTime] = useState<'Pagi' | 'Sore'>('Pagi');
+  const [skillLevel, setSkillLevel] = useState<'Pemula' | 'Menengah'>('Pemula');
+  const [surfPax, setSurfPax] = useState('1');
+
+  // General notes
+  const [generalNotes, setGeneralNotes] = useState('');
 
   // UI state
   const [copiedRef, setCopiedRef] = useState(false);
@@ -77,96 +210,134 @@ export function BookingForm({ service }: BookingFormProps) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [completedBooking, setCompletedBooking] = useState<BookingResponseData | null>(null);
 
-  // Minimum date today
-  const todayDateStr = new Date().toISOString().split('T')[0];
+  // Duration & Price Calculations
+  let durationUnits = 1;
+  let durationLabel = '1 Hari';
 
-  // Calculate duration in days
-  let durationDays = 1;
-  if (isMultiDay && startDate && endDate && endDate >= startDate) {
-    const startMs = new Date(startDate).getTime();
-    const endMs = new Date(endDate).getTime();
-    const diff = Math.round((endMs - startMs) / (1000 * 60 * 60 * 24));
-    durationDays = Math.max(1, diff + 1);
+  if (category === 'villa') {
+    if (startDate && endDate && endDate > startDate) {
+      const startMs = new Date(startDate).getTime();
+      const endMs = new Date(endDate).getTime();
+      durationUnits = Math.max(1, Math.round((endMs - startMs) / (1000 * 60 * 60 * 24)));
+    }
+    durationLabel = `${durationUnits} Malam`;
+  } else if (category === 'vehicle-rental') {
+    if (startDate && endDate && endDate >= startDate) {
+      const startMs = new Date(startDate).getTime();
+      const endMs = new Date(endDate).getTime();
+      durationUnits = Math.max(1, Math.round((endMs - startMs) / (1000 * 60 * 60 * 24)) + 1);
+    }
+    durationLabel = `${durationUnits} Hari`;
+  } else if (category === 'travel') {
+    durationUnits = Math.max(1, parseInt(participantCount) || 1);
+    durationLabel = `${durationUnits} Peserta`;
+  } else if (category === 'surfing-lesson') {
+    durationUnits = Math.max(1, parseInt(surfPax) || 1);
+    durationLabel = `${durationUnits} Peserta (Sesi ${sessionTime})`;
+  } else if (category === 'tattoo') {
+    durationUnits = 1;
+    durationLabel = 'Sesi Konsultasi & Pengerjaan';
   }
 
-  // Calculate estimated total
-  const estimatedTotal = service.price * durationDays;
+  const estimatedTotal =
+    category === 'tattoo'
+      ? Number(service.price)
+      : Number(service.price) * durationUnits;
 
-  // Handle quick date preset additions (+1, +2, +3, +7 days)
-  function handleQuickDays(daysToAdd: number) {
-    const base = startDate ? new Date(startDate) : new Date();
-    if (!startDate) {
-      setStartDate(todayDateStr);
-    }
-    const targetDate = new Date(base);
-    targetDate.setDate(targetDate.getDate() + daysToAdd);
-    const endStr = targetDate.toISOString().split('T')[0];
-    setIsMultiDay(true);
-    setEndDate(endStr);
-    if (fieldErrors.endDate) {
-      setFieldErrors((prev) => ({ ...prev, endDate: '' }));
-    }
-  }
+  // Compile structured notes for database
+  const compileStructuredNotes = (): string => {
+    const lines: string[] = [];
 
-  function handleReset() {
-    setCustomerName('');
-    setCustomerEmail('');
-    setCustomerPhone('');
+    if (category === 'vehicle-rental') {
+      if (pickupLocation.trim()) lines.push(`• Lokasi Antar/Jemput: ${pickupLocation.trim()}`);
+      if (pickupTime.trim()) lines.push(`• Jam Pengantaran: ${pickupTime.trim()}`);
+    } else if (category === 'villa') {
+      if (guestCount.trim()) lines.push(`• Jumlah Tamu: ${guestCount.trim()}`);
+      if (arrivalTime.trim()) lines.push(`• Estimasi Jam Tiba: ${arrivalTime.trim()}`);
+    } else if (category === 'travel') {
+      if (participantCount.trim()) lines.push(`• Jumlah Peserta: ${participantCount.trim()} orang`);
+      if (pickupHotel.trim()) lines.push(`• Penjemputan Hotel/Villa: ${pickupHotel.trim()}`);
+    } else if (category === 'tattoo') {
+      if (placementSize.trim()) lines.push(`• Ukuran & Penempatan: ${placementSize.trim()}`);
+      if (tattooStyle.trim()) lines.push(`• Gaya Tato: ${tattooStyle.trim()}`);
+      if (designIdea.trim()) lines.push(`• Deskripsi Desain: ${designIdea.trim()}`);
+    } else if (category === 'surfing-lesson') {
+      lines.push(`• Waktu Sesi: Sesi ${sessionTime} (${sessionTime === 'Pagi' ? '08:00 - 10:00 WITA' : '15:00 - 17:00 WITA'})`);
+      lines.push(`• Pengalaman: ${skillLevel === 'Pemula' ? 'Pemula (Baru pertama kali)' : 'Menengah (Sudah bisa berdiri)'}`);
+      if (surfPax.trim()) lines.push(`• Jumlah Peserta: ${surfPax.trim()} orang`);
+    }
+
+    if (generalNotes.trim()) {
+      lines.push(`• Catatan Tambahan: ${generalNotes.trim()}`);
+    }
+
+    return lines.join('\n');
+  };
+
+  const handleReset = () => {
+    setCompletedBooking(null);
     setStartDate('');
     setEndDate('');
-    setNotes('');
+    setGeneralNotes('');
     setErrorMessage(null);
     setFieldErrors({});
-    setCompletedBooking(null);
-    setCopiedRef(false);
-  }
+  };
 
-  function handleCopyReference(refId: string) {
-    navigator.clipboard.writeText(refId);
+  const handleCopyReference = (text: string) => {
+    navigator.clipboard.writeText(text);
     setCopiedRef(true);
     showToastInfo('Kode referensi booking disalin ke clipboard');
     setTimeout(() => setCopiedRef(false), 2500);
-  }
+  };
 
-  function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
     setFieldErrors({});
 
-    // Client preliminary checks
+    // Basic client validation
     const errors: Record<string, string> = {};
-    if (!customerName.trim() || customerName.trim().length < 2) {
-      errors.customerName = 'Nama lengkap minimal 2 karakter';
+    if (!customerName.trim()) errors.customerName = 'Nama lengkap wajib diisi.';
+    if (!customerEmail.trim()) {
+      errors.customerEmail = 'Alamat email wajib diisi.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+      errors.customerEmail = 'Format email tidak valid.';
     }
-    if (!customerEmail.trim() || !customerEmail.includes('@')) {
-      errors.customerEmail = 'Masukkan alamat email yang valid (contoh: nama@email.com)';
+    if (!customerPhone.trim()) {
+      errors.customerPhone = 'Nomor WhatsApp wajib diisi.';
+    } else if (!/^[0-9+\s\-()]{8,20}$/.test(customerPhone.trim())) {
+      errors.customerPhone = 'Nomor WhatsApp minimal 8 digit.';
     }
-    if (!customerPhone.trim() || customerPhone.trim().length < 8) {
-      errors.customerPhone = 'Nomor WhatsApp / telepon minimal 8 digit';
-    }
+
     if (!startDate) {
-      errors.startDate = 'Pilih tanggal mulai reservasi';
+      errors.startDate = isMultiDay ? 'Tanggal mulai wajib dipilih.' : 'Tanggal pemesanan wajib dipilih.';
     }
-    if (isMultiDay && endDate && endDate < startDate) {
-      errors.endDate = 'Tanggal selesai tidak boleh sebelum tanggal mulai';
+
+    if (isMultiDay) {
+      if (!endDate) {
+        errors.endDate = 'Tanggal selesai wajib dipilih.';
+      } else if (endDate < startDate) {
+        errors.endDate = 'Tanggal selesai tidak boleh sebelum tanggal mulai.';
+      }
     }
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
-      showToastError('Form Belum Lengkap', 'Mohon periksa data yang ditandai merah.');
+      setErrorMessage('Harap lengkapi semua kolom wajib.');
       return;
     }
 
     startTransition(async () => {
+      const structuredNotes = compileStructuredNotes();
+
       const res = await createPublicBookingAction({
         serviceId: service.id,
         customerName: customerName.trim(),
         customerEmail: customerEmail.trim(),
         customerPhone: customerPhone.trim(),
         startDate,
-        endDate: isMultiDay && endDate ? endDate : undefined,
-        durationDays,
-        notes: notes.trim() || undefined,
+        endDate: isMultiDay ? endDate : startDate,
+        notes: structuredNotes,
       });
 
       if (!res.success) {
@@ -179,538 +350,697 @@ export function BookingForm({ service }: BookingFormProps) {
       } else if (res.data) {
         setCompletedBooking(res.data);
         showToastSuccess(
-          'Pemesanan Berhasil Terkirim!',
-          'Permintaan Anda telah masuk ke sistem Doamandeh.'
+          'Reservasi Terkirim',
+          'Permintaan booking Anda telah tercatat. Silakan konfirmasi via WhatsApp untuk respon instan.'
         );
       }
     });
-  }
+  };
 
-  // --- SUCCESS STATE ---
+  // --- CONFIRMATION SCREEN ---
   if (completedBooking) {
-    const periodDisplay =
+    const bookingDateDisplay =
       completedBooking.endDate && completedBooking.endDate !== completedBooking.startDate
-        ? `${formatDateIndo(completedBooking.startDate)} s/d ${formatDateIndo(completedBooking.endDate)} (${completedBooking.durationDays} hari)`
+        ? `${formatDateIndo(completedBooking.startDate)} s/d ${formatDateIndo(completedBooking.endDate)}`
         : formatDateIndo(completedBooking.startDate);
 
-    const waText = encodeURIComponent(
-      `Halo Doamandeh Tours and Travel,\n\nSaya telah melakukan booking layanan melalui website resmi:\n\n` +
-        `• *ID Booking*: ${completedBooking.id.slice(0, 8)}\n` +
-        `• *Layanan*: ${completedBooking.serviceTitle}\n` +
-        `• *Nama Pemesan*: ${completedBooking.customerName}\n` +
-        `• *No. WhatsApp*: ${completedBooking.customerPhone}\n` +
-        `• *Email*: ${completedBooking.customerEmail}\n` +
-        `• *Periode/Tanggal*: ${periodDisplay}\n` +
-        `• *Total Estimasi*: ${completedBooking.totalPrice ? formatRupiah(completedBooking.totalPrice) : '-'}\n` +
-        (completedBooking.notes ? `• *Catatan*: ${completedBooking.notes}\n` : '') +
-        `\nMohon informasi ketersediaan dan konfirmasi proses selanjutnya. Terima kasih!`
-    );
-    const waUrl = `https://wa.me/6281234567890?text=${waText}`;
+    const waMessage =
+      `Halo Do'amandeh Tours and Travel,\n\n` +
+      `Saya telah melakukan booking layanan melalui website resmi:\n\n` +
+      `• *ID Booking*: #${completedBooking.id.slice(0, 8).toUpperCase()}\n` +
+      `• *Layanan*: ${completedBooking.serviceTitle}\n` +
+      `• *Nama Pemesan*: ${completedBooking.customerName}\n` +
+      `• *No. WhatsApp*: ${completedBooking.customerPhone}\n` +
+      `• *Email*: ${completedBooking.customerEmail}\n` +
+      `• *Jadwal*: ${bookingDateDisplay}\n` +
+      `• *Estimasi Total*: ${completedBooking.totalPrice ? formatRupiah(completedBooking.totalPrice) : '-'}\n` +
+      (completedBooking.notes ? `\n*Rincian Permintaan*:\n${completedBooking.notes}\n` : '') +
+      `\nMohon konfirmasi ketersediaan dan proses pemesanan saya. Terima kasih!`;
 
-    // Mailto link for backup email summary
-    const mailSubject = encodeURIComponent(`Konfirmasi Reservasi: ${completedBooking.serviceTitle} - Doamandeh`);
-    const mailBody = encodeURIComponent(
-      `Halo Doamandeh Tours,\n\nSaya telah melakukan booking ${completedBooking.serviceTitle} dengan ID: ${completedBooking.id}.\nMohon konfirmasi pesanan saya.`
-    );
-    const mailUrl = `mailto:info@doamandeh.com?subject=${mailSubject}&body=${mailBody}`;
+    const waLink = `https://wa.me/6281234567890?text=${encodeURIComponent(waMessage)}`;
 
     return (
-      <div
-        role="region"
-        aria-label="Konfirmasi Pemesanan"
-        className="rounded-[32px] border-none bg-[#FBFBFB] p-8 sm:p-10 text-center shadow-sm animate-in fade-in zoom-in-95 duration-200"
-      >
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-softpink text-black mb-5 shadow-sm">
-          <CheckCircle2 className="h-8 w-8" />
-        </div>
+      <Card className="rounded-none border border-line bg-paper text-ink shadow-none font-sans p-6 sm:p-8 space-y-6">
+        <CardHeader className="p-0 text-center space-y-3">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-none bg-sun text-ink border border-line">
+            <CheckCircle2 className="size-7" strokeWidth={1.5} />
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-widest font-mono text-ocean mb-1">
+              // RESERVASI DITERIMA
+            </p>
+            <CardTitle className="text-2xl sm:text-3xl font-medium tracking-tight text-ink">
+              Permintaan Booking Berhasil!
+            </CardTitle>
+          </div>
+          <CardDescription className="text-xs text-ink/75 font-light leading-relaxed max-w-md mx-auto">
+            Terima kasih, <strong className="text-ink font-medium">{completedBooking.customerName}</strong>. Tim kami akan segera meninjau jadwal dan ketersediaan layanan Anda.
+          </CardDescription>
+        </CardHeader>
 
-        <span className="inline-flex items-center gap-1 px-4 py-1.5 rounded-full text-xs font-sans bg-lightblue text-black mb-3">
-          Permintaan Terkirim
-        </span>
-
-        <h3 className="font-sans text-3xl sm:text-4xl text-black mb-2">
-          Pemesanan Berhasil Dikirim!
-        </h3>
-        <p className="text-xs sm:text-sm text-black/70 font-sans leading-relaxed max-w-md mx-auto mb-6">
-          Terima kasih, <strong className="text-black font-semibold">{completedBooking.customerName}</strong>. Permintaan Anda telah kami catat dengan status{' '}
-          <span className="inline-block px-2.5 py-0.5 rounded-md bg-yellow text-black font-sans text-xs font-semibold">
-            Pending
-          </span>
-          .
-        </p>
-
-        {/* Booking Details Card */}
-        <div className="rounded-2xl bg-tissue p-5 sm:p-6 text-left text-xs space-y-3 mb-6 divide-y divide-gray-200 font-sans">
-          {/* Reference ID with Copy Button */}
-          <div className="flex justify-between items-center pb-2">
+        {/* Booking Details Box */}
+        <Card className="rounded-none border border-line bg-foam p-5 text-xs space-y-3.5 shadow-none">
+          <div className="flex items-center justify-between pb-3 border-b border-line">
             <div>
-              <span className="text-black/50 block text-[10px] uppercase font-semibold tracking-wider font-sans">
-                ID Referensi
+              <span className="text-[10px] uppercase tracking-widest text-ink/50 block font-mono">
+                ID REFERENSI
               </span>
-              <span className="font-mono text-black font-bold text-sm">
+              <Badge
+                variant="outline"
+                className="font-mono text-sm font-semibold tracking-wider text-ink border-0 p-0 bg-transparent"
+              >
                 #{completedBooking.id.slice(0, 8).toUpperCase()}
-              </span>
+              </Badge>
             </div>
-            <button
-              onClick={() => handleCopyReference(completedBooking.id)}
+            <Button
               type="button"
-              aria-label="Salin ID Referensi Booking"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white hover:bg-gray-100 text-black transition-colors text-xs font-medium cursor-pointer"
+              variant="outline"
+              size="xs"
+              onClick={() => handleCopyReference(completedBooking.id)}
+              className="rounded-none border-line bg-paper hover:bg-sun text-ink text-[11px] font-mono shadow-none h-7 px-2.5"
             >
               {copiedRef ? (
                 <>
-                  <Check className="h-3.5 w-3.5 text-black" />
-                  <span className="font-semibold">Tersalin</span>
+                  <Check className="size-3 text-ocean mr-1" strokeWidth={1.5} />
+                  <span>Tersalin</span>
                 </>
               ) : (
                 <>
-                  <Copy className="h-3.5 w-3.5 text-black/60" />
+                  <Copy className="size-3 mr-1" strokeWidth={1.5} />
                   <span>Salin ID</span>
                 </>
               )}
-            </button>
+            </Button>
           </div>
 
-          <div className="pt-2 flex justify-between items-center">
-            <span className="text-black/60">Layanan</span>
-            <span className="font-bold text-black font-serif text-sm text-right">{completedBooking.serviceTitle}</span>
-          </div>
-
-          <div className="pt-2 flex justify-between items-center">
-            <span className="text-black/60">Tanggal / Durasi</span>
-            <span className="font-semibold text-black text-right">{periodDisplay}</span>
-          </div>
-
-          <div className="pt-2 flex justify-between items-center">
-            <span className="text-black/60">WhatsApp Pemesan</span>
-            <span className="text-black">{completedBooking.customerPhone}</span>
-          </div>
-          <div className="pt-2 flex justify-between items-center">
-            <span className="text-black/60">Email Pemesan</span>
-            <span className="text-black">{completedBooking.customerEmail}</span>
-          </div>
-
-          <div className="pt-3 flex justify-between items-center">
-            <div>
-              <span className="text-black/70 font-semibold block">Estimasi Total Biaya</span>
-              <span className="text-[10px] text-black/50">
-                ({completedBooking.durationDays} hari pemakaian)
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between items-start">
+              <span className="text-ink/60">Layanan</span>
+              <span className="font-medium text-ink text-right">{completedBooking.serviceTitle}</span>
+            </div>
+            <div className="flex justify-between items-start">
+              <span className="text-ink/60">Jadwal</span>
+              <span className="text-ink font-medium text-right">{bookingDateDisplay}</span>
+            </div>
+            <div className="flex justify-between items-start">
+              <span className="text-ink/60">WhatsApp</span>
+              <span className="text-ink font-mono">{completedBooking.customerPhone}</span>
+            </div>
+            <Separator className="bg-line" />
+            <div className="flex justify-between items-center pt-1">
+              <span className="font-medium text-ink">Estimasi Biaya</span>
+              <span className="text-base font-semibold text-ink font-mono">
+                {completedBooking.totalPrice ? formatRupiah(completedBooking.totalPrice) : '-'}
               </span>
             </div>
-            <span className="font-sans text-xl font-bold text-black">
-              {completedBooking.totalPrice ? formatRupiah(completedBooking.totalPrice) : '-'}
-            </span>
           </div>
-        </div>
+        </Card>
 
         {/* Action Buttons */}
-        <div className="space-y-3 font-sans">
+        <CardFooter className="p-0 flex flex-col gap-3">
           <a
-            href={waUrl}
+            href={waLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 rounded-full bg-black text-tissue font-serif text-xl py-4 px-8 hover:bg-black/90 transition-all border-none shadow-sm cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 bg-ink text-paper hover:bg-ocean transition-colors font-medium uppercase tracking-widest text-xs py-3.5 px-4 rounded-none border-0 text-center"
           >
-            <MessageCircle className="h-5 w-5" />
+            <MessageCircle className="size-4" strokeWidth={1.5} />
             <span>Konfirmasi Cepat via WhatsApp</span>
           </a>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <a
-              href={mailUrl}
-              className="flex items-center justify-center gap-2 rounded-full border border-gray-200 bg-tissue hover:bg-gray-100 py-3 px-4 text-xs font-medium text-black transition-colors"
-            >
-              <Mail className="h-4 w-4 text-black/60" />
-              <span>Simpan via Email</span>
-            </a>
-
-            <button
-              onClick={handleReset}
-              type="button"
-              className="flex items-center justify-center gap-2 rounded-full border border-gray-200 bg-tissue hover:bg-gray-100 py-3 px-4 text-xs font-medium text-black transition-colors cursor-pointer"
-            >
-              <RefreshCw className="h-4 w-4 text-black/60" />
-              <span>Pesan Layanan Lain</span>
-            </button>
-          </div>
-        </div>
-      </div>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleReset}
+            className="w-full rounded-none border-line text-xs uppercase tracking-widest font-medium py-3 hover:bg-foam h-auto"
+          >
+            <RefreshCw className="size-3.5 mr-2" strokeWidth={1.5} />
+            Buat Reservasi Baru
+          </Button>
+        </CardFooter>
+      </Card>
     );
   }
 
-  // --- FORM STATE ---
+  // --- ACTIVE BOOKING FORM ---
+  const getCategoryTitle = () => {
+    switch (category) {
+      case 'vehicle-rental':
+        return 'Form Sewa Kendaraan';
+      case 'villa':
+        return 'Reservasi Villa Stay';
+      case 'travel':
+        return 'Booking Tour & Trip';
+      case 'tattoo':
+        return 'Booking Sesi Tato Studio';
+      case 'surfing-lesson':
+        return 'Booking Kelas Selancar';
+      default:
+        return 'Formulir Reservasi';
+    }
+  };
+
   return (
-    <div
+    <Card
       role="region"
       aria-label="Formulir Reservasi Layanan"
-      className="rounded-[32px] border-none bg-[#FBFBFB] p-8 sm:p-10 shadow-sm"
+      className="rounded-none border border-line bg-foam text-ink shadow-none p-0 overflow-hidden font-sans"
     >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
+      <CardHeader className="border-b border-line p-6 sm:p-7 flex flex-row items-start justify-between gap-4">
         <div>
-          <h3 className="font-sans text-3xl text-black">
-            Reservasi Layanan
-          </h3>
-          <p className="text-xs text-black/60 mt-1 font-sans">
-            Isi data di bawah untuk memesan layanan ini
+          <p className="text-[10px] uppercase tracking-widest font-mono text-ocean mb-1">
+            // PESAN ONLINE
           </p>
+          <CardTitle className="text-2xl sm:text-3xl font-medium tracking-tight text-ink font-sans">
+            {getCategoryTitle()}
+          </CardTitle>
+          <CardDescription className="text-xs text-ink/70 font-light mt-1">
+            Isi formulir ringkas berikut untuk reservasi langsung &amp; konfirmasi via WhatsApp.
+          </CardDescription>
         </div>
-        <div className="text-right">
-          <span className="font-sans text-xs text-black/60 block">Harga</span>
-          <span className="font-sans text-2xl sm:text-3xl font-normal text-black">{formatRupiah(service.price)}</span>
-          <span className="font-sans text-xs text-black/60 block">
-            /{service.unit?.replace(/^per\s+/i, '') || 'hari'}
+        <div className="text-right shrink-0">
+          <span className="text-[10px] uppercase tracking-widest text-ink/50 block font-mono">
+            TARIF
           </span>
-        </div>
-      </div>
-
-      {/* Error Alert Banner */}
-      {errorMessage && (
-        <div
-          role="alert"
-          className="mb-6 flex items-start gap-3 rounded-2xl bg-red-50 border border-red-200 p-4 text-xs text-red-700 animate-in fade-in"
-        >
-          <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" aria-hidden="true" />
-          <div>
-            <p className="font-sans text-base font-semibold text-red-950">Gagal Mengirim Form Reservasi</p>
-            <p className="text-red-800 mt-0.5 font-sans">{errorMessage}</p>
-          </div>
-        </div>
-      )}
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} noValidate className="space-y-4 text-xs">
-        {/* Customer Name */}
-        <div>
-          <label htmlFor={nameId} className="block font-sans text-lg text-black mb-1.5">
-            Nama Lengkap Anda <span className="text-red-500" aria-hidden="true">*</span>
-          </label>
-          <div className="relative">
-            <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-black/40 pointer-events-none" aria-hidden="true" />
-            <input
-              id={nameId}
-              type="text"
-              required
-              aria-required="true"
-              aria-invalid={!!fieldErrors.customerName}
-              aria-describedby={fieldErrors.customerName ? `${nameId}-error` : undefined}
-              disabled={isPending}
-              placeholder="Contoh: Budi Santoso"
-              value={customerName}
-              onChange={(e) => {
-                setCustomerName(e.target.value);
-                if (fieldErrors.customerName) {
-                  setFieldErrors((prev) => ({ ...prev, customerName: '' }));
-                }
-              }}
-              className={`w-full rounded-2xl border bg-tissue pl-11 pr-4 py-3.5 text-xs text-black font-sans placeholder-black/40 focus:outline-none disabled:opacity-50 transition-colors ${
-                fieldErrors.customerName
-                  ? 'border-red-500 focus:border-red-600'
-                  : 'border-gray-200 focus:border-black'
-              }`}
-            />
-          </div>
-          {fieldErrors.customerName && (
-            <p id={`${nameId}-error`} role="alert" className="text-[11px] font-sans text-red-600 mt-1 flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" />
-              <span>{fieldErrors.customerName}</span>
-            </p>
-          )}
-        </div>
-
-        {/* Email & Phone Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor={emailId} className="block font-sans text-lg text-black mb-1.5">
-              Alamat Email <span className="text-red-500" aria-hidden="true">*</span>
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-black/40 pointer-events-none" aria-hidden="true" />
-              <input
-                id={emailId}
-                type="email"
-                required
-                aria-required="true"
-                aria-invalid={!!fieldErrors.customerEmail}
-                aria-describedby={fieldErrors.customerEmail ? `${emailId}-error` : undefined}
-                disabled={isPending}
-                placeholder="nama@email.com"
-                value={customerEmail}
-                onChange={(e) => {
-                  setCustomerEmail(e.target.value);
-                  if (fieldErrors.customerEmail) {
-                    setFieldErrors((prev) => ({ ...prev, customerEmail: '' }));
-                  }
-                }}
-                className={`w-full rounded-2xl border bg-tissue pl-11 pr-4 py-3.5 text-xs text-black font-sans placeholder-black/40 focus:outline-none disabled:opacity-50 transition-colors ${
-                  fieldErrors.customerEmail
-                    ? 'border-red-500 focus:border-red-600'
-                    : 'border-gray-200 focus:border-black'
-                }`}
-              />
-            </div>
-            {fieldErrors.customerEmail && (
-              <p id={`${emailId}-error`} role="alert" className="text-[11px] font-sans text-red-600 mt-1 flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" />
-                <span>{fieldErrors.customerEmail}</span>
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor={phoneId} className="block font-sans text-lg text-black mb-1.5">
-              No. WhatsApp / HP <span className="text-red-500" aria-hidden="true">*</span>
-            </label>
-            <div className="relative">
-              <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-black/40 pointer-events-none" aria-hidden="true" />
-              <input
-                id={phoneId}
-                type="tel"
-                required
-                aria-required="true"
-                aria-invalid={!!fieldErrors.customerPhone}
-                aria-describedby={fieldErrors.customerPhone ? `${phoneId}-error` : undefined}
-                disabled={isPending}
-                placeholder="081234567890"
-                value={customerPhone}
-                onChange={(e) => {
-                  setCustomerPhone(e.target.value);
-                  if (fieldErrors.customerPhone) {
-                    setFieldErrors((prev) => ({ ...prev, customerPhone: '' }));
-                  }
-                }}
-                className={`w-full rounded-2xl border bg-tissue pl-11 pr-4 py-3.5 text-xs text-black font-sans placeholder-black/40 focus:outline-none disabled:opacity-50 transition-colors ${
-                  fieldErrors.customerPhone
-                    ? 'border-red-500 focus:border-red-600'
-                    : 'border-gray-200 focus:border-black'
-                }`}
-              />
-            </div>
-            {fieldErrors.customerPhone && (
-              <p id={`${phoneId}-error`} role="alert" className="text-[11px] font-sans text-red-600 mt-1 flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" />
-                <span>{fieldErrors.customerPhone}</span>
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Date Mode Toggle */}
-        <div className="flex items-center justify-between pt-1 pb-0.5">
-          <span className="text-xs font-sans text-black">Durasi Pemesanan:</span>
-          <button
-            type="button"
-            onClick={() => {
-              setIsMultiDay(!isMultiDay);
-              if (isMultiDay) {
-                setEndDate('');
-              }
-            }}
-            className="text-xs font-sans text-black hover:underline cursor-pointer"
+          <span className="text-xl sm:text-2xl font-medium text-ink font-mono tracking-tight block">
+            {formatRupiah(service.price)}
+          </span>
+          <Badge
+            variant="outline"
+            className="rounded-none border-line bg-paper text-ink/80 text-[10px] font-mono py-0.5 px-2 mt-1"
           >
-            {isMultiDay ? 'Ganti ke Pemesanan 1 Hari' : 'Pesan Rentang Beberapa Hari'}
-          </button>
+            /{service.unit?.replace(/^per\s+/i, '') || (category === 'villa' ? 'malam' : 'hari')}
+          </Badge>
         </div>
+      </CardHeader>
 
-        {/* Date Pickers Grid */}
-        <div className={`grid gap-4 ${isMultiDay ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
-          {/* Start Date */}
-          <div>
-            <label htmlFor={startDateId} className="block font-sans text-lg text-black mb-1.5">
-              {isMultiDay ? 'Tanggal Mulai / Check-in' : 'Tanggal Reservasi / Pemakaian'}{' '}
-              <span className="text-red-500" aria-hidden="true">*</span>
-            </label>
-            <div className="relative">
-              <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-black/40 pointer-events-none" aria-hidden="true" />
-              <input
+      <CardContent className="p-6 sm:p-7 space-y-5">
+        {/* Error Alert Banner */}
+        {errorMessage && (
+          <Alert
+            variant="destructive"
+            className="rounded-none border-red-300 bg-paper text-red-900"
+          >
+            <AlertCircle className="size-4 text-red-600" strokeWidth={1.5} />
+            <AlertTitle className="font-semibold text-red-950">Gagal Mengirim Form</AlertTitle>
+            <AlertDescription className="text-red-800">{errorMessage}</AlertDescription>
+          </Alert>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} noValidate className="space-y-4 text-xs">
+          {/* 1. DATA PEMESAN */}
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor={nameId} className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                Nama Lengkap <span className="text-red-500" aria-hidden="true">*</span>
+              </Label>
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-ink/40 pointer-events-none" strokeWidth={1.5} aria-hidden="true" />
+                <Input
+                  id={nameId}
+                  type="text"
+                  required
+                  disabled={isPending}
+                  placeholder="Contoh: Budi Santoso"
+                  value={customerName}
+                  onChange={(e) => {
+                    setCustomerName(e.target.value);
+                    if (fieldErrors.customerName) setFieldErrors((p) => ({ ...p, customerName: '' }));
+                  }}
+                  className="pl-10 text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10"
+                />
+              </div>
+              {fieldErrors.customerName && (
+                <p role="alert" className="text-[11px] text-red-600 mt-1 flex items-center gap-1 font-mono">
+                  <AlertCircle className="size-3" strokeWidth={1.5} />
+                  <span>{fieldErrors.customerName}</span>
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor={phoneId} className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                  No. WhatsApp <span className="text-red-500" aria-hidden="true">*</span>
+                </Label>
+                <div className="relative">
+                  <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-ink/40 pointer-events-none" strokeWidth={1.5} aria-hidden="true" />
+                  <Input
+                    id={phoneId}
+                    type="tel"
+                    required
+                    disabled={isPending}
+                    placeholder="0812-3456-7890"
+                    value={customerPhone}
+                    onChange={(e) => {
+                      setCustomerPhone(e.target.value);
+                      if (fieldErrors.customerPhone) setFieldErrors((p) => ({ ...p, customerPhone: '' }));
+                    }}
+                    className="pl-10 text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10 font-mono"
+                  />
+                </div>
+                {fieldErrors.customerPhone && (
+                  <p role="alert" className="text-[11px] text-red-600 mt-1 flex items-center gap-1 font-mono">
+                    <AlertCircle className="size-3" strokeWidth={1.5} />
+                    <span>{fieldErrors.customerPhone}</span>
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor={emailId} className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                  Alamat Email <span className="text-red-500" aria-hidden="true">*</span>
+                </Label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-ink/40 pointer-events-none" strokeWidth={1.5} aria-hidden="true" />
+                  <Input
+                    id={emailId}
+                    type="email"
+                    required
+                    disabled={isPending}
+                    placeholder="nama@email.com"
+                    value={customerEmail}
+                    onChange={(e) => {
+                      setCustomerEmail(e.target.value);
+                      if (fieldErrors.customerEmail) setFieldErrors((p) => ({ ...p, customerEmail: '' }));
+                    }}
+                    className="pl-10 text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10"
+                  />
+                </div>
+                {fieldErrors.customerEmail && (
+                  <p role="alert" className="text-[11px] text-red-600 mt-1 flex items-center gap-1 font-mono">
+                    <AlertCircle className="size-3" strokeWidth={1.5} />
+                    <span>{fieldErrors.customerEmail}</span>
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <Separator className="bg-line my-1" />
+
+          {/* 2. JADWAL (Menggunakan shadcn Calendar & Popover) */}
+          {isMultiDay ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <BookingDatePicker
                 id={startDateId}
-                type="date"
-                required
-                aria-required="true"
-                aria-invalid={!!fieldErrors.startDate}
-                aria-describedby={fieldErrors.startDate ? `${startDateId}-error` : undefined}
-                min={todayDateStr}
-                disabled={isPending}
+                label={category === 'villa' ? 'Tanggal Check-in' : 'Mulai Sewa'}
                 value={startDate}
-                onChange={(e) => {
-                  const val = e.target.value;
+                onChange={(val) => {
                   setStartDate(val);
-                  if (fieldErrors.startDate) {
-                    setFieldErrors((prev) => ({ ...prev, startDate: '' }));
-                  }
+                  if (fieldErrors.startDate) setFieldErrors((p) => ({ ...p, startDate: '' }));
                   if (endDate && val && endDate < val) {
                     setEndDate(val);
                   }
                 }}
-                className={`w-full rounded-2xl border bg-tissue pl-11 pr-4 py-3.5 text-xs text-black font-sans focus:outline-none disabled:opacity-50 transition-colors ${
-                  fieldErrors.startDate
-                    ? 'border-red-500 focus:border-red-600'
-                    : 'border-gray-200 focus:border-black'
-                }`}
+                error={fieldErrors.startDate}
+                disabled={isPending}
+                placeholder="Pilih tgl mulai"
+              />
+
+              <BookingDatePicker
+                id={endDateId}
+                label={category === 'villa' ? 'Tanggal Check-out' : 'Selesai Sewa'}
+                value={endDate}
+                minDate={startDate ? new Date(startDate + 'T00:00:00') : startOfDay(new Date())}
+                onChange={(val) => {
+                  setEndDate(val);
+                  if (fieldErrors.endDate) setFieldErrors((p) => ({ ...p, endDate: '' }));
+                }}
+                error={fieldErrors.endDate}
+                disabled={isPending || !startDate}
+                placeholder="Pilih tgl selesai"
               />
             </div>
-            {fieldErrors.startDate && (
-              <p id={`${startDateId}-error`} role="alert" className="text-[11px] font-sans text-red-600 mt-1 flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" />
-                <span>{fieldErrors.startDate}</span>
-              </p>
-            )}
-          </div>
-
-          {/* End Date (if multi-day) */}
-          {isMultiDay && (
+          ) : (
             <div>
-              <label htmlFor={endDateId} className="block font-serif text-lg text-black mb-1.5">
-                Tanggal Selesai / Check-out <span className="text-red-500" aria-hidden="true">*</span>
-              </label>
-              <div className="relative">
-                <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-black/40 pointer-events-none" aria-hidden="true" />
-                <input
-                  id={endDateId}
-                  type="date"
-                  required
-                  aria-required="true"
-                  aria-invalid={!!fieldErrors.endDate}
-                  aria-describedby={fieldErrors.endDate ? `${endDateId}-error` : undefined}
-                  min={startDate || todayDateStr}
-                  disabled={isPending || !startDate}
-                  value={endDate}
-                  onChange={(e) => {
-                    setEndDate(e.target.value);
-                    if (fieldErrors.endDate) {
-                      setFieldErrors((prev) => ({ ...prev, endDate: '' }));
-                    }
-                  }}
-                  className={`w-full rounded-2xl border bg-tissue pl-11 pr-4 py-3.5 text-xs text-black font-sans focus:outline-none disabled:opacity-50 transition-colors ${
-                    fieldErrors.endDate
-                      ? 'border-red-500 focus:border-red-600'
-                      : 'border-gray-200 focus:border-black'
-                  }`}
+              <BookingDatePicker
+                id={startDateId}
+                label={
+                  category === 'tattoo'
+                    ? 'Tanggal Sesi Tato'
+                    : category === 'surfing-lesson'
+                    ? 'Tanggal Kelas Selancar'
+                    : 'Tanggal Tour'
+                }
+                value={startDate}
+                onChange={(val) => {
+                  setStartDate(val);
+                  if (fieldErrors.startDate) setFieldErrors((p) => ({ ...p, startDate: '' }));
+                }}
+                error={fieldErrors.startDate}
+                disabled={isPending}
+                placeholder="Pilih tanggal jadwal..."
+              />
+            </div>
+          )}
+
+          {/* 3. FIELD KHUSUS SESUAI LAYANAN (100% Relevan) */}
+
+          {/* A. SEWA KENDARAAN */}
+          {category === 'vehicle-rental' && (
+            <div className="space-y-4 pt-1">
+              <div>
+                <Label htmlFor="rental-pickup-location" className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                  Lokasi Antar / Penjemputan Unit <span className="text-red-500">*</span>
+                </Label>
+                <div className="relative">
+                  <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-ink/40 pointer-events-none" strokeWidth={1.5} />
+                  <Input
+                    id="rental-pickup-location"
+                    type="text"
+                    required
+                    disabled={isPending}
+                    placeholder="Contoh: Bandara Ngurah Rai, Hotel di Seminyak, Villa di Canggu"
+                    value={pickupLocation}
+                    onChange={(e) => setPickupLocation(e.target.value)}
+                    className="pl-10 text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="rental-pickup-time" className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                  Estimasi Jam Antar Unit <span className="text-ink/40 text-[10px] font-mono lowercase">(opsional)</span>
+                </Label>
+                <div className="relative">
+                  <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-ink/40 pointer-events-none" strokeWidth={1.5} />
+                  <Input
+                    id="rental-pickup-time"
+                    type="text"
+                    disabled={isPending}
+                    placeholder="Contoh: 10:00 WITA / sesuai jam mendarat pesawat"
+                    value={pickupTime}
+                    onChange={(e) => setPickupTime(e.target.value)}
+                    className="pl-10 text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* B. VILLA STAY */}
+          {category === 'villa' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              <div>
+                <Label htmlFor="villa-guests" className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                  Jumlah Tamu <span className="text-red-500">*</span>
+                </Label>
+                <div className="relative">
+                  <Users className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-ink/40 pointer-events-none" strokeWidth={1.5} />
+                  <Input
+                    id="villa-guests"
+                    type="text"
+                    required
+                    disabled={isPending}
+                    placeholder="Contoh: 2 Dewasa, 1 Anak"
+                    value={guestCount}
+                    onChange={(e) => setGuestCount(e.target.value)}
+                    className="pl-10 text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="villa-arrival" className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                  Estimasi Jam Tiba <span className="text-ink/40 text-[10px] font-mono lowercase">(opsional)</span>
+                </Label>
+                <div className="relative">
+                  <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-ink/40 pointer-events-none" strokeWidth={1.5} />
+                  <Input
+                    id="villa-arrival"
+                    type="text"
+                    disabled={isPending}
+                    placeholder="Contoh: 14:00 WITA"
+                    value={arrivalTime}
+                    onChange={(e) => setArrivalTime(e.target.value)}
+                    className="pl-10 text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* C. TOUR & TRIP */}
+          {category === 'travel' && (
+            <div className="space-y-4 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="tour-participants" className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                    Jumlah Peserta (Pax) <span className="text-red-500">*</span>
+                  </Label>
+                  <div className="relative">
+                    <Users className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-ink/40 pointer-events-none" strokeWidth={1.5} />
+                    <Input
+                      id="tour-participants"
+                      type="number"
+                      min="1"
+                      required
+                      disabled={isPending}
+                      placeholder="2"
+                      value={participantCount}
+                      onChange={(e) => setParticipantCount(e.target.value)}
+                      className="pl-10 text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10 font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="tour-pickup-hotel" className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                    Nama Hotel / Villa Penjemputan <span className="text-red-500">*</span>
+                  </Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-ink/40 pointer-events-none" strokeWidth={1.5} />
+                    <Input
+                      id="tour-pickup-hotel"
+                      type="text"
+                      required
+                      disabled={isPending}
+                      placeholder="Contoh: Lobby Hotel Padma Ubud / Villa Seminyak"
+                      value={pickupHotel}
+                      onChange={(e) => setPickupHotel(e.target.value)}
+                      className="pl-10 text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* D. TATTOO STUDIO */}
+          {category === 'tattoo' && (
+            <div className="space-y-4 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="tattoo-placement" className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                    Ukuran &amp; Penempatan Tubuh <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="tattoo-placement"
+                    type="text"
+                    required
+                    disabled={isPending}
+                    placeholder="Contoh: 8x8 cm di lengan bagian dalam / leher"
+                    value={placementSize}
+                    onChange={(e) => setPlacementSize(e.target.value)}
+                    className="text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="tattoo-style" className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                    Gaya Tato yang Diinginkan <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="tattoo-style"
+                    type="text"
+                    required
+                    disabled={isPending}
+                    placeholder="Contoh: Fine Line, Blackwork, Realism, Script"
+                    value={tattooStyle}
+                    onChange={(e) => setTattooStyle(e.target.value)}
+                    className="text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="tattoo-idea" className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                  Ide Konsep Desain <span className="text-ink/40 text-[10px] font-mono lowercase">(opsional)</span>
+                </Label>
+                <Textarea
+                  id="tattoo-idea"
+                  rows={2}
+                  disabled={isPending}
+                  placeholder="Ceritakan ide tato, makna simbolis, atau jika sudah punya referensi gambar (bisa dikirim via WA)..."
+                  value={designIdea}
+                  onChange={(e) => setDesignIdea(e.target.value)}
+                  className="text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean resize-y min-h-[70px]"
                 />
               </div>
-              {fieldErrors.endDate && (
-                <p id={`${endDateId}-error`} role="alert" className="text-[11px] font-sans text-red-600 mt-1 flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" />
-                  <span>{fieldErrors.endDate}</span>
-                </p>
-              )}
             </div>
           )}
-        </div>
 
-        {/* Quick Date Presets */}
-        <div className="flex flex-wrap items-center gap-2 pt-1 pb-1">
-          <span className="text-[11px] text-black/60 font-sans flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            Preset durasi:
-          </span>
-          <button
-            type="button"
-            onClick={() => {
-              setIsMultiDay(false);
-              setEndDate('');
-            }}
-            className={`px-3 py-1.5 rounded-full border text-[11px] font-sans transition-colors cursor-pointer ${
-              !isMultiDay
-                ? 'bg-yellow border-yellow text-black font-semibold'
-                : 'bg-tissue border-gray-200 text-black/70 hover:bg-gray-100'
-            }`}
-          >
-            1 Hari
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickDays(1)}
-            className="px-3 py-1.5 rounded-full border border-gray-200 bg-tissue text-black/70 hover:bg-gray-100 text-[11px] font-sans transition-colors cursor-pointer"
-          >
-            +1 Hari (2 Hari)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickDays(2)}
-            className="px-3 py-1.5 rounded-full border border-gray-200 bg-tissue text-black/70 hover:bg-gray-100 text-[11px] font-sans transition-colors cursor-pointer"
-          >
-            +2 Hari (3 Hari)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickDays(6)}
-            className="px-3 py-1.5 rounded-full border border-gray-200 bg-tissue text-black/70 hover:bg-gray-100 text-[11px] font-sans transition-colors cursor-pointer"
-          >
-            +6 Hari (1 Minggu)
-          </button>
-        </div>
+          {/* E. SURFING LESSON */}
+          {category === 'surfing-lesson' && (
+            <div className="space-y-4 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* Session Time Toggle */}
+                <div>
+                  <Label className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                    Pilihan Waktu
+                  </Label>
+                  <div className="grid grid-cols-2 gap-1 bg-paper border border-line p-1">
+                    <Button
+                      type="button"
+                      variant={sessionTime === 'Pagi' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setSessionTime('Pagi')}
+                      className={`rounded-none h-8 text-[11px] shadow-none ${
+                        sessionTime === 'Pagi' ? 'bg-ink text-paper' : 'text-ink hover:bg-foam'
+                      }`}
+                    >
+                      Pagi (08:00)
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={sessionTime === 'Sore' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setSessionTime('Sore')}
+                      className={`rounded-none h-8 text-[11px] shadow-none ${
+                        sessionTime === 'Sore' ? 'bg-ink text-paper' : 'text-ink hover:bg-foam'
+                      }`}
+                    >
+                      Sore (15:00)
+                    </Button>
+                  </div>
+                </div>
 
-        {/* Price & Duration Summary Box */}
-        <div className="rounded-2xl bg-yellow p-4 text-black font-sans space-y-2">
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-black/70">Durasi Terpilih</span>
-            <span className="font-semibold text-black">
-              {durationDays} {service.category === 'villa' ? 'Malam' : 'Hari'}
-            </span>
-          </div>
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-black/70">Tarif Satuan</span>
-            <span className="text-black">{formatRupiah(service.price)}</span>
-          </div>
-          <div className="flex justify-between items-center pt-2 border-t border-black/10">
-            <div>
-              <span className="font-bold text-black text-xs block">Estimasi Total Biaya</span>
-              <span className="text-[10px] text-black/60">
-                {durationDays > 1 ? `${durationDays} x ${formatRupiah(service.price)}` : 'Tarif 1 sesi/hari'}
-              </span>
+                {/* Skill Level Toggle */}
+                <div>
+                  <Label className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                    Tingkat Pengalaman
+                  </Label>
+                  <div className="grid grid-cols-2 gap-1 bg-paper border border-line p-1">
+                    <Button
+                      type="button"
+                      variant={skillLevel === 'Pemula' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setSkillLevel('Pemula')}
+                      className={`rounded-none h-8 text-[11px] shadow-none ${
+                        skillLevel === 'Pemula' ? 'bg-ink text-paper' : 'text-ink hover:bg-foam'
+                      }`}
+                    >
+                      Pemula
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={skillLevel === 'Menengah' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setSkillLevel('Menengah')}
+                      className={`rounded-none h-8 text-[11px] shadow-none ${
+                        skillLevel === 'Menengah' ? 'bg-ink text-paper' : 'text-ink hover:bg-foam'
+                      }`}
+                    >
+                      Menengah
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Participants */}
+                <div>
+                  <Label htmlFor="surf-pax" className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+                    Peserta (Pax)
+                  </Label>
+                  <Input
+                    id="surf-pax"
+                    type="number"
+                    min="1"
+                    disabled={isPending}
+                    value={surfPax}
+                    onChange={(e) => setSurfPax(e.target.value)}
+                    className="text-xs rounded-none border-line bg-paper text-ink shadow-none focus-visible:ring-1 focus-visible:ring-ocean h-10 font-mono"
+                  />
+                </div>
+              </div>
             </div>
-            <span className="font-serif text-2xl font-normal text-black">
-              {formatRupiah(estimatedTotal)}
-            </span>
-          </div>
-        </div>
+          )}
 
-        {/* Notes */}
-        <div>
-          <label htmlFor={notesId} className="block font-sans text-lg text-black mb-1.5">
-            Catatan Tambahan <span className="text-black/50 text-sm italic font-sans">(Opsional)</span>
-          </label>
-          <div className="relative">
-            <FileText className="absolute left-4 top-4 h-4 w-4 text-black/40 pointer-events-none" aria-hidden="true" />
-            <textarea
+          {/* CATATAN TAMBAHAN (UMUM) */}
+          <div>
+            <Label htmlFor={notesId} className="block text-xs uppercase tracking-wider font-medium text-ink mb-1.5">
+              Catatan / Permintaan Khusus <span className="text-ink/40 text-[10px] font-mono lowercase">(opsional)</span>
+            </Label>
+            <Textarea
               id={notesId}
-              rows={3}
+              rows={2}
               disabled={isPending}
-              placeholder="Contoh: Lokasi antar jemput bandara/hotel, jam kedatangan, preferensi khusus..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-2xl border border-gray-200 bg-tissue pl-11 pr-4 py-3 text-xs text-black font-sans placeholder-black/40 focus:border-black focus:outline-none resize-y min-h-[90px] leading-relaxed disabled:opacity-50 transition-colors"
+              placeholder="Tuliskan jika ada kebutuhan khusus atau pertanyaan tambahan..."
+              value={generalNotes}
+              onChange={(e) => setGeneralNotes(e.target.value)}
+              className="text-xs rounded-none border-line bg-paper text-ink placeholder:text-ink/40 shadow-none focus-visible:ring-1 focus-visible:ring-ocean resize-y min-h-[60px]"
             />
           </div>
-        </div>
 
-        {/* Trust & Guarantee */}
-        <div className="flex items-center gap-2 pt-1 text-xs text-black/70 font-sans">
-          <ShieldCheck className="h-4 w-4 text-black shrink-0" aria-hidden="true" />
-          <span>Data reservasi Anda aman & tim kami akan segera menghubungi untuk konfirmasi.</span>
-        </div>
+          {/* RINGKASAN ESTIMASI HARGA (Clean & Simple) */}
+          <Card className="rounded-none border border-line bg-paper p-4 text-ink font-sans space-y-2 shadow-none">
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-ink/70">Durasi / Satuan</span>
+              <Badge variant="outline" className="rounded-none border-line font-mono font-medium bg-foam text-ink">
+                {durationLabel}
+              </Badge>
+            </div>
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-ink/70">Tarif Satuan</span>
+              <span className="text-ink font-mono">{formatRupiah(service.price)}</span>
+            </div>
+            <Separator className="bg-line" />
+            <div className="flex justify-between items-center pt-0.5">
+              <div>
+                <span className="font-medium text-ink text-xs block">
+                  {category === 'tattoo' ? 'Estimasi Mulai Dari' : 'Estimasi Total'}
+                </span>
+                {category === 'tattoo' && (
+                  <span className="text-[10px] text-ink/50 font-sans">
+                    Biaya final disesuaikan ukuran di studio
+                  </span>
+                )}
+              </div>
+              <span className="text-xl font-medium text-ink font-mono tracking-tight">
+                {formatRupiah(estimatedTotal)}
+              </span>
+            </div>
+          </Card>
 
-        {/* Submit Button with Loading State */}
-        <button
-          type="submit"
-          disabled={isPending}
-          aria-busy={isPending}
-          className="w-full flex items-center justify-center gap-2 rounded-full bg-black text-tissue font-sans text-xl py-4 px-8 hover:bg-black/90 transition-all border-none shadow-sm disabled:opacity-50 mt-4 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
-        >
-          {isPending ? (
-            <>
-              <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
-              <span>Memproses Booking...</span>
-            </>
-          ) : (
-            <>
-              <span>Kirim Permintaan Booking</span>
-              <ArrowUpRight className="h-5 w-5" aria-hidden="true" />
-            </>
-          )}
-        </button>
-      </form>
-    </div>
+          {/* Trust Guarantee */}
+          <div className="flex items-center gap-2 pt-0.5 text-[11px] text-ink/70 font-light">
+            <ShieldCheck className="size-4 text-ocean shrink-0" strokeWidth={1.5} aria-hidden="true" />
+            <span>Pemesanan aman &amp; konfirmasi langsung terhubung ke admin lokal via WhatsApp.</span>
+          </div>
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            disabled={isPending}
+            aria-busy={isPending}
+            className="w-full rounded-none bg-ink text-paper hover:bg-ocean transition-colors uppercase tracking-widest font-medium text-xs py-4 px-6 border-0 shadow-none mt-3 cursor-pointer h-auto"
+          >
+            {isPending ? (
+              <>
+                <Loader2 className="size-4 animate-spin mr-2" strokeWidth={1.5} aria-hidden="true" />
+                <span>Memproses Booking...</span>
+              </>
+            ) : (
+              <>
+                <span>Kirim Permintaan Booking</span>
+                <ArrowUpRight className="size-4 ml-2" strokeWidth={1.5} aria-hidden="true" />
+              </>
+            )}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

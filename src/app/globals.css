@@ -36,52 +36,65 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --font-sans: "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif;
-  --font-serif: "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif;
+  --font-sans: var(--font-jost), "Jost", "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif;
+  --font-serif: var(--font-jost), "Jost", "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif;
 
-  /* Strict Design System Token Names (DESIGN.md) */
-  --color-softyellow: #FFF6C6;
-  --color-yellow: #FFF6C6;
-  --color-softblue: #5F7A8E;
-  --color-brown: #504139;
-  --color-softwhite: #E7E8DF;
-  --color-black: #2C2E31;
+  /* Strict Design System Token Names (DESIGN.md v2) */
+  --radius: 0rem;
+  --color-paper: #FAF9F4;
+  --color-sun: #FFF3C4;
+  --color-ink: #26241F;
+  --color-ocean: #0F5D66;
+  --color-foam: #ECEFEB;
+  --color-line: #E2DFD4;
+
+  /* Legacy aliases mapped to v2 */
+  --color-softyellow: #FFF3C4;
+  --color-yellow: #FFF3C4;
+  --color-softblue: #0F5D66;
+  --color-brown: #26241F;
+  --color-softwhite: #ECEFEB;
+  --color-black: #26241F;
+  --color-tissue: #FAF9F4;
+  --color-lightblue: #0F5D66;
+  --color-peach: #ECEFEB;
 }
 
 :root {
-  --background: #FFF6C6;
-  --foreground: #2C2E31;
-  --card: #E7E8DF;
-  --card-foreground: #2C2E31;
-  --popover: #E7E8DF;
-  --popover-foreground: #2C2E31;
-  --primary: #2C2E31;
-  --primary-foreground: #FFF6C6;
-  --secondary: #5F7A8E;
-  --secondary-foreground: #FFF6C6;
-  --muted: #504139;
-  --muted-foreground: #FFF6C6;
-  --accent: #5F7A8E;
-  --accent-foreground: #FFF6C6;
-  --border: #504139;
-  --input: #E7E8DF;
-  --ring: #2C2E31;
+  --radius: 0rem;
+  --background: #FAF9F4;
+  --foreground: #26241F;
+  --card: #ECEFEB;
+  --card-foreground: #26241F;
+  --popover: #ECEFEB;
+  --popover-foreground: #26241F;
+  --primary: #26241F;
+  --primary-foreground: #FAF9F4;
+  --secondary: #0F5D66;
+  --secondary-foreground: #FAF9F4;
+  --muted: #ECEFEB;
+  --muted-foreground: #26241F;
+  --accent: #FFF3C4;
+  --accent-foreground: #26241F;
+  --border: #E2DFD4;
+  --input: #E2DFD4;
+  --ring: #0F5D66;
 
-  --chart-1: #504139;
-  --chart-2: #5F7A8E;
-  --chart-3: #2C2E31;
+  --chart-1: #0F5D66;
+  --chart-2: #26241F;
+  --chart-3: #FFF3C4;
   --chart-4: #8C7355;
   --chart-5: #A3907C;
 
-  /* Sidebar Theme Variables (DESIGN.md) */
-  --sidebar: #2C2E31;
-  --sidebar-foreground: #FFF6C6;
-  --sidebar-primary: #504139;
-  --sidebar-primary-foreground: #FFF6C6;
-  --sidebar-accent: #504139;
-  --sidebar-accent-foreground: #FFF6C6;
-  --sidebar-border: #504139;
-  --sidebar-ring: #FFF6C6;
+  /* Sidebar Theme Variables (DESIGN.md v2) */
+  --sidebar: #26241F;
+  --sidebar-foreground: #FAF9F4;
+  --sidebar-primary: #0F5D66;
+  --sidebar-primary-foreground: #FAF9F4;
+  --sidebar-accent: #0F5D66;
+  --sidebar-accent-foreground: #FAF9F4;
+  --sidebar-border: #E2DFD4;
+  --sidebar-ring: #0F5D66;
 }
 
 /* ADMIN — neutral shadcn dashboard (ADMIN_UI.md) */
@@ -193,99 +206,14 @@ html[data-theme="admin"].dark {
   --sidebar-ring: #14b8a6;
 }
 
-/* Explicit Utility Classes for Color Tokens */
-.bg-softyellow,
-.bg-yellow {
-  background-color: #FFF6C6 !important;
-}
-
-.text-softyellow,
-.text-yellow {
-  color: #FFF6C6 !important;
-}
-
-.border-softyellow,
-.border-yellow {
-  border-color: #FFF6C6 !important;
-}
-
-.bg-softblue {
-  background-color: #5F7A8E !important;
-}
-
-.text-softblue {
-  color: #5F7A8E !important;
-}
-
-.border-softblue {
-  border-color: #5F7A8E !important;
-}
-
-.bg-brown {
-  background-color: #504139 !important;
-}
-
-.text-brown {
-  color: #504139 !important;
-}
-
-.border-brown {
-  border-color: #504139 !important;
-}
-
-.bg-softwhite {
-  background-color: #E7E8DF !important;
-}
-
-.text-softwhite {
-  color: #E7E8DF !important;
-}
-
-.border-softwhite {
-  border-color: #E7E8DF !important;
-}
-
-.bg-black {
-  background-color: #2C2E31 !important;
-}
-
-.text-black {
-  color: #2C2E31 !important;
-}
-
-.border-black {
-  border-color: #2C2E31 !important;
-}
-
-/* Backward compatibility classes */
-.bg-tissue {
-  background-color: #FFF6C6;
-}
-
-.text-tissue {
-  color: #FFF6C6;
-}
-
-.bg-lightblue {
-  background-color: #5F7A8E;
-}
-
-.text-lightblue {
-  color: #5F7A8E;
-}
-
-.bg-peach {
-  background-color: #504139;
-}
-
-.text-peach {
-  color: #504139;
-}
 
 /* Scoped Typography: Public Brand vs Admin */
 html:not([data-theme="admin"]),
 html:not([data-theme="admin"]) body {
-  font-family: var(--font-futura), "Futura", "Futura PT", "Futura-PT", "League Spartan", "Century Gothic", sans-serif;
+  font-family: var(--font-jost), "Jost", "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif;
+}
+
+html[data-scroll-behavior="smooth"]:not([data-theme="admin"]) {
   scroll-behavior: smooth;
 }
 

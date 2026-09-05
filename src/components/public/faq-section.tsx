@@ -14,33 +14,32 @@ interface FaqItem {
 const DEFAULT_FAQ_DATA: FaqItem[] = [
   {
     num: '01',
-    question: 'Gimana Cara Booking Layanan Doamandeh?',
-    answer: 'Gampang banget! Kamu bisa langsung pilih layanan di website ini dan klik tombol pesan, atau langsung chat admin kami via WhatsApp. Nanti tim Doamandeh bakal secepatnya konfirmasi jadwal buat kamu.',
+    question: "Gimana Cara Booking Layanan Do'amandeh?",
+    answer: "Gampang banget! Kamu bisa langsung pilih layanan di website ini dan klik tombol pesan, atau langsung chat admin kami via WhatsApp. Nanti tim Do'amandeh bakal secepatnya konfirmasi jadwal buat kamu.",
   },
   {
     num: '02',
     question: 'Apa Saja Syarat Sewa Motor Atau Mobil? ',
-    answer: 'Cukup siapkan identitas asli (KTP atau Paspor) dan SIM yang masih aktif (SIM C buat motor, SIM A buat mobil). Asyiknya lagi, Doamandeh kasih gratis antar-jemput kendaraan langsung ke hotelmu untuk area tertentu lho!',
+    answer: "Cukup siapkan identitas asli (KTP atau Paspor) dan SIM yang masih aktif (SIM C buat motor, SIM A buat mobil). Asyiknya lagi, Do'amandeh kasih gratis antar-jemput kendaraan langsung ke hotelmu untuk area tertentu lho!",
   },
   {
     num: '03',
     question: 'Studio Tattonya Aman Dan Steril Kan?',
-    answer: 'Pasti dong! Keamananmu itu nomor satu buat kami. Doamandeh pakai jarum dan alat sekali pakai (single-use) yang dibuka langsung di depanmu, tinta impor standar medis, plus studionya selalu rutin didisinfeksi.',
+    answer: "Pasti dong! Keamananmu itu nomor satu buat kami. Do'amandeh pakai jarum dan alat sekali pakai (single-use) yang dibuka langsung di depanmu, tinta impor standar medis, plus studionya selalu rutin didisinfeksi.",
   },
   {
     num: '04',
     question: 'Sewa Villa Sudah Termasuk Bersih-Bersih?',
-    answer: 'Sudah all-in! Nginep di villa Doamandeh udah pasti dapet private pool, WiFi kenceng, AC, alat mandi, sampai layanan bersih-bersih tiap hari (daily housekeeping). Kamu tinggal santai aja tanpa ada biaya tambahan.',
+    answer: "Sudah all-in! Nginep di villa Do'amandeh udah pasti dapet private pool, WiFi kenceng, AC, alat mandi, sampai layanan bersih-bersih tiap hari (daily housekeeping). Kamu tinggal santai aja tanpa ada biaya tambahan.",
   },
   {
     num: '05',
     question: 'Belum Pernah Surfing, Bisa Ikut Kelasnya?',
-    answer: 'Bisa banget! Instruktur selancar Doamandeh udah terbiasa dan sabar banget ngajarin pemula. Awalnya kita akan latihan santai di air dangkal dulu dengan pengawasan 1-on-1, jadi dijamin aman dan fun.',
+    answer: "Bisa banget! Instruktur selancar Do'amandeh udah terbiasa dan sabar banget ngajarin pemula. Awalnya kita akan latihan santai di air dangkal dulu dengan pengawasan 1-on-1, jadi dijamin aman dan fun.",
   },
 ];
 
-const DEFAULT_FAQ_IMAGE =
-  'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80';
+const DEFAULT_FAQ_IMAGE = '/assets/hero-bali.jpg';
 
 interface FaqSectionProps {
   faqTitle?: string;
@@ -74,7 +73,7 @@ export function FaqSection({
   };
 
   return (
-    <section id="faq" className="relative w-full bg-brown text-softyellow font-sans overflow-hidden">
+    <section id="faq" className="relative w-full bg-brown text-softyellow font-sans overflow-hidden scroll-mt-16 sm:scroll-mt-20">
 
       {/* 1. TAMPILAN MOBILE */}
       <div className="block md:hidden px-6 py-10 text-softyellow">
@@ -83,7 +82,7 @@ export function FaqSection({
           <h2 className="text-2xl sm:text-3xl font-medium leading-[1.15] tracking-tight text-softyellow max-w-[62%] whitespace-pre-line">
             {faqTitle}
           </h2>
-          <div className="relative w-28 h-36 shrink-0 overflow-hidden border-2 border-softyellow rounded-none">
+          <div className="relative w-28 h-36 shrink-0 overflow-hidden border border-line rounded-none">
             <Image
               src={faqImage || DEFAULT_FAQ_IMAGE}
               alt="Alam & Budaya Bali"
@@ -114,9 +113,9 @@ export function FaqSection({
                   </h3>
                   <div className="shrink-0 text-softyellow">
                     {isOpen ? (
-                      <Minus className="w-4 h-4 stroke-[2]" />
+                      <Minus className="w-4 h-4" strokeWidth={1.5} />
                     ) : (
-                      <Plus className="w-4 h-4 stroke-[2]" />
+                      <Plus className="w-4 h-4" strokeWidth={1.5} />
                     )}
                   </div>
                 </button>
@@ -171,9 +170,9 @@ export function FaqSection({
                     </h3>
                     <div className="shrink-0 text-softyellow">
                       {isOpen ? (
-                        <Minus className="w-4 h-4 stroke-[2]" />
+                        <Minus className="w-4 h-4" strokeWidth={1.5} />
                       ) : (
-                        <Plus className="w-4 h-4 stroke-[2]" />
+                        <Plus className="w-4 h-4" strokeWidth={1.5} />
                       )}
                     </div>
                   </button>
@@ -194,8 +193,8 @@ export function FaqSection({
 
         </FadeIn>
 
-        {/* Kolom Kanan: Foto Full-Height Desktop (Border 2px border-softyellow) */}
-        <div className="relative w-full h-full min-h-[100dvh] overflow-hidden border-l-2 border-softyellow">
+        {/* Kolom Kanan: Foto Full-Height Desktop (Border 1px border-line DESIGN.md v2) */}
+        <div className="relative w-full h-full min-h-[100dvh] overflow-hidden border-l border-line">
           <Image
             src={faqImage || DEFAULT_FAQ_IMAGE}
             alt="Tarian Kecak & Alam Bali"

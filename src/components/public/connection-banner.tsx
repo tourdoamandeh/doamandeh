@@ -15,10 +15,10 @@ export function ConnectionBanner({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-      <div className="p-6 rounded-[28px] bg-yellow border-none text-black flex items-start gap-4 shadow-sm">
-        <Info className="w-6 h-6 text-black shrink-0 mt-0.5" />
+      <div className="p-6 rounded-none bg-sun border border-line text-ink flex items-start gap-4 shadow-none">
+        <Info className="w-5 h-5 text-ink shrink-0 mt-0.5" strokeWidth={1.5} />
         <div className="space-y-1">
-          <h3 className="text-base font-sans font-bold text-black">
+          <h3 className="text-base font-sans font-medium text-ink">
             Koneksi Supabase Belum Dikonfigurasi
           </h3>
           <p className="text-xs text-black/80 leading-relaxed font-sans">
