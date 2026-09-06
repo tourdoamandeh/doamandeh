@@ -11,6 +11,7 @@ import { PublicHeader } from '@/components/public/public-header';
 import { PublicFooter } from '@/components/public/public-footer';
 import { BookingForm } from '@/components/public/booking-form';
 import { ToastProvider } from '@/components/public/toast';
+import { ServiceGalleryCarousel } from '@/components/public/service-gallery-carousel';
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -290,102 +291,12 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
           </div>
         </div>
 
-        {/* 3. GALERI ADAPTIF DINAMIS (DESIGN.md v2)
-            - 1 Foto: Single large banner 16:9 yang fokus dan elegan
-            - 2 Foto: Grid 2 kolom seimbang (50% - 50%) 16:10 tanpa foto acak/pura
-            - 3+ Foto: Grid 12 kolom (col-8 utama kiri + 2 foto col-4 kanan bertumpuk) */}
-        <div className="py-10 border-b border-line">
-          <p className="text-[10px] uppercase tracking-widest font-mono text-ocean mb-4">
-            // DOKUMENTASI VISUAL
-          </p>
-
-          {displayImages.length === 1 && (
-            <div className="w-full">
-              <AspectRatio ratio={16 / 9} className="border border-line rounded-none overflow-hidden relative bg-foam">
-                <Image
-                  src={displayImages[0]}
-                  alt={service.title}
-                  fill
-                  priority
-                  sizes="100vw"
-                  className="object-cover"
-                />
-              </AspectRatio>
-            </div>
-          )}
-
-          {displayImages.length === 2 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="w-full">
-                <AspectRatio ratio={16 / 10} className="border border-line rounded-none overflow-hidden relative bg-foam">
-                  <Image
-                    src={displayImages[0]}
-                    alt={`${service.title} - Foto 1`}
-                    fill
-                    priority
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover"
-                  />
-                </AspectRatio>
-              </div>
-              <div className="w-full">
-                <AspectRatio ratio={16 / 10} className="border border-line rounded-none overflow-hidden relative bg-foam">
-                  <Image
-                    src={displayImages[1]}
-                    alt={`${service.title} - Foto 2`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover"
-                  />
-                </AspectRatio>
-              </div>
-            </div>
-          )}
-
-          {displayImages.length >= 3 && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-              {/* Foto Utama col-span-8 */}
-              <div className="lg:col-span-8">
-                <AspectRatio ratio={16 / 10} className="border border-line rounded-none overflow-hidden relative bg-foam">
-                  <Image
-                    src={displayImages[0]}
-                    alt={service.title}
-                    fill
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 66vw"
-                    className="object-cover"
-                  />
-                </AspectRatio>
-              </div>
-
-              {/* 2 Foto col-span-4 stack */}
-              <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-4">
-                <div className="w-full">
-                  <AspectRatio ratio={16 / 10} className="border border-line rounded-none overflow-hidden relative bg-foam">
-                    <Image
-                      src={displayImages[1]}
-                      alt={`${service.title} preview 1`}
-                      fill
-                      sizes="(max-width: 1024px) 50vw, 33vw"
-                      className="object-cover"
-                    />
-                  </AspectRatio>
-                </div>
-                <div className="w-full">
-                  <AspectRatio ratio={16 / 10} className="border border-line rounded-none overflow-hidden relative bg-foam">
-                    <Image
-                      src={displayImages[2]}
-                      alt={`${service.title} preview 2`}
-                      fill
-                      sizes="(max-width: 1024px) 50vw, 33vw"
-                      className="object-cover"
-                    />
-                  </AspectRatio>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        {/* 3. FOCUS SLICE CAROUSEL DOKUMENTASI VISUAL (Selaras dengan Hero Section) */}
+        <ServiceGalleryCarousel
+          images={displayImages}
+          title={service.title}
+          categoryLabel={categoryMeta.label}
+        />
 
         {/* 4. KONTEN 2 KOLOM (DESIGN.md v2)
             Kiri: section "Deskripsi / Termasuk / Durasi / Meeting point" dipisah Separator
