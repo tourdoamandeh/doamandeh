@@ -18,11 +18,6 @@ export async function updateBookingStatusAction(
   try {
     const supabase = await createClient();
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return { success: false, error: 'Sesi telah berakhir. Silakan login kembali.' };
-    }
-
     const { error } = await supabase
       .from('bookings')
       .update({ status: parsedStatus.data })
@@ -93,14 +88,59 @@ export async function createBookingAction(input: BookingInput): Promise<ActionRe
   }
 }
 
-export async function deleteBookingAction(id: string): Promise<ActionResult<{ id: string }>> {
+export async function updateBookingAction(
+  id: string,
+  input: BookingInput
+): Promise<ActionResult<Booking>> {
+  const parsed = bookingSchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.message || 'Input edit booking tidak valid',
+    };
+  }
+
   try {
     const supabase = await createClient();
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return { success: false, error: 'Sesi telah berakhir. Silakan login kembali.' };
+    const { data, error } = await supabase
+      .from('bookings')
+      .update({
+        service_id: parsed.data.service_id,
+        customer_name: parsed.data.customer_name,
+        customer_email: parsed.data.customer_email,
+        customer_phone: parsed.data.customer_phone,
+        booking_date: parsed.data.booking_date,
+        notes: parsed.data.notes || null,
+        status: parsed.data.status,
+        total_price: parsed.data.total_price || null,
+      })
+      .eq('id', id)
+      .select('*, service:services(*)')
+      .single();
+
+    if (error) {
+      return { success: false, error: 'Gagal mengedit booking: ' + error.message };
     }
+
+    revalidatePath('/admin/bookings');
+    revalidatePath('/admin');
+
+    return {
+      success: true,
+      data: data as Booking,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : 'Terjadi kesalahan sistem saat mengedit booking.',
+    };
+  }
+}
+
+export async function deleteBookingAction(id: string): Promise<ActionResult<{ id: string }>> {
+  try {
+    const supabase = await createClient();
 
     const { error } = await supabase
       .from('bookings')

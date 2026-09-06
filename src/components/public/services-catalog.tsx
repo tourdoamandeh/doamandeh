@@ -8,7 +8,7 @@ import { Service, ServiceCategory } from '@/types/database';
 import { formatRupiah, getServiceImageUrl, getServiceFallbackImage } from '@/lib/constants';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { ArrowUpRight, Search, X } from 'lucide-react';
+import { ArrowUpRight, Search, X, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { SiteSettingsInput } from '@/lib/validations/admin';
 
 interface ServicesCatalogProps {
@@ -16,6 +16,8 @@ interface ServicesCatalogProps {
   whatsappNumber?: string;
   settings?: Partial<SiteSettingsInput>;
 }
+
+const ITEMS_PER_PAGE = 10;
 
 const CATEGORY_TABS: { key: 'all' | ServiceCategory; label: string; num: string }[] = [
   { key: 'all', label: 'Semua', num: 'ALL' },
@@ -74,6 +76,33 @@ const VALID_CATEGORIES: ServiceCategory[] = [
   'surfing-lesson',
 ];
 
+function getPaginationRange(current: number, total: number): (number | string)[] {
+  const delta = 1;
+  const range: number[] = [];
+  const rangeWithDots: (number | string)[] = [];
+  let l: number | undefined;
+
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+      range.push(i);
+    }
+  }
+
+  for (const i of range) {
+    if (l !== undefined) {
+      if (i - l === 2) {
+        rangeWithDots.push(l + 1);
+      } else if (i - l !== 1) {
+        rangeWithDots.push('...');
+      }
+    }
+    rangeWithDots.push(i);
+    l = i;
+  }
+
+  return rangeWithDots;
+}
+
 export function ServicesCatalog({
   services,
   settings,
@@ -88,12 +117,18 @@ export function ServicesCatalog({
 
   const [activeCategory, setActiveCategory] = useState<'all' | ServiceCategory>(initialCat);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (categoryParam && VALID_CATEGORIES.includes(categoryParam)) {
       setActiveCategory(categoryParam);
     }
   }, [categoryParam]);
+
+  // Reset page when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeCategory, searchQuery]);
 
   const pageTagline = settings?.services_page_tagline || '// LAYANAN';
   const pageTitle = settings?.services_page_title || 'Services';
@@ -127,6 +162,23 @@ export function ServicesCatalog({
     });
   }, [services, activeCategory, searchQuery]);
 
+  // Pagination calculation
+  const totalPages = Math.max(1, Math.ceil(filteredServices.length / ITEMS_PER_PAGE));
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedServices = useMemo(() => {
+    return filteredServices.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredServices, startIndex]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      const catalogNav = document.getElementById('catalog-nav');
+      if (catalogNav) {
+        catalogNav.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
+
   return (
     <div className="w-full font-sans text-ink">
       {/* 1. HEADER SPLIT (DESIGN.md v2) */}
@@ -146,14 +198,14 @@ export function ServicesCatalog({
           <p className="text-sm sm:text-base text-ink/75 font-light leading-relaxed max-w-sm">
             {pageDesc}
           </p>
-          <div className="border-l border-line pl-6 shrink-0">
+          {/* <div className="border-l border-line pl-6 shrink-0">
             <span className="text-5xl sm:text-6xl font-medium text-ink tracking-tight font-mono block leading-none">
               {services.length}
             </span>
             <span className="text-[10px] uppercase tracking-widest text-ink/60 font-mono block mt-2">
               Layanan Aktif
             </span>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -183,7 +235,7 @@ export function ServicesCatalog({
       </div>
 
       {/* 3. FILTER & SEARCH BAR */}
-      <div className="py-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-line">
+      <div id="catalog-nav" className="py-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-line scroll-mt-24">
         {/* Filter Categories Ribbon */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
           {CATEGORY_TABS.map((tab) => {
@@ -194,11 +246,10 @@ export function ServicesCatalog({
                 key={tab.key}
                 type="button"
                 onClick={() => setActiveCategory(tab.key)}
-                className={`px-3.5 py-2 text-xs uppercase tracking-widest font-medium transition-colors border rounded-none shrink-0 flex items-center gap-2 ${
-                  isActive
+                className={`px-3.5 py-2 text-xs uppercase tracking-widest font-medium transition-colors border rounded-none shrink-0 flex items-center gap-2 ${isActive
                     ? 'bg-ink text-paper border-ink'
                     : 'bg-foam text-ink border-line hover:bg-sun hover:border-line'
-                }`}
+                  }`}
               >
                 <span>{tab.label}</span>
                 <span className={`text-[10px] font-mono ${isActive ? 'text-paper/60' : 'text-ink/50'}`}>
@@ -254,7 +305,7 @@ export function ServicesCatalog({
         </div>
       ) : (
         <div className="divide-y divide-line border-b border-line">
-          {filteredServices.map((service, index) => (
+          {paginatedServices.map((service, index) => (
             <Link
               key={service.id}
               href={`/services/${service.id}`}
@@ -263,7 +314,7 @@ export function ServicesCatalog({
               {/* [01] [Thumbnail Foto] [Nama Layanan Besar + Badge Category] */}
               <div className="flex items-center sm:items-start gap-4 sm:gap-6 flex-1 min-w-0">
                 <span className="font-mono text-xs sm:text-sm text-ink/40 group-hover:text-ink transition-colors shrink-0 pt-1">
-                  {String(index + 1).padStart(2, '0')}
+                  {String(startIndex + index + 1).padStart(2, '0')}
                 </span>
 
                 {/* Thumbnail Foto Layanan */}
@@ -322,10 +373,89 @@ export function ServicesCatalog({
         </div>
       )}
 
-      {/* 4. FOOTER NOTE */}
+      {/* 5. MINIMALIST PAGINATION CONTROLS (Desktop: Right aligned, Mobile: Centered) */}
+      {totalPages > 1 && (
+        <div className="py-6 flex items-center justify-center sm:justify-end gap-1.5 overflow-x-auto max-w-full border-b border-line">
+          {/* First Page << */}
+          <button
+            type="button"
+            disabled={currentPage === 1}
+            onClick={() => handlePageChange(1)}
+            aria-label="Halaman Pertama"
+            className="size-9 border border-line bg-foam text-ink hover:bg-sun disabled:opacity-30 disabled:hover:bg-foam disabled:cursor-not-allowed transition-colors rounded-none shrink-0 flex items-center justify-center"
+          >
+            <ChevronsLeft className="size-4" strokeWidth={1.5} />
+          </button>
+
+          {/* Previous Page < */}
+          <button
+            type="button"
+            disabled={currentPage === 1}
+            onClick={() => handlePageChange(currentPage - 1)}
+            aria-label="Halaman Sebelumnya"
+            className="size-9 border border-line bg-foam text-ink hover:bg-sun disabled:opacity-30 disabled:hover:bg-foam disabled:cursor-not-allowed transition-colors rounded-none shrink-0 flex items-center justify-center"
+          >
+            <ChevronLeft className="size-4" strokeWidth={1.5} />
+          </button>
+
+          {/* Page Numbers & Ellipses */}
+          {getPaginationRange(currentPage, totalPages).map((item, idx) => {
+            if (typeof item === 'string') {
+              return (
+                <span
+                  key={`dots-${idx}`}
+                  className="px-1 text-xs font-mono text-ink/50 select-none shrink-0 flex items-center justify-center"
+                >
+                  ...
+                </span>
+              );
+            }
+
+            const isActive = item === currentPage;
+            return (
+              <button
+                key={item}
+                type="button"
+                onClick={() => handlePageChange(item)}
+                className={`size-9 text-xs font-mono font-medium border rounded-none transition-colors shrink-0 flex items-center justify-center ${
+                  isActive
+                    ? 'bg-ink text-paper border-ink font-semibold'
+                    : 'bg-foam text-ink border-line hover:bg-sun'
+                }`}
+              >
+                {item}
+              </button>
+            );
+          })}
+
+          {/* Next Page > */}
+          <button
+            type="button"
+            disabled={currentPage === totalPages}
+            onClick={() => handlePageChange(currentPage + 1)}
+            aria-label="Halaman Selanjutnya"
+            className="size-9 border border-line bg-foam text-ink hover:bg-sun disabled:opacity-30 disabled:hover:bg-foam disabled:cursor-not-allowed transition-colors rounded-none shrink-0 flex items-center justify-center"
+          >
+            <ChevronRight className="size-4" strokeWidth={1.5} />
+          </button>
+
+          {/* Last Page >> */}
+          <button
+            type="button"
+            disabled={currentPage === totalPages}
+            onClick={() => handlePageChange(totalPages)}
+            aria-label="Halaman Terakhir"
+            className="size-9 border border-line bg-foam text-ink hover:bg-sun disabled:opacity-30 disabled:hover:bg-foam disabled:cursor-not-allowed transition-colors rounded-none shrink-0 flex items-center justify-center"
+          >
+            <ChevronsRight className="size-4" strokeWidth={1.5} />
+          </button>
+        </div>
+      )}
+
+      {/* 6. FOOTER NOTE */}
       <div className="pt-8 pb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-light text-ink/60">
         <p>
-          Menampilkan <span className="font-medium text-ink">{filteredServices.length}</span> dari {services.length} layanan yang tersedia.
+          Menampilkan <span className="font-medium text-ink">{startIndex + 1}–{Math.min(startIndex + ITEMS_PER_PAGE, filteredServices.length)}</span> dari {filteredServices.length} layanan ({services.length} total layanan).
         </p>
         <p className="text-[11px] uppercase tracking-wider font-mono">
           Semua harga sudah termasuk pajak &amp; layanan operasional.

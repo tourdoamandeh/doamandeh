@@ -243,11 +243,6 @@ export function PublicFooter({ settings }: PublicFooterProps) {
                   {currentSettings.operating_hours_title || 'Buka Setiap Hari'}
                 </p>
                 <p className="text-sm text-ink/80 font-light">{currentSettings.operating_hours_time || '08:00 - 22:00 WITA'}</p>
-                <div className="w-full h-px bg-line my-3"></div>
-                <p className="text-[10px] uppercase tracking-widest font-bold text-ocean flex items-center gap-2">
-                  <span className="size-1.5 bg-ocean block"></span>
-                  {currentSettings.operating_hours_note || 'Reservasi Server 24/7'}
-                </p>
               </div>
             </div>
           </div>

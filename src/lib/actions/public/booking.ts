@@ -117,7 +117,7 @@ export async function createPublicBookingAction(
       .insert({
         service_id: serviceId,
         customer_name: customerName,
-        customer_email: customerEmail,
+        customer_email: customerEmail || '-',
         customer_phone: customerPhone,
         booking_date: startDate,
         notes: formattedNotes || null,

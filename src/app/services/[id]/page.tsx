@@ -398,7 +398,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
           {/* Kolom Kanan: Card Form Booking Sticky */}
           <div className="lg:col-span-5 lg:sticky lg:top-24">
             <ToastProvider>
-              <BookingForm service={service} />
+              <BookingForm service={service} whatsappNumber={siteSettings.contact_whatsapp} />
             </ToastProvider>
           </div>
         </div>

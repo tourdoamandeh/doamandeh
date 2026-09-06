@@ -11,7 +11,11 @@ export const publicBookingSchema = z
     customerEmail: z
       .string()
       .trim()
-      .email('Format email tidak valid (contoh: nama@email.com)'),
+      .optional()
+      .refine(
+        (val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
+        'Format email tidak valid (contoh: nama@email.com)'
+      ),
     customerPhone: z
       .string()
       .trim()

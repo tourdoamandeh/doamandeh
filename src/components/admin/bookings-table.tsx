@@ -15,6 +15,7 @@ import {
   Calendar,
   Loader2,
   Eye,
+  Pencil,
   X,
   ArrowUpDown,
   MessageCircle,
@@ -84,6 +85,7 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'date-asc' | 'price-desc'>('newest');
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [bookingToEdit, setBookingToEdit] = useState<(Booking & { service?: Service | null }) | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<(Booking & { service?: Service | null }) | null>(null);
   const [bookingToDelete, setBookingToDelete] = useState<(Booking & { service?: Service | null }) | null>(null);
 
@@ -95,13 +97,19 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
   const filteredBookings = initialBookings
     .filter((b) => {
       const query = search.toLowerCase().trim();
+      const name = (b.customer_name || '').toLowerCase();
+      const email = (b.customer_email || '').toLowerCase();
+      const phone = b.customer_phone || '';
+      const serviceTitle = (b.service?.title || '').toLowerCase();
+      const notes = (b.notes || '').toLowerCase();
+
       const matchesSearch =
         !query ||
-        b.customer_name.toLowerCase().includes(query) ||
-        b.customer_email.toLowerCase().includes(query) ||
-        b.customer_phone.includes(query) ||
-        (b.service?.title && b.service.title.toLowerCase().includes(query)) ||
-        (b.notes && b.notes.toLowerCase().includes(query));
+        name.includes(query) ||
+        email.includes(query) ||
+        phone.includes(query) ||
+        serviceTitle.includes(query) ||
+        notes.includes(query);
 
       const matchesStatus = statusFilter === 'all' || b.status === statusFilter;
       const matchesCategory =
@@ -111,15 +119,15 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
     })
     .sort((a, b) => {
       if (sortBy === 'oldest') {
-        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
       }
       if (sortBy === 'date-asc') {
-        return new Date(a.booking_date).getTime() - new Date(b.booking_date).getTime();
+        return new Date(a.booking_date || 0).getTime() - new Date(b.booking_date || 0).getTime();
       }
       if (sortBy === 'price-desc') {
         return (Number(b.total_price) || 0) - (Number(a.total_price) || 0);
       }
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
     });
 
   // Count by Status
@@ -136,12 +144,9 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
     startTransition(async () => {
       const res = await updateBookingStatusAction(id, newStatus);
       if (!res.success) {
-        toast.error(res.error || 'Gagal mengupdate status');
+        toast.error(res.error || 'Gagal mengubah status booking');
       } else {
-        toast.success(`Status booking diubah ke "${newStatus}"`);
-        if (selectedBooking && selectedBooking.id === id) {
-          setSelectedBooking({ ...selectedBooking, status: newStatus });
-        }
+        toast.success(`Status booking berhasil diubah menjadi "${newStatus}"`);
       }
       setUpdatingId(null);
     });
@@ -173,11 +178,14 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
   }
 
   function generateWhatsAppLink(booking: Booking & { service?: Service | null }): string {
-    const rawPhone = booking.customer_phone.replace(/\D/g, '');
+    const phoneStr = booking.customer_phone || '';
+    const rawPhone = phoneStr.replace(/\D/g, '');
     const cleanPhone = rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : rawPhone;
     const serviceName = booking.service?.title || 'Layanan Wisata';
+    const customerName = booking.customer_name || 'Pelanggan';
+    const bookingDate = booking.booking_date || '-';
     const text = encodeURIComponent(
-      `Halo ${booking.customer_name}, kami dari Do'amandeh Tours & Travel ingin mengonfirmasi pesanan Anda untuk ${serviceName} pada tanggal ${booking.booking_date}. Mohon konfirmasi ketersediaan Anda. Terima kasih!`
+      `Halo ${customerName}, kami dari Do'amandeh Tours & Travel ingin mengonfirmasi pesanan Anda untuk ${serviceName} pada tanggal ${bookingDate}. Mohon konfirmasi ketersediaan Anda. Terima kasih!`
     );
     return `https://wa.me/${cleanPhone}?text=${text}`;
   }
@@ -269,7 +277,10 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
 
         {/* Primary Action Button */}
         <Button
-          onClick={() => setDialogOpen(true)}
+          onClick={() => {
+            setBookingToEdit(null);
+            setDialogOpen(true);
+          }}
           size="sm"
           className="bg-primary hover:bg-primary/90 text-primary-foreground h-9"
         >
@@ -446,6 +457,18 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
                           <Button
                             variant="ghost"
                             size="sm"
+                            onClick={() => {
+                              setBookingToEdit(booking);
+                              setDialogOpen(true);
+                            }}
+                            className="size-7 p-0 text-muted-foreground hover:text-foreground"
+                            title="Edit Booking"
+                          >
+                            <Pencil className="size-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => setSelectedBooking(booking)}
                             className="size-7 p-0 text-muted-foreground hover:text-foreground"
                             title="Lihat Detail"
@@ -472,11 +495,15 @@ export function BookingsTable({ initialBookings, services }: BookingsTableProps)
         </CardContent>
       </Card>
 
-      {/* Manual Booking Dialog */}
+      {/* Manual & Edit Booking Dialog */}
       <BookingFormDialog
         services={services}
         isOpen={dialogOpen}
-        onClose={() => setDialogOpen(false)}
+        onClose={() => {
+          setDialogOpen(false);
+          setBookingToEdit(null);
+        }}
+        bookingToEdit={bookingToEdit}
       />
 
       {/* Booking Detail Drawer */}

@@ -48,6 +48,7 @@ import {
 
 interface BookingFormProps {
   service: Service;
+  whatsappNumber?: string;
 }
 
 function formatRupiah(amount: number): string {
@@ -154,7 +155,7 @@ function BookingDatePicker({
   );
 }
 
-export function BookingForm({ service }: BookingFormProps) {
+export function BookingForm({ service, whatsappNumber }: BookingFormProps) {
   const { success: showToastSuccess, error: showToastError, info: showToastInfo } = useToast();
   const [isPending, startTransition] = useTransition();
 
@@ -377,7 +378,8 @@ export function BookingForm({ service }: BookingFormProps) {
       (completedBooking.notes ? `\n*Rincian Permintaan*:\n${completedBooking.notes}\n` : '') +
       `\nMohon konfirmasi ketersediaan dan proses pemesanan saya. Terima kasih!`;
 
-    const waLink = `https://wa.me/6281234567890?text=${encodeURIComponent(waMessage)}`;
+    const cleanWa = (whatsappNumber || '+62 812-3456-7890').replace(/[^0-9]/g, '');
+    const waLink = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waMessage)}`;
 
     return (
       <Card className="rounded-none border border-line bg-paper text-ink shadow-none font-sans p-6 sm:p-8 space-y-6">

@@ -36,8 +36,10 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --font-sans: var(--font-jost), "Jost", "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif;
-  --font-serif: var(--font-jost), "Jost", "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif;
+  --font-sans: "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", var(--font-jost), "Jost", "Century Gothic", sans-serif;
+  --font-serif: "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", var(--font-jost), "Jost", "Century Gothic", sans-serif;
+  --font-mono: "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", var(--font-jost), "Jost", "Century Gothic", sans-serif;
+  --font-futura: "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", var(--font-jost), "Jost", "Century Gothic", sans-serif;
 
   /* Strict Design System Token Names (DESIGN.md v2) */
   --radius: 0rem;
@@ -207,41 +209,20 @@ html[data-theme="admin"].dark {
 }
 
 
-/* Scoped Typography: Public Brand vs Admin */
-html:not([data-theme="admin"]),
-html:not([data-theme="admin"]) body {
-  font-family: var(--font-jost), "Jost", "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", "Century Gothic", sans-serif;
-}
-
-html[data-scroll-behavior="smooth"]:not([data-theme="admin"]) {
-  scroll-behavior: smooth;
-}
-
-html:not([data-theme="admin"]) button,
-html:not([data-theme="admin"]) input,
-html:not([data-theme="admin"]) select,
-html:not([data-theme="admin"]) textarea {
-  font-family: inherit;
-}
-
-[data-theme="admin"],
-[data-theme="admin"] body {
-  font-family: "Instrument Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-
-[data-theme="admin"] button,
-[data-theme="admin"] input,
-[data-theme="admin"] select,
-[data-theme="admin"] textarea {
-  font-family: inherit;
-}
-
-[data-theme="admin"] code,
-[data-theme="admin"] kbd,
-[data-theme="admin"] samp,
-[data-theme="admin"] pre,
-[data-theme="admin"] .font-mono {
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+/* Universal Typography: Everything Uses Futura Font */
+*,
+*::before,
+*::after,
+html,
+body,
+button,
+input,
+select,
+textarea,
+.font-sans,
+.font-mono,
+.font-serif {
+  font-family: "Futura", "Futura PT", "Futura-PT", var(--font-futura), "League Spartan", var(--font-jost), "Jost", "Century Gothic", sans-serif !important;
 }
 
 /* Status & Surface Helper Utilities for Admin (ADMIN_UI.md) */
