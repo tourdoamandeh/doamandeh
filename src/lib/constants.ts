@@ -121,17 +121,75 @@ export function getServiceFallbackImage(category?: string | null): string {
 }
 
 /**
- * Mengambil URL gambar layanan yang valid.
+ * Mengurai string image_url menjadi array string URL foto [utama, galeri1, galeri2, ...]
+ * Mendukung format:
+ * - JSON string array: '["url1", "url2", "url3"]'
+ * - Single URL string: 'https://...' atau '/assets/...'
+ */
+export function parseServiceImages(imageUrl?: string | null): string[] {
+  if (!imageUrl || imageUrl.trim() === '') return [];
+  const trimmed = imageUrl.trim();
+  if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((item): item is string => typeof item === 'string' && item.trim() !== '');
+      }
+    } catch {
+      // fallback jika gagal parse JSON
+    }
+  }
+  return [trimmed];
+}
+
+/**
+ * Mengemas array URL gambar menjadi string untuk disimpan di database.
+ * Jika kosong -> null
+ * Jika hanya 1 gambar -> string URL biasa (backward-compatible)
+ * Jika lebih dari 1 gambar -> JSON array string
+ */
+export function serializeServiceImages(images: (string | null | undefined)[]): string | null {
+  const filtered = images.map((img) => (img ? img.trim() : '')).filter(Boolean);
+  if (filtered.length === 0) return null;
+  if (filtered.length === 1) return filtered[0];
+  return JSON.stringify(filtered);
+}
+
+/**
+ * Mengambil URL gambar layanan yang valid (foto utama / cover).
  * Jika `image_url` kosong/null/undefined, otomatis fallback ke aset lokal public/assets.
  */
 export function getServiceImageUrl(service?: {
   image_url?: string | null;
   category?: string | null;
 } | null): string {
-  if (service?.image_url && service.image_url.trim() !== '') {
-    return service.image_url;
+  const images = parseServiceImages(service?.image_url);
+  if (images.length > 0 && images[0]) {
+    return images[0];
   }
   return getServiceFallbackImage(service?.category);
+}
+
+/**
+ * Mengambil 2 foto dokumentasi / galeri samping untuk halaman detail layanan.
+ * Memprioritaskan foto ke-2 dan ke-3 yang diunggah dari CMS.
+ * Jika belum diunggah, otomatis fallback ke aset default kategori.
+ */
+export function getServiceGalleryImages(
+  service?: {
+    image_url?: string | null;
+    category?: string | null;
+  } | null,
+  fallbackImages?: [string, string]
+): [string, string] {
+  const images = parseServiceImages(service?.image_url);
+  const fallback0 = fallbackImages?.[0] || getServiceFallbackImage(service?.category);
+  const fallback1 = fallbackImages?.[1] || '/assets/hero-bali.svg';
+
+  const g0 = images[1] || fallback0;
+  const g1 = images[2] || fallback1;
+
+  return [g0, g1];
 }
 
 /**

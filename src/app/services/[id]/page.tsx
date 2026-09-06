@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { Service, ServiceCategory } from '@/types/database';
-import { getServiceImageUrl, formatRupiah } from '@/lib/constants';
+import { getServiceImageUrl, getServiceGalleryImages, formatRupiah } from '@/lib/constants';
 import { getSiteSettingsAction } from '@/lib/actions/admin/settings';
 import { DEFAULT_SITE_SETTINGS } from '@/lib/validations/admin';
 import { PublicHeader } from '@/components/public/public-header';
@@ -164,6 +164,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
   )}`;
 
   const mainImageUrl = getServiceImageUrl(service);
+  const [galleryImg1, galleryImg2] = getServiceGalleryImages(service, categoryMeta.galleryImages);
 
   return (
     <div className="min-h-screen flex flex-col bg-paper text-ink font-sans selection:bg-sun selection:text-ink">
@@ -313,7 +314,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
               <div className="w-full">
                 <AspectRatio ratio={16 / 10} className="border border-line rounded-none overflow-hidden relative bg-foam">
                   <Image
-                    src={categoryMeta.galleryImages[0]}
+                    src={galleryImg1}
                     alt={`${service.title} preview 1`}
                     fill
                     sizes="(max-width: 1024px) 50vw, 33vw"
@@ -324,7 +325,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
               <div className="w-full">
                 <AspectRatio ratio={16 / 10} className="border border-line rounded-none overflow-hidden relative bg-foam">
                   <Image
-                    src={categoryMeta.galleryImages[1]}
+                    src={galleryImg2}
                     alt={`${service.title} preview 2`}
                     fill
                     sizes="(max-width: 1024px) 50vw, 33vw"

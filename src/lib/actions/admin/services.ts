@@ -6,6 +6,7 @@ import { Service } from '@/types/database';
 import { revalidatePath } from 'next/cache';
 import { ActionResult } from './auth';
 import { deleteServiceImageAction } from './storage';
+import { parseServiceImages } from '@/lib/constants';
 
 export async function createServiceAction(input: ServiceInput): Promise<ActionResult<Service>> {
   const parsed = serviceSchema.safeParse(input);
@@ -165,7 +166,10 @@ export async function deleteServiceAction(id: string): Promise<ActionResult<{ id
       .single();
 
     if (serviceData?.image_url) {
-      await deleteServiceImageAction(serviceData.image_url).catch(() => {});
+      const images = parseServiceImages(serviceData.image_url);
+      for (const img of images) {
+        await deleteServiceImageAction(img).catch(() => {});
+      }
     }
 
     const { error } = await supabase

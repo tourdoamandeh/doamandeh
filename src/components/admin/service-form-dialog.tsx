@@ -12,6 +12,7 @@ import {
   UploadCloud,
   Trash2,
   Link as LinkIcon,
+  CheckCircle2,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,6 +20,8 @@ import { Button } from '@/components/ui/button';
 import {
   SERVICE_PRESET_IMAGES,
   getServiceFallbackImage,
+  parseServiceImages,
+  serializeServiceImages,
 } from '@/lib/constants';
 import {
   Drawer,
@@ -46,6 +49,30 @@ const CATEGORIES: { value: ServiceCategory; label: string }[] = [
 
 const MAX_IMAGE_SIZE_MB = 5;
 
+const SLOT_META = [
+  {
+    title: 'Slot 1: Foto Utama / Cover',
+    badge: 'Cover Utama (Wajib)',
+    hint: 'Tampil di katalog, kartu layanan landing page, dan foto utama halaman detail.',
+  },
+  {
+    title: 'Slot 2: Foto Dokumentasi 1',
+    badge: 'Galeri Samping 1 (Opsional)',
+    hint: 'Tampil sebagai foto galeri samping atas di halaman detail layanan.',
+  },
+  {
+    title: 'Slot 3: Foto Dokumentasi 2',
+    badge: 'Galeri Samping 2 (Opsional)',
+    hint: 'Tampil sebagai foto galeri samping bawah di halaman detail layanan.',
+  },
+];
+
+interface ImageSlotState {
+  url: string;
+  preview: string;
+  file: File | null;
+}
+
 async function compressImageToDataUrl(file: File): Promise<string> {
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -65,7 +92,7 @@ async function compressImageToDataUrl(file: File): Promise<string> {
           }
         } else {
           if (height > MAX_HEIGHT) {
-            width = Math.round((width * MAX_HEIGHT) / height);
+            width = Math.round((height * MAX_HEIGHT) / height);
             height = MAX_HEIGHT;
           }
         }
@@ -107,10 +134,14 @@ export function ServiceFormDialog({
   const [duration, setDuration] = useState('');
   const [isActive, setIsActive] = useState(true);
 
-  // Image State
-  const [imageUrl, setImageUrl] = useState('');
-  const [previewUrl, setPreviewUrl] = useState('');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // Multi-Image State: 3 slots (Slot 0: Main, Slot 1: Gallery 1, Slot 2: Gallery 2)
+  const [activeSlot, setActiveSlot] = useState<number>(0);
+  const [slots, setSlots] = useState<[ImageSlotState, ImageSlotState, ImageSlotState]>([
+    { url: '', preview: '', file: null },
+    { url: '', preview: '', file: null },
+    { url: '', preview: '', file: null },
+  ]);
+
   const [isUploading, setIsUploading] = useState(false);
   const [isDeletingImage, setIsDeletingImage] = useState(false);
   const [uploadMode, setUploadMode] = useState<'upload' | 'preset' | 'url'>('upload');
@@ -127,9 +158,14 @@ export function ServiceFormDialog({
         setUnit(service.unit || 'per hari');
         setDuration(service.duration || '');
         setIsActive(service.is_active);
-        setImageUrl(service.image_url || '');
-        setPreviewUrl(service.image_url || '');
-        setSelectedFile(null);
+
+        const parsed = parseServiceImages(service.image_url);
+        setSlots([
+          { url: parsed[0] || '', preview: parsed[0] || '', file: null },
+          { url: parsed[1] || '', preview: parsed[1] || '', file: null },
+          { url: parsed[2] || '', preview: parsed[2] || '', file: null },
+        ]);
+        setActiveSlot(0);
       } else {
         setCategory('vehicle-rental');
         setTitle('');
@@ -138,9 +174,12 @@ export function ServiceFormDialog({
         setUnit('per hari');
         setDuration('');
         setIsActive(true);
-        setImageUrl('');
-        setPreviewUrl('');
-        setSelectedFile(null);
+        setSlots([
+          { url: '', preview: '', file: null },
+          { url: '', preview: '', file: null },
+          { url: '', preview: '', file: null },
+        ]);
+        setActiveSlot(0);
       }
       setErrorMessage(null);
     }
@@ -158,15 +197,22 @@ export function ServiceFormDialog({
     }
 
     setErrorMessage(null);
-    setSelectedFile(file);
-
+    let preview = '';
     try {
-      const compressedDataUrl = await compressImageToDataUrl(file);
-      setPreviewUrl(compressedDataUrl);
+      preview = await compressImageToDataUrl(file);
     } catch {
-      const objUrl = URL.createObjectURL(file);
-      setPreviewUrl(objUrl);
+      preview = URL.createObjectURL(file);
     }
+
+    setSlots((prev) => {
+      const next = [...prev] as [ImageSlotState, ImageSlotState, ImageSlotState];
+      next[activeSlot] = {
+        ...next[activeSlot],
+        file,
+        preview,
+      };
+      return next;
+    });
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -186,16 +232,39 @@ export function ServiceFormDialog({
   }
 
   function handleSelectPreset(url: string) {
-    setImageUrl(url);
-    setPreviewUrl(url);
-    setSelectedFile(null);
+    setSlots((prev) => {
+      const next = [...prev] as [ImageSlotState, ImageSlotState, ImageSlotState];
+      next[activeSlot] = {
+        url,
+        preview: url,
+        file: null,
+      };
+      return next;
+    });
   }
 
-  async function handleRemoveImage() {
-    const currentUrl = imageUrl || previewUrl;
-    setSelectedFile(null);
-    setPreviewUrl('');
-    setImageUrl('');
+  function handleUrlChange(val: string) {
+    setSlots((prev) => {
+      const next = [...prev] as [ImageSlotState, ImageSlotState, ImageSlotState];
+      next[activeSlot] = {
+        url: val,
+        preview: val,
+        file: null,
+      };
+      return next;
+    });
+  }
+
+  async function handleRemoveActiveImage() {
+    const currentSlot = slots[activeSlot];
+    const currentUrl = currentSlot.url || currentSlot.preview;
+
+    setSlots((prev) => {
+      const next = [...prev] as [ImageSlotState, ImageSlotState, ImageSlotState];
+      next[activeSlot] = { url: '', preview: '', file: null };
+      return next;
+    });
+
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -208,25 +277,8 @@ export function ServiceFormDialog({
     ) {
       setIsDeletingImage(true);
       try {
-        const res = await deleteServiceImageAction(currentUrl);
-        if (res.success) {
-          toast.success('Foto layanan berhasil dihapus dari storage.');
-          if (service?.id) {
-            await updateServiceAction(service.id, {
-              category: service.category,
-              title: service.title,
-              description: service.description || undefined,
-              price: service.price,
-              unit: service.unit || 'per hari',
-              duration: service.duration || undefined,
-              image_url: undefined,
-              is_active: service.is_active,
-            });
-            onSuccess?.();
-          }
-        } else if (res.error) {
-          toast.error(res.error);
-        }
+        await deleteServiceImageAction(currentUrl);
+        toast.success(`Foto slot ${activeSlot + 1} berhasil dihapus dari storage.`);
       } catch {
         toast.error('Gagal menghapus gambar dari storage.');
       } finally {
@@ -246,48 +298,62 @@ export function ServiceFormDialog({
     }
 
     startTransition(async () => {
-      let finalImageUrl = imageUrl.trim() || undefined;
+      setIsUploading(true);
+      const finalUrls: (string | null)[] = ['', '', ''];
+      let hasUploadError = false;
 
-      if (selectedFile) {
-        setIsUploading(true);
-        try {
-          const uploadFormData = new FormData();
-          uploadFormData.append('file', selectedFile);
-          uploadFormData.append('category', category);
+      try {
+        for (let i = 0; i < 3; i++) {
+          const slot = slots[i];
+          if (slot.file) {
+            const uploadFormData = new FormData();
+            uploadFormData.append('file', slot.file);
+            uploadFormData.append('category', category);
 
-          const uploadRes = await uploadServiceImageAction(uploadFormData);
-          if (uploadRes.success && uploadRes.data?.publicUrl) {
-            finalImageUrl = uploadRes.data.publicUrl;
+            const uploadRes = await uploadServiceImageAction(uploadFormData);
+            if (uploadRes.success && uploadRes.data?.publicUrl) {
+              finalUrls[i] = uploadRes.data.publicUrl;
+            } else {
+              const errorMsg = uploadRes.error || `Gagal mengunggah foto slot ${i + 1} ke storage.`;
+              setErrorMessage(errorMsg);
+              toast.error(errorMsg);
+              hasUploadError = true;
+              break;
+            }
           } else {
-            const errorMsg = uploadRes.error || 'Gagal mengupload gambar ke Supabase Storage.';
-            setErrorMessage(errorMsg);
-            toast.error(errorMsg);
-            setIsUploading(false);
-            return;
+            finalUrls[i] = slot.url.trim() || null;
           }
-        } catch (uploadErr) {
-          const errorMsg =
-            uploadErr instanceof Error
-              ? uploadErr.message
-              : 'Terjadi kesalahan saat mengunggah gambar ke storage.';
-          setErrorMessage(errorMsg);
-          toast.error(errorMsg);
-          setIsUploading(false);
-          return;
-        } finally {
-          setIsUploading(false);
         }
+      } catch (err) {
+        const errorMsg =
+          err instanceof Error
+            ? err.message
+            : 'Terjadi kesalahan saat mengunggah gambar ke storage.';
+        setErrorMessage(errorMsg);
+        toast.error(errorMsg);
+        hasUploadError = true;
+      } finally {
+        setIsUploading(false);
       }
 
+      if (hasUploadError) return;
+
+      const finalImageUrl = serializeServiceImages(finalUrls);
+
       if (isEditing && service) {
-        // If image was replaced or deleted, clean up old storage file
-        if (service.image_url && service.image_url !== finalImageUrl) {
-          if (
-            service.image_url.includes('supabase.co/storage') ||
-            service.image_url.startsWith('services/') ||
-            service.image_url.startsWith('images/')
-          ) {
-            deleteServiceImageAction(service.image_url).catch(() => {});
+        // Clean up any old storage files that are no longer referenced
+        if (service.image_url) {
+          const oldImages = parseServiceImages(service.image_url);
+          for (const oldImg of oldImages) {
+            if (!finalUrls.includes(oldImg)) {
+              if (
+                oldImg.includes('supabase.co/storage') ||
+                oldImg.startsWith('services/') ||
+                oldImg.startsWith('images/')
+              ) {
+                deleteServiceImageAction(oldImg).catch(() => {});
+              }
+            }
           }
         }
 
@@ -334,7 +400,8 @@ export function ServiceFormDialog({
     });
   }
 
-  const activeDisplayImage = previewUrl || imageUrl;
+  const activeSlotState = slots[activeSlot];
+  const activeDisplayImage = activeSlotState.preview || activeSlotState.url;
   const currentPresets = SERVICE_PRESET_IMAGES[category] || [];
 
   return (
@@ -353,350 +420,442 @@ export function ServiceFormDialog({
               {isEditing ? 'Edit Layanan' : 'Tambah Layanan Baru'}
             </DrawerTitle>
             <DrawerDescription className="text-xs text-muted-foreground mt-0.5">
-              Isi informasi katalog layanan operasional Do&apos;amandeh.
+              Kelola informasi layanan, tarif, status ketersediaan, serta 3 foto dokumentasi galeri.
             </DrawerDescription>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="size-8 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+            className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
           >
             <X className="size-4" />
           </button>
         </DrawerHeader>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 text-xs">
-          {errorMessage && (
-            <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive flex items-start gap-2.5 text-xs">
-              <AlertCircle className="size-4 shrink-0 mt-0.5" />
-              <span>{errorMessage}</span>
-            </div>
-          )}
+        {/* Scrollable Form Body */}
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto flex flex-col">
+          <div className="p-6 space-y-4 flex-1">
+            {/* Error Banner */}
+            {errorMessage && (
+              <div className="flex items-start gap-2.5 p-3 rounded border border-destructive/30 bg-destructive/10 text-destructive text-xs">
+                <AlertCircle className="size-4 shrink-0 mt-0.5" />
+                <div className="flex-1 leading-relaxed">{errorMessage}</div>
+              </div>
+            )}
 
-          {/* Category */}
-          <div className="space-y-1.5">
-            <Label htmlFor="category" className="text-xs font-medium">
-              Kategori Layanan <span className="text-destructive">*</span>
-            </Label>
-            <select
-              id="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value as ServiceCategory)}
-              className="w-full h-9 rounded border border-border bg-background px-3 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
-            >
-              {CATEGORIES.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Title */}
-          <div className="space-y-1.5">
-            <Label htmlFor="title" className="text-xs font-medium">
-              Nama Layanan <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="title"
-              type="text"
-              placeholder="Contoh: Honda PCX 160cc Matic, Private Villa..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="h-9 text-xs"
-              required
-            />
-          </div>
-
-          {/* Price & Unit Grid */}
-          <div className="grid grid-cols-2 gap-3">
+            {/* Category Select */}
             <div className="space-y-1.5">
-              <Label htmlFor="price" className="text-xs font-medium">
-                Harga (IDR) <span className="text-destructive">*</span>
+              <Label htmlFor="category" className="text-xs font-medium">
+                Kategori Layanan <span className="text-destructive">*</span>
               </Label>
-              <Input
-                id="price"
-                type="number"
-                min="0"
-                step="1000"
-                placeholder="150000"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="h-9 text-xs"
+              <select
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value as ServiceCategory)}
+                className="w-full h-9 rounded border border-border bg-background px-3 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                 required
-              />
+              >
+                {CATEGORIES.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
+            {/* Title */}
             <div className="space-y-1.5">
-              <Label htmlFor="unit" className="text-xs font-medium">
-                Satuan Harga <span className="text-destructive">*</span>
+              <Label htmlFor="title" className="text-xs font-medium">
+                Nama Layanan <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="unit"
+                id="title"
                 type="text"
-                placeholder="per hari, per sesi, per malam"
-                value={unit}
-                onChange={(e) => setUnit(e.target.value)}
+                placeholder="Contoh: Honda PCX 160cc Matic, Private Villa..."
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 className="h-9 text-xs"
                 required
               />
             </div>
-          </div>
 
-          {/* Duration */}
-          <div className="space-y-1.5">
-            <Label htmlFor="duration" className="text-xs font-medium">
-              Durasi Operasional (Opsional)
-            </Label>
-            <Input
-              id="duration"
-              type="text"
-              placeholder="Contoh: 2 jam, 1 hari, 8 jam tour"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              className="h-9 text-xs"
-            />
-          </div>
+            {/* Price & Unit Grid */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="price" className="text-xs font-medium">
+                  Harga (IDR) <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="price"
+                  type="number"
+                  min="0"
+                  step="1000"
+                  placeholder="150000"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="h-9 text-xs"
+                  required
+                />
+              </div>
 
-          {/* Description */}
-          <div className="space-y-1.5">
-            <Label htmlFor="description" className="text-xs font-medium">
-              Deskripsi &amp; Fasilitas
-            </Label>
-            <textarea
-              id="description"
-              rows={4}
-              placeholder="Jelaskan spesifikasi, fasilitas include, ketentuan..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[96px]"
-            />
-          </div>
-
-          {/* Photo Section */}
-          <div className="rounded border border-border bg-muted/20 p-3.5 space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-border">
-              <span className="text-xs font-medium text-foreground">
-                Foto Layanan
-              </span>
-
-              <div className="flex items-center gap-1">
-                <Button
-                  type="button"
-                  variant={uploadMode === 'upload' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setUploadMode('upload')}
-                  className="h-7 text-[11px] px-2.5"
-                >
-                  Upload
-                </Button>
-                <Button
-                  type="button"
-                  variant={uploadMode === 'preset' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setUploadMode('preset')}
-                  className="h-7 text-[11px] px-2.5"
-                >
-                  Preset Assets
-                </Button>
-                <Button
-                  type="button"
-                  variant={uploadMode === 'url' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setUploadMode('url')}
-                  className="h-7 text-[11px] px-2.5"
-                >
-                  URL
-                </Button>
+              <div className="space-y-1.5">
+                <Label htmlFor="unit" className="text-xs font-medium">
+                  Satuan Harga <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="unit"
+                  type="text"
+                  placeholder="per hari, per sesi, per malam"
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value)}
+                  className="h-9 text-xs"
+                  required
+                />
               </div>
             </div>
 
-            {/* Hidden file input ALWAYS present in the DOM so fileInputRef.current is never null */}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
-              onChange={handleFileChange}
-              className="hidden"
-            />
+            {/* Duration */}
+            <div className="space-y-1.5">
+              <Label htmlFor="duration" className="text-xs font-medium">
+                Durasi Operasional (Opsional)
+              </Label>
+              <Input
+                id="duration"
+                type="text"
+                placeholder="Contoh: 2 jam, 1 hari, 8 jam tour"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                className="h-9 text-xs"
+              />
+            </div>
 
-            {/* Fallback Banner if no custom image is selected */}
-            {!activeDisplayImage && (
-              <div className="flex items-center gap-3 p-2.5 rounded border border-dashed border-border bg-background">
-                <img
-                  src={getServiceFallbackImage(category)}
-                  alt="Aset fallback bawaan"
-                  className="size-12 rounded object-cover border border-border shrink-0 bg-muted"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-xs font-medium text-foreground">
-                      Foto Bawaan Aktif (Fallback)
+            {/* Description */}
+            <div className="space-y-1.5">
+              <Label htmlFor="description" className="text-xs font-medium">
+                Deskripsi &amp; Fasilitas
+              </Label>
+              <textarea
+                id="description"
+                rows={4}
+                placeholder="Jelaskan spesifikasi, fasilitas include, ketentuan..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full rounded border border-border bg-background px-3 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed resize-y min-h-[96px]"
+              />
+            </div>
+
+            {/* Photo Section: 3 Slots Management */}
+            <div className="rounded border border-border bg-muted/20 p-3.5 space-y-3.5">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-foreground">
+                    Foto Layanan &amp; Galeri Dokumentasi (3 Slot)
+                  </span>
+                  <span className="text-[10px] text-muted-foreground font-mono">
+                    1 Cover + 2 Galeri Samping
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  Klik salah satu slot di bawah untuk mengunggah / mengubah foto cover utama atau 2 foto galeri dokumentasi samping.
+                </p>
+              </div>
+
+              {/* 3 Slot Tabs Preview Cards */}
+              <div className="grid grid-cols-3 gap-2.5">
+                {SLOT_META.map((meta, idx) => {
+                  const slot = slots[idx];
+                  const display = slot.preview || slot.url;
+                  const isSelected = activeSlot === idx;
+
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setActiveSlot(idx);
+                        setUploadMode('upload');
+                      }}
+                      className={`relative rounded border p-1.5 text-left transition-all cursor-pointer ${
+                        isSelected
+                          ? 'border-primary ring-2 ring-primary/20 bg-background shadow-xs'
+                          : 'border-border bg-background/50 hover:bg-background'
+                      }`}
+                    >
+                      <div className="relative aspect-video w-full rounded overflow-hidden bg-muted flex items-center justify-center">
+                        {display ? (
+                          <img
+                            src={display}
+                            alt={meta.title}
+                            className="size-full object-cover"
+                          />
+                        ) : idx === 0 ? (
+                          <div className="relative size-full">
+                            <img
+                              src={getServiceFallbackImage(category)}
+                              alt="Default Fallback"
+                              className="size-full object-cover opacity-60"
+                            />
+                            <span className="absolute inset-0 bg-black/30 flex items-center justify-center text-[9px] text-white font-medium">
+                              Default
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center text-muted-foreground">
+                            <UploadCloud className="size-4 opacity-50" />
+                            <span className="text-[9px] mt-0.5 text-muted-foreground">Belum ada</span>
+                          </div>
+                        )}
+                        <span
+                          className={`absolute top-1 left-1 text-[8px] font-mono font-bold px-1.5 py-0.5 rounded shadow-xs ${
+                            isSelected
+                              ? 'bg-primary text-primary-foreground'
+                              : 'bg-black/70 text-white'
+                          }`}
+                        >
+                          Slot {idx + 1}
+                        </span>
+                      </div>
+
+                      <div className="mt-1.5 flex items-center justify-between">
+                        <span className="text-[10px] font-medium text-foreground truncate">
+                          {idx === 0 ? 'Cover Utama' : `Dokumentasi ${idx}`}
+                        </span>
+                        {display && (
+                          <CheckCircle2 className="size-3 text-emerald-500 shrink-0" />
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Active Slot Controller Header */}
+              <div className="pt-2 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-semibold text-foreground">
+                      {SLOT_META[activeSlot].title}
                     </span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border font-medium">
-                      public/assets
+                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-muted text-muted-foreground font-mono">
+                      {SLOT_META[activeSlot].badge}
                     </span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-0.5 leading-tight">
-                    Jika tidak ada foto khusus yang diunggah, sistem otomatis menampilkan aset{' '}
-                    <code className="text-foreground font-semibold">{getServiceFallbackImage(category)}</code> di website klien dan admin.
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                    {SLOT_META[activeSlot].hint}
                   </p>
                 </div>
-              </div>
-            )}
 
-            {/* Active Preview */}
-            {activeDisplayImage ? (
-              <div className="relative rounded border border-border bg-background overflow-hidden">
-                <img
-                  src={activeDisplayImage}
-                  alt="Preview"
-                  className="h-36 w-full object-cover"
-                />
-                <div className="absolute top-2 right-2 flex items-center gap-1.5">
+                <div className="flex items-center gap-1 shrink-0">
                   <Button
                     type="button"
-                    variant="secondary"
+                    variant={uploadMode === 'upload' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => {
-                      setUploadMode('upload');
-                      fileInputRef.current?.click();
-                    }}
-                    disabled={isUploading || isDeletingImage}
-                    className="h-7 text-xs bg-white text-stone-900 hover:bg-stone-100 shadow-md border border-stone-200 cursor-pointer"
+                    onClick={() => setUploadMode('upload')}
+                    className="h-7 text-[11px] px-2.5"
                   >
-                    Ganti
+                    Upload
                   </Button>
                   <Button
                     type="button"
+                    variant={uploadMode === 'preset' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={handleRemoveImage}
-                    disabled={isDeletingImage || isUploading}
-                    className="h-7 w-7 p-0 bg-red-600 hover:bg-red-700 text-white rounded shadow-md border-0 cursor-pointer flex items-center justify-center"
-                    title="Hapus Foto"
+                    onClick={() => setUploadMode('preset')}
+                    className="h-7 text-[11px] px-2.5"
                   >
-                    {isDeletingImage ? (
-                      <Loader2 className="size-3.5 animate-spin" />
-                    ) : (
-                      <Trash2 className="size-3.5" />
-                    )}
+                    Preset
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={uploadMode === 'url' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setUploadMode('url')}
+                    className="h-7 text-[11px] px-2.5"
+                  >
+                    URL
                   </Button>
                 </div>
               </div>
-            ) : null}
 
-            {/* Mode: Upload */}
-            {uploadMode === 'upload' && !activeDisplayImage && (
-              <div>
-                <div
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setIsDragOver(true);
-                  }}
-                  onDragLeave={() => setIsDragOver(false)}
-                  onDrop={handleDrop}
-                  onClick={() => !isUploading && fileInputRef.current?.click()}
-                  className={`cursor-pointer flex flex-col items-center justify-center p-6 border border-dashed rounded transition-colors ${
-                    isDragOver ? 'border-primary bg-primary/5' : 'border-border bg-background hover:bg-muted/50'
-                  }`}
-                >
-                  {isUploading ? (
-                    <div className="flex items-center gap-2 py-2 text-xs font-medium text-foreground">
-                      <Loader2 className="size-4 animate-spin text-primary" />
-                      <span>Memproses Gambar...</span>
-                    </div>
-                  ) : (
-                    <>
-                      <UploadCloud className="size-6 text-muted-foreground mb-1.5" />
-                      <p className="text-xs font-medium text-foreground">
-                        Upload Gambar Khusus Layanan
-                      </p>
-                      <p className="text-[11px] text-muted-foreground mt-0.5">JPG, PNG, WEBP (Maksimal 5MB)</p>
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onChange={handleFileChange}
+                className="hidden"
+              />
 
-            {/* Mode: Preset */}
-            {uploadMode === 'preset' && (
-              <div className="space-y-2">
-                <p className="text-[11px] text-muted-foreground">
-                  Pilih dari koleksi aset resmi <code className="text-foreground">public/assets</code> untuk kategori ini:
-                </p>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {currentPresets.map((preset) => {
-                    const isSelected = activeDisplayImage === preset.url;
-                    return (
-                      <button
-                        key={preset.label}
-                        type="button"
-                        onClick={() => handleSelectPreset(preset.url)}
-                        className={`group rounded border text-left overflow-hidden transition-all cursor-pointer ${
-                          isSelected
-                            ? 'border-primary ring-2 ring-primary/20 bg-muted'
-                            : 'border-border bg-background hover:border-primary/50'
-                        }`}
-                      >
-                        <div className="h-16 w-full bg-muted overflow-hidden flex items-center justify-center">
-                          <img
-                            src={preset.url}
-                            alt={preset.label}
-                            className="h-full w-full object-cover group-hover:scale-105 transition-transform"
-                          />
-                        </div>
-                        <p className="p-1.5 text-[10px] font-medium text-foreground truncate">
-                          {preset.label}
-                        </p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Mode: URL */}
-            {uploadMode === 'url' && (
-              <div className="space-y-2">
-                <div className="relative">
-                  <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-                  <Input
-                    type="url"
-                    placeholder="/assets/service-vehicle.jpg atau URL eksternal..."
-                    value={imageUrl}
-                    onChange={(e) => {
-                      setImageUrl(e.target.value);
-                      setPreviewUrl(e.target.value);
-                    }}
-                    className="pl-9 h-9 text-xs"
+              {/* Fallback Banner for Slot 0 if empty */}
+              {activeSlot === 0 && !activeDisplayImage && (
+                <div className="flex items-center gap-3 p-2.5 rounded border border-dashed border-border bg-background">
+                  <img
+                    src={getServiceFallbackImage(category)}
+                    alt="Aset fallback bawaan"
+                    className="size-12 rounded object-cover border border-border shrink-0 bg-muted"
                   />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-xs font-medium text-foreground">
+                        Foto Bawaan Aktif (Default)
+                      </span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border font-medium">
+                        public/assets
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-tight">
+                      Jika foto cover slot 1 belum diunggah, sistem otomatis menampilkan aset{' '}
+                      <code className="text-foreground font-semibold">{getServiceFallbackImage(category)}</code>.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-[11px] text-muted-foreground">
-                  Gunakan path lokal (misal: <code className="text-foreground">/assets/service-vehicle.jpg</code>) atau URL HTTPS gambar online.
-                </p>
-              </div>
-            )}
+              )}
+
+              {/* Active Slot Preview (if filled) */}
+              {activeDisplayImage ? (
+                <div className="relative rounded border border-border bg-background overflow-hidden">
+                  <img
+                    src={activeDisplayImage}
+                    alt={`Preview Slot ${activeSlot + 1}`}
+                    className="h-36 w-full object-cover"
+                  />
+                  <div className="absolute top-2 right-2 flex items-center gap-1.5">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => {
+                        setUploadMode('upload');
+                        fileInputRef.current?.click();
+                      }}
+                      disabled={isUploading || isDeletingImage}
+                      className="h-7 text-xs bg-white text-stone-900 hover:bg-stone-100 shadow-md border border-stone-200 cursor-pointer"
+                    >
+                      Ganti Foto
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={handleRemoveActiveImage}
+                      disabled={isDeletingImage || isUploading}
+                      className="h-7 w-7 p-0 bg-red-600 hover:bg-red-700 text-white rounded shadow-md border-0 cursor-pointer flex items-center justify-center"
+                      title="Hapus Foto Slot Ini"
+                    >
+                      {isDeletingImage ? (
+                        <Loader2 className="size-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="size-3.5" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              ) : null}
+
+              {/* Mode: Upload (if slot empty) */}
+              {uploadMode === 'upload' && !activeDisplayImage && (
+                <div>
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragOver(true);
+                    }}
+                    onDragLeave={() => setIsDragOver(false)}
+                    onDrop={handleDrop}
+                    onClick={() => !isUploading && fileInputRef.current?.click()}
+                    className={`cursor-pointer flex flex-col items-center justify-center p-6 border border-dashed rounded transition-colors ${
+                      isDragOver ? 'border-primary bg-primary/5' : 'border-border bg-background hover:bg-muted/50'
+                    }`}
+                  >
+                    {isUploading ? (
+                      <div className="flex items-center gap-2 py-2 text-xs font-medium text-foreground">
+                        <Loader2 className="size-4 animate-spin text-primary" />
+                        <span>Memproses Gambar...</span>
+                      </div>
+                    ) : (
+                      <>
+                        <UploadCloud className="size-6 text-muted-foreground mb-1.5" />
+                        <p className="text-xs font-medium text-foreground">
+                          Upload Foto untuk {SLOT_META[activeSlot].title}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">JPG, PNG, WEBP (Maksimal 5MB)</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Mode: Preset */}
+              {uploadMode === 'preset' && (
+                <div className="space-y-2">
+                  <p className="text-[11px] text-muted-foreground">
+                    Pilih foto dari aset resmi untuk {SLOT_META[activeSlot].title}:
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {currentPresets.map((preset) => {
+                      const isSelected = activeDisplayImage === preset.url;
+                      return (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() => handleSelectPreset(preset.url)}
+                          className={`group rounded border text-left overflow-hidden transition-all cursor-pointer ${
+                            isSelected
+                              ? 'border-primary ring-2 ring-primary/20 bg-muted'
+                              : 'border-border bg-background hover:border-primary/50'
+                          }`}
+                        >
+                          <div className="h-16 w-full bg-muted overflow-hidden flex items-center justify-center">
+                            <img
+                              src={preset.url}
+                              alt={preset.label}
+                              className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+                            />
+                          </div>
+                          <p className="p-1.5 text-[10px] font-medium text-foreground truncate">
+                            {preset.label}
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Mode: URL */}
+              {uploadMode === 'url' && (
+                <div className="space-y-2">
+                  <div className="relative">
+                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+                    <Input
+                      type="url"
+                      placeholder="/assets/... atau URL HTTPS gambar online..."
+                      value={activeSlotState.url}
+                      onChange={(e) => handleUrlChange(e.target.value)}
+                      className="pl-9 h-9 text-xs"
+                    />
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    Gunakan path lokal (misal: <code className="text-foreground">/assets/service-travel.jpg</code>) atau link gambar HTTPS.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Active Checkbox */}
+            <div className="flex items-center gap-2 pt-1">
+              <input
+                type="checkbox"
+                id="is_active"
+                checked={isActive}
+                onChange={(e) => setIsActive(e.target.checked)}
+                className="size-4 rounded border-border text-primary focus:ring-ring cursor-pointer"
+              />
+              <label htmlFor="is_active" className="text-xs font-medium text-foreground cursor-pointer">
+                Aktifkan layanan ini (tampilkan di website publik)
+              </label>
+            </div>
           </div>
 
-          {/* Active Checkbox */}
-          <div className="flex items-center gap-2 pt-1">
-            <input
-              type="checkbox"
-              id="is_active"
-              checked={isActive}
-              onChange={(e) => setIsActive(e.target.checked)}
-              className="size-4 rounded border-border text-primary focus:ring-ring cursor-pointer"
-            />
-            <label htmlFor="is_active" className="text-xs font-medium text-foreground cursor-pointer">
-              Aktifkan layanan ini (tampilkan di website publik)
-            </label>
-          </div>
-
-          </div>
-
-          {/* Actions */}
+          {/* Actions Footer */}
           <DrawerFooter className="px-6 py-4 border-t border-border bg-card/80 backdrop-blur-sm flex flex-row items-center justify-end gap-2.5 shrink-0 mt-0">
             <Button
               type="button"
