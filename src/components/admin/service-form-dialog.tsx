@@ -53,17 +53,17 @@ const SLOT_META = [
   {
     title: 'Slot 1: Foto Utama / Cover',
     badge: 'Cover Utama (Wajib)',
-    hint: 'Tampil di katalog, kartu layanan landing page, dan foto utama halaman detail.',
+    hint: 'Tampil di katalog, kartu layanan, dan foto utama halaman detail.',
   },
   {
     title: 'Slot 2: Foto Dokumentasi 1',
-    badge: 'Galeri Samping 1 (Opsional)',
-    hint: 'Tampil sebagai foto galeri samping atas di halaman detail layanan.',
+    badge: 'Foto 2 (Opsional)',
+    hint: 'Jika diisi bersama Slot 1, halaman detail otomatis menampilkan 2 foto berdampingan (50% - 50%).',
   },
   {
     title: 'Slot 3: Foto Dokumentasi 2',
-    badge: 'Galeri Samping 2 (Opsional)',
-    hint: 'Tampil sebagai foto galeri samping bawah di halaman detail layanan.',
+    badge: 'Foto 3 (Opsional)',
+    hint: 'Jika ketiga slot terisi, halaman detail otomatis menampilkan galeri grid lengkap 3 foto.',
   },
 ];
 
@@ -696,15 +696,14 @@ export function ServiceFormDialog({
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="text-xs font-medium text-foreground">
-                        Foto Bawaan Aktif (Default)
+                        Foto Cadangan Default
                       </span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border font-medium">
                         public/assets
                       </span>
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-0.5 leading-tight">
-                      Jika foto cover slot 1 belum diunggah, sistem otomatis menampilkan aset{' '}
-                      <code className="text-foreground font-semibold">{getServiceFallbackImage(category)}</code>.
+                      Hanya dipakai jika Slot 1 belum diisi (<code className="text-foreground font-semibold">{getServiceFallbackImage(category)}</code>). Jika Anda sudah mengunggah foto sendiri, foto cadangan ini tidak akan pernah ditampilkan.
                     </p>
                   </div>
                 </div>
